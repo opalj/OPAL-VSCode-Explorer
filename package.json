@@ -19,6 +19,26 @@
 				"command": "extension.helloWorld",
 				"title": "Hello World"
 			}
+		],
+		"languages": [
+			{
+				"id": "tac",
+				"aliases": [
+					"three-address code",
+					"tac"
+				],
+				"extensions": [
+					".tac"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "tac",
+				"scopeName": "source.tac",
+				"path": "./syntaxes/tac.tmLanguage.json"
+			}
 		]
 	},
 	"scripts": {
