@@ -3,29 +3,64 @@
 	"name": "three-address-code",
 	"patterns": [
 		{
-			"include": "#keywords"
+			"include": "#keyword"
 		},
 		{
-			"include": "#strings"
+			"include": "#support"
+		},
+		{
+			"include": "string"
+		},
+		{
+			"include": "comment"
 		}
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.tac",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
+		"keyword": {
+			"patterns": [
+				{	
+					"name" : "keyword.control",
+					"match" : "\\b(if|goto)\\b"
+				},
+				{	
+					"name" : "keyword.operator",
+					"match" : "\\b(new)\\b"
+				}
+			]
 		},
-		"strings": {
-			"name": "string.quoted.double.tac",
+		"support": {
+			"patterns" : [
+						{	
+							"name" : "support.constant",
+							"match" : "^\\s+\\d+:"
+						},
+						{	
+							"name" : "support.constant",
+							"match" : "^\\s+\/\/\\s(\\d)+(, \\d+)* \u2192"
+						},
+						{	
+							"name" : "support.constant",
+							"match" : "\/\\*pc=\\d+:\\*\/"
+						}
+			]
+		},
+		"string": {
+			"name": "string.quoted.double.untitled",
 			"begin": "\"",
 			"end": "\"",
 			"patterns": [
 				{
-					"name": "constant.character.escape.tac",
-					"match": "\\\\."
+					"name": "constant.character.escape.untitled",
+					"match": "\\."
 				}
 			]
+		},
+		"comment":
+		{
+			"patterns": [{
+				"name": "comment",
+				"match": "\/\\*(\\s|\\.|\\w)*\\*\/"
+			}]
 		}
 	},
 	"scopeName": "source.tac"
