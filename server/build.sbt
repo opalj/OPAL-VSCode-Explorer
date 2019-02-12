@@ -1,25 +1,16 @@
-resolvers += "Sonaotype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 import Dependencies._
 
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.example"
-ThisBuild / organizationName := "example"
+ThisBuild / organization     := "org.opalj"
 
+resolvers += "Sonaotype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 lazy val root = (project in file("."))
   .settings(
     name := "OPAL Command Server",
     libraryDependencies ++= Seq(
-	scalaTest % Test,
-	opal_common,
-	opal_br,
-	opal_ai,
-	opal_ba,
-	opal_bi,
-	opal_da,
-	opal_tac,
-	opal_bc,
-	opal_sai
+	scalaTest % Test
 	)
   )
 
