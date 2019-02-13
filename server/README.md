@@ -20,7 +20,7 @@ Statische TAC Dateien (siehe Web Ordner server\src\main\webapp):
 
 http://localhost:8080/tac-examples/
 
-TAC Servlet (siehe Ordner server\src\main\scala\opal\vscode\extension)
+TAC Servlet (siehe Ordner server\src\main\scala\opal\extension\vscode\)
 
 http://localhost:8080/tac/blabla
 
