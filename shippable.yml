@@ -1,9 +1,15 @@
-language: scala
+language:
 scala: 
     - 2.12.8
+
+node_js:
+    - 8.10.25
 
 build:
     ci:
         - cd server/
         - sbt compile
         - sbt test
+        - cd ..
+        - cd extension
+        - npm test
