@@ -5,4 +5,5 @@ scala:
 build:
     ci:
         - cd server/
+        - sbt compile
         - sbt test
