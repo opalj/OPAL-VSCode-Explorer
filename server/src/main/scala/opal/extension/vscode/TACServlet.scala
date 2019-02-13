@@ -1,4 +1,4 @@
-package opal.vscode.extension
+package opal.extension.vscode
 
 import org.scalatra._
 import org.json4s.{DefaultFormats, Formats}

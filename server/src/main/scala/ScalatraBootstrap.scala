@@ -1,4 +1,4 @@
-import opal.vscode.extension._
+import opal.extension.vscode._
 import org.scalatra._
 import javax.servlet.ServletContext
 

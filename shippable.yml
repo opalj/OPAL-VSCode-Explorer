@@ -1,0 +1,12 @@
+language: scala
+scala: 
+    - 2.12.8
+
+build:
+    ci:
+        - cd server/
+        - sbt compile
+        - sbt test
+        - cd ..
+        - cd extension
+        - npm test
