@@ -1,4 +1,4 @@
-language:
+language: scala
 scala: 
     - 2.12.8
 
