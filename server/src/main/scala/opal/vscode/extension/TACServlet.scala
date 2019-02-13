@@ -18,12 +18,16 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
     get("/tac/:id") {
 		var tacDir = "./src/main/webapp/tac-examples"
-		var content = "Could not load file properly"
+		var content = ""
 		
 		var target = tacDir + "/" + params("id")
 
-		content = Source.fromFile(target).getLines.mkString
+		try{
+			content = Source.fromFile(target).getLines.mkString
 
+		}catch{
+			case e: Exception => content = "Could not finde tac-file of given name: " + params("id") + "!"
+		}
         new TAC(params("id"), content)
     }
 }
