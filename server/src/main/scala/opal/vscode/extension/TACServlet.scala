@@ -4,6 +4,7 @@ import org.scalatra._
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
 import scala.io.Source
+import java.io.File
 
 
 
@@ -16,15 +17,14 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
     }
 
     get("/tac/:id") {
-        new TAC(params("id"), "void <init>(){"+
-      "/* PARAMETERS:"+
-         "param0: useSites={0} (origin=-1)"+
-      "*/"+
-    "0:/*pc=1:*/ {param0}/*(non-virtual) java.lang.Object*/.<init>()"+
-      "// ⚡️ <uncaught exception ⇒ abnormal return>"+
-      "// 0 →"+
-    "1:/*pc=4:*/ return}"
-    )
+		var tacDir = "./src/main/webapp/tac-examples"
+		var content = "Could not load file properly"
+		
+		var target = tacDir + "/" + params("id")
+
+		content = Source.fromFile(target).getLines.mkString
+
+        new TAC(params("id"), content)
     }
 }
 
