@@ -1,8 +1,10 @@
-language: scala
-scala: 
-    - 2.12.8
-
 build:
+    pre_ci_boot:
+    image_name: agssl123/vscodeextension
+    image_tag: test
+    pull: true
+    env: FOO=bar
+    options: "-e HOME=/root"
     ci:
         - cd server/
         - sbt compile
