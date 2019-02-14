@@ -13,5 +13,5 @@ build:
         - sbt test
         - cd ..
         - cd extension
-        - npm install
+        - npm install -g tsc
         - npm test
