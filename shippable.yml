@@ -14,4 +14,5 @@ build:
         - cd ..
         - cd extension
         - npm install typescript -g
+        - nom install
         - npm test
