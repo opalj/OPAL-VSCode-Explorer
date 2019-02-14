@@ -2,8 +2,8 @@ language: none
 
 build:
     pre_ci_boot:
-        image_name: my_registry_repo/my_image
-        image_tag: latest
+        image_name: agssl123/vscodeextension
+        image_tag: test
         pull: true
         options: "-e HOME=/root"
 
