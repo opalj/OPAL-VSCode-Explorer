@@ -20,7 +20,15 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World!');
 	});
 
+	let exampleComand = vscode.commands.registerCommand('extension.getTACex', () => {
+		//Second Command
+		//I'll try to make this command deliver a example from the server
+		vscode.window.showInformationMessage('Hier könnte ihr TAC stehen');
+	});
+
+
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(exampleComand);
 }
 
 // this method is called when your extension is deactivated
