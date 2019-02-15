@@ -15,4 +15,5 @@ build:
         - cd extension
         - npm install typescript -g
         - npm install
+        - npm run postinstall
         - npm test
