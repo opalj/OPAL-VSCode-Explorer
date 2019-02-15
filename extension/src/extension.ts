@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { TacService } from './extension/tac.service';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -32,8 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
 		//Second Command
 		//I'll try to make this command deliver a example from the server
 		vscode.window.showInformationMessage('Subwindow sollte geöffnet werden.');
-		vscode.window.showInformationMessage(what);
-
+		var tacService = new TacService('localhost:8080/');
+		tacService.loadTAC("short1.txt").then(function (res) {
+			vscode.window.showInformationMessage(res);		
+		})
 	});
 
 
