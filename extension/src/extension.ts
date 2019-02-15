@@ -26,9 +26,20 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hier könnte ihr TAC stehen');
 	});
 
+	let windowComand = vscode.commands.registerCommand('extension.subwindow', async () => {
+		let what = await vscode.window.showInputBox({ placeHolder: 'cowsay...' });
+
+		//Second Command
+		//I'll try to make this command deliver a example from the server
+		vscode.window.showInformationMessage('Subwindow sollte geöffnet werden.');
+		vscode.window.showInformationMessage(what);
+
+	});
+
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(exampleComand);
+	context.subscriptions.push(windowComand);
 }
 
 // this method is called when your extension is deactivated
