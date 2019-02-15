@@ -28,8 +28,6 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
 		}
 
 		
-		new TAC("A","B")
-		Thread.sleep(2000) 
         new TAC(params("id"), content)
     }
 }
