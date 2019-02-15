@@ -28,16 +28,15 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let windowComand = vscode.commands.registerCommand('extension.subwindow', async () => {
-		let what = await vscode.window.showInputBox({ placeHolder: 'cowsay...' });
-
-		//Second Command
-		//I'll try to make this command deliver a example from the server
-		vscode.window.showInformationMessage('Subwindow sollte geöffnet werden.');
-		var tacService = new TacService('http://localhost:8080/tac/');
-		if (what) {
-			tacService.loadTAC(what).then(function (res: any) {
+		let tacID = await vscode.window.showInputBox({ placeHolder: 'TAC ID ...' });
+		if (tacID) {
+			var tacService = new TacService('http://localhost:8080/tac/');
+			vscode.window.showInformationMessage('TAC requested from Server ..... ');
+			tacService.loadTAC(tacID).then(function (res: any) {
 				vscode.window.showInformationMessage(res.tac);
 			});
+		} else {
+			vscode.window.showInformationMessage('ERROR: something wrong with the TAC ID');
 		}
 	});
 
