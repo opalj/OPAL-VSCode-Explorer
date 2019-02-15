@@ -1,12 +1,18 @@
-language: scala
-scala: 
-    - 2.12.8
+language: none
 
 build:
+    pre_ci_boot:
+        image_name: agssl123/vscodeextension
+        image_tag: test
+        pull: true
+        options: "-e HOME=/root"
+
     ci:
         - cd server/
         - sbt compile
         - sbt test
         - cd ..
         - cd extension
+        - npm install typescript -g
+        - npm install
         - npm test
