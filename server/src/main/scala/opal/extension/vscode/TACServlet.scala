@@ -28,6 +28,10 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
 		}catch{
 			case e: Exception => content = "Could not finde tac-file of given name: " + params("id") + "!"
 		}
+
+		
+		new TAC("A","B")
+		Thread.sleep(2000) 
         new TAC(params("id"), content)
     }
 }
