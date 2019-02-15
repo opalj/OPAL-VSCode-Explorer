@@ -1,5 +1,5 @@
 // var rp = require('request-promise');
-
+var request = require('request');
 
 export class TacService {
 
@@ -18,7 +18,7 @@ export class TacService {
     }
 
     async loadTAC(id: string) {
-        var request = require('request');
+        this.options.uri += id;
         return new Promise((resolve, reject) => {
             request(this.options, function (error: any, response: any, body: any) {
                 console.log(body);

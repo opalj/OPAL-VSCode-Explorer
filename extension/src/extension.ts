@@ -33,10 +33,12 @@ export function activate(context: vscode.ExtensionContext) {
 		//Second Command
 		//I'll try to make this command deliver a example from the server
 		vscode.window.showInformationMessage('Subwindow sollte geöffnet werden.');
-		var tacService = new TacService('localhost:8080/');
-		tacService.loadTAC("short1.txt").then(function (res) {
-			vscode.window.showInformationMessage(res);		
-		})
+		var tacService = new TacService('http://localhost:8080/tac/');
+		if (what) {
+			tacService.loadTAC(what).then(function (res: any) {
+				vscode.window.showInformationMessage(res.tac);
+			});
+		}
 	});
 
 
