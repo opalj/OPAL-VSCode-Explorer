@@ -19,8 +19,8 @@ build:
         - npm run postinstall
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
+        - cd ..
     post_ci:
-        - ls ./ 
-        - ls ./server
+        - ls ./server/target
         - ls ./server/target/scala-2.12
         - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage
