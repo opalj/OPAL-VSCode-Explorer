@@ -12,8 +12,8 @@ build:
         - sbt compile
         - sbt test
         - sbt coverageReport
-        - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage
         - cd ..
+        - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage
         - cd extension
         - npm install typescript -g
         - npm install
