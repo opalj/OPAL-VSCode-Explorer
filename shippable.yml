@@ -3,7 +3,7 @@ language: none
 build:
     pre_ci_boot:
         image_name: agssl123/vscodeextension
-        image_tag: test
+        image_tag: latest
         pull: true
         options: "-e HOME=/root"
 
