@@ -16,6 +16,8 @@ build:
         - sbt compile
         - sbt clean coverage test
         - sbt coverageReport
+        - sbt clean assembly
+        - java -jar '.\target\scala-2.12\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar'
         - cd ..
         - cd extension
         - npm install typescript -g
