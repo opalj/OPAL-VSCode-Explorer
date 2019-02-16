@@ -23,4 +23,5 @@ build:
     post_ci:
         - ls ./server/target
         - ls ./server/target/scala-2.12
-        - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage
+        - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage -r
+        - cp ./server/target/scala-2.12/scoverage-report ./shippable/codecoverage -r
