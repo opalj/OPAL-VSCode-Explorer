@@ -25,10 +25,18 @@ libraryDependencies ++= Seq(
   "org.eclipse.jetty" % "jetty-webapp" % "9.4.9.v20180320" % "container",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
 	"org.scalatra" %% "scalatra-json" % ScalatraVersion,
-  "org.json4s"   %% "json4s-jackson" % "3.5.2"
+  "org.json4s"   %% "json4s-jackson" % "3.5.2",
+  "junit"                      % "junit"                   % "4.5",
+  "org.scalatest"              % "scalatest_2.11"          % "2.2.0-RC2",
+  "org.scalatest" %% "scalatest" % "2.1.6" % "test"
 )
 enablePlugins(SbtTwirl)
 enablePlugins(ScalatraPlugin)
+
+testOptions in Test <+= (target in Test) map {
+  t => Tests.Argument(TestFrameworks.ScalaTest, "junitxml(directory=\"%s\")" format (t / "../shippable/testresults"))
+}
+
 
 
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.

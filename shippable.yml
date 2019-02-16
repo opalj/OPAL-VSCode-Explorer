@@ -7,6 +7,10 @@ build:
         pull: true
         options: "-e HOME=/root"
 
+    before_script:
+        - mkdir -p shippable/testresults
+        - ln -s ../target/test-reports shippable/testresults
+
     ci:
         - cd server/
         - sbt compile
