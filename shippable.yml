@@ -9,7 +9,7 @@ build:
 
     before_script:
         - mkdir -p shippable/testresults
-        - ln -s ../target/test-reports shippable/testresults
+        - ln -s ./server/target/scala-2.12/scoverage-report shippable/testresults
 
     ci:
         - cd server/
@@ -24,8 +24,3 @@ build:
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
         - cd ..
-    post_ci:
-        - ls ./server/target
-        - ls ./server/target/scala-2.12
-        - cp ./server/target/scala-2.12/scoverage-data ./shippable/codecoverage -r
-        - cp ./server/target/scala-2.12/scoverage-report ./shippable/codecoverage -r
