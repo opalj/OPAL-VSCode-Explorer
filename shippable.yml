@@ -10,8 +10,7 @@ build:
     ci:
         - cd server/
         - sbt compile
-        - sbt test
-        - sbt coverages
+        - sbt clean coverage test
         - sbt coverageReport
         - cd ..
         - cd extension
