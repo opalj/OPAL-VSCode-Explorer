@@ -32,10 +32,15 @@ export class TacService {
         this.options.uri += id;
         return new Promise((resolve, reject) => {
             request(this.options, function (error: any, response: any, body: any) {
-                console.log(body);
-                console.log(error);
-                console.log(response);
-                resolve(body);
+                if (error) {
+                    console.log("Error: ")
+                    console.log(error);
+                    reject(error)
+                } else {
+                    console.log("Response: ");
+                    console.log(response);
+                    resolve(body);
+                }
             });
         });
     }

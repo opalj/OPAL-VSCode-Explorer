@@ -4,7 +4,9 @@
 //
 
 // The module 'assert' provides assertion methods from node
-import * as assert from 'assert';
+var assert = require('chai').assert
+var expect = require('chai').expect
+import { TacService } from '../extension/tac.service';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -19,4 +21,21 @@ suite("Extension Tests", function () {
         assert.equal(-1, [1, 2, 3].indexOf(5));
         assert.equal(-1, [1, 2, 3].indexOf(0));
     });
+
+    test('assertion success', async () => {
+        var tacService = new TacService("http://localhost:8080/tac/");
+        var id = 'short1.txt';
+
+        try {
+            var res : any = await tacService.loadTAC(id);    
+            expect(res).to.have.property('tac');
+            expect(res).to.have.property('id');
+            expect(res.id).to.equal('short1.txt');
+            expect(res.tac).to.have.string('void <init>(){');
+            expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
+            expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
+        } catch(error) {
+            console.log(error);
+        }
+      });
 });
