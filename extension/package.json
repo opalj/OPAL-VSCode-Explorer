@@ -10,23 +10,13 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld",
-		"onCommand:extension.getTACex",
-		"onCommand:extension.subwindow"
+		"onCommand:extension.tac"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "extension.getTACex",
-				"title": "Get TAC Example"
-			},
-			{
-				"command": "extension.subwindow",
+				"command": "extension.tac",
 				"title": "Opal-TAC"
 			}
 		],

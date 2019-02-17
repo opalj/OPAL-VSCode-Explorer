@@ -33,9 +33,9 @@ export class TacService {
         return new Promise((resolve, reject) => {
             request(this.options, function (error: any, response: any, body: any) {
                 if (error) {
-                    console.log("Error: ")
+                    console.log("Error: ");
                     console.log(error);
-                    reject(error)
+                    reject(error);
                 } else {
                     console.log("Response: ");
                     console.log(response);
