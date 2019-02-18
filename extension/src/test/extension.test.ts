@@ -14,7 +14,7 @@ import { TacService } from '../extension/service/tac.service';
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", function () {
 
-    test('assertion success', async () => {
+    test('assertion success short1.txt', async () => {
         var tacService = new TacService("http://localhost:8080/tac/");
         var id = 'short1.txt';
 
@@ -31,7 +31,7 @@ suite("Extension Tests", function () {
         }
       });
 
-	test('assertion success', async () => {
+	test('assertion success severalMethods.txt', async () => {
         var tacService = new TacService("http://localhost:8080/tac/");
         var id = 'severalMethods.txt';
 
@@ -40,15 +40,15 @@ suite("Extension Tests", function () {
             expect(res).to.have.property('tac');
             expect(res).to.have.property('id');
             expect(res.id).to.equal(id);
-            expect(res.tac).to.have.string('void <init>(){');
-            expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
-            expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
+            expect(res.tac).to.have.string('void a(java.lang.String){');
+            expect(res.tac).to.have.string('7:/*pc=24:*/ lv7 = {param0}/*com.android.volley.VolleyLog$a*/.b');
+            expect(res.tac).to.have.string('30:/*pc=96:*/ lv1e = "(%-4d ms) %s"');
         } catch(error) {
             console.log(error);
         }
       });
 
-	test('assertion success', async () => {
+	test('assertion success intermediate2.txt', async () => {
         var tacService = new TacService("http://localhost:8080/tac/");
         var id = 'intermediate2.txt';
 
@@ -57,9 +57,9 @@ suite("Extension Tests", function () {
             expect(res).to.have.property('tac');
             expect(res).to.have.property('id');
             expect(res.id).to.equal(id);
-            expect(res.tac).to.have.string('void <init>(){');
-            expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
-            expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
+            expect(res.tac).to.have.string('4:/*pc=14:*/ lv4 = "volley/0"');
+            expect(res.tac).to.have.string('1:/*pc=5:*/');
+            expect(res.tac).to.have.string('static com.android.volley');
         } catch(error) {
             console.log(error);
         }
