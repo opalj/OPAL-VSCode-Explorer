@@ -2,10 +2,13 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
+import { InitService } from './extension/service/init.service';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+	var InitService = new InitService();
 
 	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
 	//registering command "Opal-TAC", p.r. to extension/package.json
