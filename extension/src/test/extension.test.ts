@@ -14,12 +14,6 @@ import { TacService } from '../extension/service/tac.service';
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", function () {
 
-    // Defines a Mocha unit test
-    test("Something 1", function() {
-        assert.equal(-1, [1, 2, 3].indexOf(5));
-        assert.equal(-1, [1, 2, 3].indexOf(0));
-    });
-
     test('assertion success', async () => {
         var tacService = new TacService("http://localhost:8080/tac/");
         var id = 'short1.txt';
@@ -28,7 +22,41 @@ suite("Extension Tests", function () {
             var res : any = await tacService.loadTAC(id);    
             expect(res).to.have.property('tac');
             expect(res).to.have.property('id');
-            expect(res.id).to.equal('short1.txt');
+            expect(res.id).to.equal(id);
+            expect(res.tac).to.have.string('void <init>(){');
+            expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
+            expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
+        } catch(error) {
+            console.log(error);
+        }
+      });
+
+	test('assertion success', async () => {
+        var tacService = new TacService("http://localhost:8080/tac/");
+        var id = 'severalMethods.txt';
+
+        try {
+            var res : any = await tacService.loadTAC(id);    
+            expect(res).to.have.property('tac');
+            expect(res).to.have.property('id');
+            expect(res.id).to.equal(id);
+            expect(res.tac).to.have.string('void <init>(){');
+            expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
+            expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
+        } catch(error) {
+            console.log(error);
+        }
+      });
+
+	test('assertion success', async () => {
+        var tacService = new TacService("http://localhost:8080/tac/");
+        var id = 'intermediate2.txt';
+
+        try {
+            var res : any = await tacService.loadTAC(id);    
+            expect(res).to.have.property('tac');
+            expect(res).to.have.property('id');
+            expect(res.id).to.equal(id);
             expect(res.tac).to.have.string('void <init>(){');
             expect(res.tac).to.have.string('param0: useSites={0} (origin=-1)');
             expect(res.tac).to.have.string('// ⚡️ <uncaught exception ⇒ abnormal return>');
