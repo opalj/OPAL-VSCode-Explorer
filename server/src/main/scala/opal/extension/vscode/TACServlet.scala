@@ -16,7 +16,7 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
         contentType = formats("json")
     }
 
-    get("/tac/:id") {
+    get("/:id") {
 		var tacDir = new File(".").getCanonicalPath()+File.separator+"src"+File.separator+"main"+File.separator+"webapp"+File.separator+"tac-examples"
 		var content = ""
 		var target = tacDir + File.separator + params("id")
