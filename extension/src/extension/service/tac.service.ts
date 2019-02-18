@@ -30,13 +30,16 @@ export class TacService {
      */
     async loadTAC(id: string) {
         this.options.uri += id;
+        //asynchronous requesting
         return new Promise((resolve, reject) => {
             request(this.options, function (error: any, response: any, body: any) {
                 if (error) {
+                    //error handling
                     console.log("Error: ");
                     console.log(error);
                     reject(error);
                 } else {
+                    //response handling
                     console.log("Response: ");
                     console.log(response);
                     resolve(body);
