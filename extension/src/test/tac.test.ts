@@ -1,18 +1,10 @@
-//
-// Note: This example test is leveraging the Mocha test framework.
-// Please refer to their documentation on https://mochajs.org/ for help.
-//
-
 var expect = require('chai').expect;
 import { TacService } from '../extension/service/tac.service';
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-// import * as vscode from 'vscode';
-// import * as myExtension from '../extension';
-
-// Defines a Mocha test suite to group tests of similar kind together
-suite("Extension Tests", function () {
+/**
+ * Tests for TAC Features
+ */
+suite("TAC Test Suit", function () {
 
     test('assertion success short1.txt', async () => {
         var tacService = new TacService("http://localhost:8080/tac/");
