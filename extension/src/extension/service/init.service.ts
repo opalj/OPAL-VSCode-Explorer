@@ -9,21 +9,24 @@ export class InitService {
         "uri": "",
         "headers": {
         },
+        "body": {},
         "json": true
     };
 
-
     constructor(public _url: string){
-        this.options.uri = _url;
+        this.options.uri = _url+'/opal/init';
     }
 
     /**
      * 
      */
-    init(config : string){
+    init(config : any) {
+        config.status = "init opal";
+        this.options.body = config;
+        console.log(this.options);
         //Promise for sending classpath
         return new Promise((resolve, reject) => {
-            request(this.options, config, function (error: any, response: any, body: any) {
+            request.post(this.options, function (error: any, response: any, body: any) {
                 if (error) {
                     //error handling
                     console.log("Error: ");
