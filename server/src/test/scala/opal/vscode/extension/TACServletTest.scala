@@ -7,7 +7,7 @@ class HelloWorldServletTests extends ScalatraSuite with FunSuiteLike {
   addServlet(classOf[TACServlet], "/*")
 
   test("get tac route") {
-    get("/tac/short1.txt") {
+    get("/short1.txt") {
       status should equal (200)
       body should include ("short1.txt")
     }
