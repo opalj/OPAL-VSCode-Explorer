@@ -14,9 +14,9 @@ build:
     ci:
         - cd server/
         - sbt compile
-        - sbt clean coverage test
+        - sbt coverage test
         - sbt coverageReport
-        - sbt clean assembly
+        - sbt assembly
         - java -jar './target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' & 
         - cd ..
         - cd extension
