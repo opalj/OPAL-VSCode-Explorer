@@ -12,7 +12,7 @@ build:
         - ln -s ./server/target/scala-2.12/scoverage-report shippable/testresults
 
     ci:
-        - cd serverTEST/
+        - cd server/
         - sbt compile
         - sbt clean coverage test
         - sbt coverageReport
