@@ -5,7 +5,6 @@ var request = require('request');
 
 export class InitService {
 
-    config:any = {};
     options = {
         "uri": "",
         "headers": {
@@ -14,18 +13,17 @@ export class InitService {
     };
 
 
-    constructor(public _config: any){
-        this.config = _config;
-        this.options.uri = this.config.serverUrl;
+    constructor(public _url: string){
+        this.options.uri = _url;
     }
 
     /**
      * 
      */
-    init(){
+    init(config : string){
         //Promise for sending classpath
         return new Promise((resolve, reject) => {
-            request(this.options, this.config.classpath, function (error: any, response: any, body: any) {
+            request(this.options, config, function (error: any, response: any, body: any) {
                 if (error) {
                     //error handling
                     console.log("Error: ");
