@@ -12,7 +12,7 @@ build:
         - ln -s ./server/target/scala-2.12/scoverage-report shippable/testresults
 
     ci:
-        - cd server/
+        - cd serverTEST/
         - sbt compile
         - sbt clean coverage test
         - sbt coverageReport
@@ -36,5 +36,5 @@ integrations:
       on_success: change
       on_failure: always
       on_cancel: never
-      on_start: always
+      on_start: never
       on_pull_request: always
