@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+//import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 
@@ -15,10 +16,21 @@ export function activate(context: vscode.ExtensionContext) {
 			//executing TacService on Tac ID
 			var tacService = new TacService('http://localhost:8080/tac/');
 			vscode.window.showInformationMessage('TAC requested from Server ..... ');
+		
 			tacService.loadTAC(tacID).then(function (res: any) {
 				//return Tac in info box
-				vscode.window.showInformationMessage(res.tac);
+				//vscode.window.showInformationMessage(res.tac);
+				var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
+				vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
+					vscode.window.showTextDocument(a,1,false).then(e => { 
+						e.edit(edit => {
+							 edit.insert(new vscode.Position(0,0), res.tac);
+						});
+					 });
+				});
+			
 			});
+			
 		} else {
 			//invalid Tac ID given
 			vscode.window.showInformationMessage('ERROR: something wrong with the TAC ID');
