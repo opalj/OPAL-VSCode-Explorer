@@ -16,11 +16,13 @@ class InitOPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         contentType = formats("json")
     }
 
-    get("/:classpath") {
-        new OPAL(params("classpath"), "pending"); 
+    post("/init") {
+        var opalStatus = parsedBody.extract[OPALStatus];
+        opalStatus.status = "init started";
+        opalStatus
     }
 }
 
 
-case class OPAL (classpath: String, status: String)
+case class OPALStatus (classpath: String, var status: String)
 
