@@ -4,14 +4,31 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import { InitService } from './extension/service/init.service';
 
-var config = require('./extension/opal.config.json');
+var config = require('./../.vscode/opal.config.json');
+var jettyStarted = false;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	var initService : any = new InitService(config);
-	initService.init();
+	/**
+	 * If jetty not already started, start jetty
+	 */
+	if (!jettyStarted) {
+		jettyStarted = true;
+		var terminal = vscode.window.createTerminal("jetty");
+		terminal.show(false);
+		terminal.sendText("pwd");
+		terminal.sendText("java -jar "+config.extension.jettyjar, true);
+	}
+
+	/**
+	 * Initialize OPAL
+	 */
+	var initService : any = new InitService(config.server.url);
+	initService.init(config.opal);
+	
+	
 
 	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
 	//registering command "Opal-TAC", p.r. to extension/package.json
@@ -20,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let tacID = await vscode.window.showInputBox({ placeHolder: 'TAC ID ...' });
 		if (tacID) {
 			//executing TacService on Tac ID
-			var tacService = new TacService('http://localhost:8080/tac/');
+			var tacService = new TacService(config.server.url);
 			vscode.window.showInformationMessage('TAC requested from Server ..... ');
 			tacService.loadTAC(tacID).then(function (res: any) {
 				//return Tac in info box
