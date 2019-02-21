@@ -4,12 +4,20 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import { InitService } from './extension/service/init.service';
 
-var config = require('./../.vscode/opal.config.json');
+//var config = require('./../.vscode/opal.config.json');
 var jettyStarted = false;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+
+	/**
+	 * Open opal.config.json
+	 */
+	var rootPath = vscode.workspace.rootPath;
+	var path: vscode.Uri = vscode.Uri.parse("file:///"+rootPath+"/opal.config.json");
+	var document = await vscode.workspace.openTextDocument(path);
+	var config = JSON.parse(document.getText());
 
 	/**
 	 * If jetty not already started, start jetty
@@ -18,7 +26,6 @@ export function activate(context: vscode.ExtensionContext) {
 		jettyStarted = true;
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		terminal.sendText("pwd");
 		terminal.sendText("java -jar "+config.extension.jettyjar, true);
 	}
 
