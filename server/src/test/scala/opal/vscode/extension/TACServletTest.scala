@@ -1,9 +1,9 @@
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuiteLike
-import opal.extension.vscode._
+import opal.extension.vscode.servlet.TACServlet;
 
 class HelloWorldServletTests extends ScalatraSuite with FunSuiteLike {
-  // `HelloWorldServlet` is your app which extends ScalatraServlet
+  
   addServlet(classOf[TACServlet], "/*")
 
   test("get tac route") {
