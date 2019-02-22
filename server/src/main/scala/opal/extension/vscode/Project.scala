@@ -17,17 +17,11 @@ class Project(projectId : String, classPath : String) {
          log = "75 % loaded";
          Thread.sleep(5000);
          log = "100 % loaded";
-         Thread.sleep(5000);
-         var res = "";
          log
     }
 
-    def getTac() : String = {
-        /**
-         * OPAL
-         */
-         var res = "";
-         res;
+    def delete() : String = {
+        "deleted";
     }
 
     def getLog() : String = {
@@ -35,6 +29,14 @@ class Project(projectId : String, classPath : String) {
          * OPAL Logger
          */
          var res = log;
+         res;
+    }
+
+    def getTac() : String = {
+        /**
+         * OPAL
+         */
+         var res = "";
          res;
     }
 }
