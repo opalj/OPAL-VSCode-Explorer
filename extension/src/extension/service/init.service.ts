@@ -14,7 +14,7 @@ export class InitService {
     };
 
     constructor(public _url: string){
-        this.options.uri = _url+'/opal/init';
+        this.options.uri = _url+'/opal/project/load';
     }
 
     /**
