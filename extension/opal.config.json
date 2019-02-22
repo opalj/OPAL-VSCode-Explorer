@@ -3,6 +3,7 @@
         "url" : "http://localhost:8080"
     },
     "opal": {
+        "projectId" : "abc",
         "classpath": "test.testitest.opal.extension.for.vs.code"
     },
     "extension": {
