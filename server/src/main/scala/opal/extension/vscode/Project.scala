@@ -21,6 +21,8 @@ class Project(projectId : String, classPath : String) {
     }
 
     def delete() : String = {
+        log = "";
+        status = "";
         "deleted";
     }
 

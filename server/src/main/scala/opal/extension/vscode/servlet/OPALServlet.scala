@@ -62,8 +62,8 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
             res;
         } else {
             project = workspace.get(projectId.get).get;
+            project.getLog();
         }
-        project.getLog();
     }
 
     post("/project/delete") {

@@ -4,9 +4,7 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import { ProjectService } from './extension/service/project.service';
 
-//var config = require('./../.vscode/opal.config.json');
-var jettyStarted = false;
-var projectloaded = false;
+const isReachable = require('is-reachable');
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -23,26 +21,41 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * If jetty not already started, start jetty
 	 */
-	if (!jettyStarted) {
-		jettyStarted = true;
+	// Ping Jetty
+	var jettyIsUp = await isReachable(config.server.url);
+	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		terminal.sendText("java -jar "+config.extension.jettyjar, true);
+		//terminal.sendText("java -jar '"+config.extension.jettyjar+"'", true);
+	}
+
+	/*
+	 * Wait for Jetty being started
+	 */
+	while (!jettyIsUp) {
+		await delay(100);
+		jettyIsUp = await isReachable("localhost:8080");
 	}
 
 	/**
 	 * Load Project in OPAL
 	 */
+	console.log("START LOADING PROJECT");
 	var projectService : any = new ProjectService(config.server.url);
 	projectService.load(config.opal).then(function () {
-		projectloaded = true;
+		console.log("Project loaded!");
 	});
 	
-
-	while(!projectloaded) {
-		var log = await projectService.requestLOG();
+	console.log("REQUEST LOG");
+	projectService.requestLOG(config.opal).then(function (response : any) {
+		console.log(response);
+	});
+	await delay(1000);
+	//while(!projectloaded) {
+		console.log("REQUEST LOG await");
+		var log = await projectService.requestLOG(config.opal);
 		console.log(log);
-	}
+	//}
 
 	
 	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
@@ -68,4 +81,11 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+	
+}
+
+
+async function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}

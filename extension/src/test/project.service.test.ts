@@ -12,6 +12,5 @@ suite("OPAL Initialization Test Suit", function () {
 		};
         var res : any = await projectService.load(request);
         expect(res).to.equal("100 % loaded");
-		
     });
 });

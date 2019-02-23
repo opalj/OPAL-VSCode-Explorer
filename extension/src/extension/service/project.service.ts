@@ -1,4 +1,4 @@
-var request = require('request');
+var request = require('request-promise-native');
 /**
  * Service for initiating opal
  */
@@ -12,10 +12,12 @@ export class ProjectService {
         "json": true
     };
 
+    protected url = "";
+
     protected status = "";
 
     constructor(public _url: string){
-        this.options.uri = _url+'/opal/project/load';
+        this.url = _url;
     }
 
     /**
@@ -25,41 +27,15 @@ export class ProjectService {
      */
     async load(config : any) {
         this.options.body = config;
+        this.options.uri = this.url + "/opal/project/load";
         console.log(this.options);
         //Promise for sending classpath
-        return new Promise((resolve, reject) => {
-            request.post(this.options, function (error: any, response: any, body: any) {
-                if (error) {
-                    //error handling
-                    console.log("Error: ");
-                    console.log(error);
-                    reject(error);
-                } else {
-                    //response handling
-                    console.log("Response: ");
-                    console.log(response);
-                    resolve(body);
-                }
-            });
-        });
+        return request.post(this.options);
     }
 
     async requestLOG(config : any) {
         this.options.body = config;
-        return new Promise((resolve, reject) => {
-            request.post(this.options, function (error: any, response : any, body: any) {
-                if (error) {
-                    //error handling
-                    console.log("Error: ");
-                    console.log(error);
-                    reject(error);
-                } else {
-                    //response handling
-                    console.log("Response: ");
-                    console.log(response);
-                    resolve(body);
-                }
-            });
-        });
+        this.options.uri = this.url + "/opal/project/load/log";
+        return request.post(this.options);
     }
 }
