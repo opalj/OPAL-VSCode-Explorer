@@ -19,8 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage('TAC requested from Server ..... ');
 		
 			tacService.loadTAC(tacID).then(function (res: any) {
-				//return Tac in info box
-				//vscode.window.showInformationMessage(res.tac);
+				//return Tac and show it in a Textdocument
 				var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
 				vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
 					vscode.window.showTextDocument(a,1,false).then(e => { 
