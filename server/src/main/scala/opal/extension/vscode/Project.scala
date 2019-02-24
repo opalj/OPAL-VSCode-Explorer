@@ -6,23 +6,25 @@ class Project(projectId : String, classPath : String) {
     protected var log = "";
 
     def load() : String = {
-        /**
-         * OPAL
-         */
-         status = "loaded";
-         log = "25 % loaded";
-         Thread.sleep(5000);
-         log = "50 % loaded";
-         Thread.sleep(5000);
-         log = "75 % loaded";
-         Thread.sleep(5000);
-         log = "100 % loaded";
-         log
+        if (status != "loaded") {
+            /**
+            * OPAL
+            */
+            log = "25 % loaded";
+            Thread.sleep(5000);
+            log = "50 % loaded";
+            Thread.sleep(5000);
+            log = "75 % loaded";
+            Thread.sleep(5000);
+            log = "100 % loaded";
+            status = "loaded";
+        }
+        log;
     }
 
     def delete() : String = {
         log = "";
-        status = "";
+        status = "deleted";
         "deleted";
     }
 

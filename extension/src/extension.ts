@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		//terminal.sendText("java -jar '"+config.extension.jettyjar+"'", true);
+		terminal.sendText("java -jar '"+config.extension.jettyjar+"'", true);
 	}
 
 	/*
@@ -40,22 +40,26 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * Load Project in OPAL
 	 */
-	console.log("START LOADING PROJECT");
+	let myStatusBarItem: vscode.StatusBarItem;
+	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+	context.subscriptions.push(myStatusBarItem);
+
+	var projectloaded = false;
 	var projectService : any = new ProjectService(config.server.url);
 	projectService.load(config.opal).then(function () {
 		console.log("Project loaded!");
+		myStatusBarItem.text = "Project loaded!";
+		myStatusBarItem.show();
+		projectloaded = true;
 	});
 	
-	console.log("REQUEST LOG");
-	projectService.requestLOG(config.opal).then(function (response : any) {
-		console.log(response);
-	});
-	await delay(1000);
-	//while(!projectloaded) {
-		console.log("REQUEST LOG await");
+	while(!projectloaded) {
+		await delay(1000);
 		var log = await projectService.requestLOG(config.opal);
+		myStatusBarItem.text = "OPAL: Loading Project: "+log+" ... ";
+		myStatusBarItem.show();
 		console.log(log);
-	//}
+	}
 
 	
 	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
