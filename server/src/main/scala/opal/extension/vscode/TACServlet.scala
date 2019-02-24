@@ -22,7 +22,7 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
 		var target = tacDir + File.separator + params("id")
 
 		try{
-			content = Source.fromFile(target, "UTF-8").getLines.mkString("");
+			content = Source.fromFile(target, "UTF-8").getLines.mkString("\n");
 		}catch{
 			case e: Exception => content = params("id") + " " + e.getMessage()
 		}
