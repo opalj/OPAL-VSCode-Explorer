@@ -1,0 +1,12 @@
+{
+	"server" : {
+		"url" : "http://localhost:8080"
+	},
+	"opal" : {
+	"projectId" : "abc",
+        "classpath": "test;testitest;blaaa;"
+	},
+	"extension" : {
+		"jettyjar": "C:\\Users\\valyreon\\Documents\\opal-vscode-explorer-dev\\server\\target\\scala-2.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
+	}
+}
