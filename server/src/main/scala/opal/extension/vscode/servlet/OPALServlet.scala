@@ -22,27 +22,30 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
     post("/project/load") {
         var json = request.body;
-        var params = parse(json).values.asInstanceOf[Map[String, String]];
-
         var res = "";
-        var projectId = params.get("projectId");
-        if (projectId.isEmpty) {
-            res = "Error: Project ID is empty!"
-            res;
-        }
-        var classPath = params.get("classpath");
-        if (classPath.isEmpty) {
-            res = "Error: classpath is empty!";
-            res;
-        }
-        var project : Project = null;
-        if (workspace.get(projectId.get).isEmpty) {
-            project = new Project(projectId.get, classPath.get);
-            workspace.put(projectId.get, project);
+        if (json == "") {
+            res = "Error: Body is empty!";
         } else {
-            project = workspace.get(projectId.get).get;
+            var params = parse(json).values.asInstanceOf[Map[String, String]];
+            var projectId = params.get("projectId");
+
+            if (projectId.isEmpty || projectId.get == "") {
+                res = "Error: Project ID is empty!";
+            } else if (params.get("classpath").isEmpty) {
+                res = "Error: classpath is empty!";
+            } else {
+                var classPath = params.get("classpath").get;
+                var project : Project = null;
+                if (workspace.get(projectId.get).isEmpty) {
+                    project = new Project(projectId.get, classPath);
+                    workspace.put(projectId.get, project);
+                } else {
+                    project = workspace.get(projectId.get).get;
+                }
+                res = project.load();
+            }
         }
-        project.load();
+        res;
     }
 
     post("/project/load/log") {
@@ -51,19 +54,18 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
         var res = "";
         var projectId = params.get("projectId");
-        if (projectId.isEmpty) {
-            res = "Error: Project ID is empty!"
-            res;
-        }
-
-        var project : Project = null;
-        if (workspace.get(projectId.get).isEmpty) {
-            res = "Error: Project not found!"
-            res;
+        if (projectId.isEmpty || projectId.get == "") {
+            res = "Error: Project ID is empty!";
         } else {
-            project = workspace.get(projectId.get).get;
-            project.getLog();
+            var project : Project = null;
+            if (workspace.get(projectId.get).isEmpty) {
+                res = "Error: Project not found!";
+            } else {
+                project = workspace.get(projectId.get).get;
+                res = project.getLog();
+            }
         }
+        res;
     }
 
     post("/project/delete") {
@@ -73,17 +75,17 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         var res = "";
         var projectId = params.get("projectId");
         if (projectId.isEmpty) {
-            res = "Error: Project ID is empty!"
-            res;
-        }
-
-        var project : Project = null;
-        if (workspace.get(projectId.get).isEmpty) {
-            res = "Error: Project not found!"
-            res;
+            res = "Error: Project ID is empty!";
         } else {
-            project = workspace.get(projectId.get).get;
+            var project : Project = null;
+            if (workspace.get(projectId.get).isEmpty) {
+                res = "Error: Project not found!"
+                res;
+            } else {
+                project = workspace.get(projectId.get).get;
+            }
+            res = project.delete();
         }
-        project.delete();
+        res;
     }
 }
