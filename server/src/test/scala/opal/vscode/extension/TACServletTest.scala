@@ -2,7 +2,7 @@ import org.scalatra.test.scalatest._
 import org.scalatest.FunSuiteLike
 import opal.extension.vscode.servlet.TACServlet;
 
-class HelloWorldServletTests extends ScalatraSuite with FunSuiteLike {
+class TACServletTests extends ScalatraSuite with FunSuiteLike {
   
   addServlet(classOf[TACServlet], "/*")
 
