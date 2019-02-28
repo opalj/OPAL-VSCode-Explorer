@@ -8,6 +8,7 @@ import org.opalj.log.{LogContext, LogMessage, OPALLogger}
 import org.opalj.tac.{DefaultTACAIKey, ToTxt}
 
 import java.io.File
+import org.opalj.br.MethodDescriptor;
 
 class OPALProject(projectId : String, opalInit : OpalInit) {
 
@@ -37,7 +38,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         val tacAI = project.get(DefaultTACAIKey)
         project.allClassFiles.find(_.fqn  == tacForMethod.fqn).get.findMethod(tacForMethod.methodName,MethodDescriptor(tacForMethod.descriptor)).map(tacAI(_)).get
         project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
-        val tac = project.allClassFiles.find(_.fqn == tacForMethod.fqn).get.findMethod(tacForMethod.methodName,MethodDescriptor(tacForMethod.descriptor)).map(tacAI()).get
+        val tac = project.allClassFiles.find(_.fqn == tacForMethod.fqn).get.findMethod(tacForMethod.methodName,MethodDescriptor(tacForMethod.descriptor)).map(tacAI(_)).get
         ToTxt(tac)
     }
 }
