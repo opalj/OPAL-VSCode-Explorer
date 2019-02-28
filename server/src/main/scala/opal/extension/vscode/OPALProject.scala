@@ -26,12 +26,8 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         "Project loaded"
     }
 
-    def delete() : String = {
-""
-    }
-
     def getLog() : String = {
-""
+        logger.flushLogs();
     }
 
     def getTac(tacForMethod : TACForMethod, tacForClass : TACForClass) : String = {
@@ -44,6 +40,16 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
 }
 
 class StringLogger extends OPALLogger {
-  override def log(message: LogMessage)(implicit ctx: LogContext): Unit =
-  /* TODO */ ()
+
+    protected var logCache = "";
+
+    override def log(message: LogMessage)(implicit ctx: LogContext): Unit = {
+        logCache + message.message;
+    }
+
+    def flushLogs(): String = {
+        val tmp = logCache;
+        logCache = "";
+        tmp;
+    }
 }
