@@ -1,6 +1,4 @@
 
-import Dependencies._
-
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organizationName := "TU"
@@ -10,9 +8,7 @@ resolvers += "Sonaotype OSS Snapshots" at "https://oss.sonatype.org/content/repo
 lazy val root = (project in file("."))
   .settings(
     name := "OPAL Command Server",
-    libraryDependencies ++= Seq(
-	scalaTest % Test
-	)
+    libraryDependencies ++= Seq()
   )
 
 resolvers += Classpaths.typesafeReleases
