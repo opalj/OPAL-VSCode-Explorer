@@ -1,4 +1,6 @@
 var request = require('request-promise-native');
+import { workspace, RelativePattern } from 'vscode';
+
 /**
  * Service for initiating opal
  */
@@ -12,12 +14,10 @@ export class ProjectService {
         "json": true
     };
 
-    protected url = "";
-
-    protected status = "";
+    protected serverUrl = "";
 
     constructor(public _url: string){
-        this.url = _url;
+        this.serverUrl = _url;
     }
 
     /**
@@ -27,7 +27,7 @@ export class ProjectService {
      */
     async load(config : any) {
         this.options.body = config;
-        this.options.uri = this.url + "/opal/project/load";
+        this.options.uri = this.serverUrl + "/opal/project/load";
         console.log(this.options);
         //Promise for sending classpath
         return request.post(this.options);
@@ -35,7 +35,56 @@ export class ProjectService {
 
     async requestLOG(config : any) {
         this.options.body = config;
-        this.options.uri = this.url + "/opal/project/load/log";
+        this.options.uri = this.serverUrl + "/opal/project/load/log";
         return request.post(this.options);
+    }
+
+    async getOPALInitMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
+        var projectID = await this.getProjectPath();
+        var targets = await this.getTargets(targetsDirPath);
+        var libraries = await this.getLibraries(librariesDirPath);
+        return {
+            "projectID" : projectID,
+            "targets" : targets,
+            "libraries" : libraries,
+            "config" : config
+        };
+    }
+
+    async getLogMessage(target : string, config : Object) {
+        var projectID = await this.getProjectPath();
+        return {
+            "projectID" : projectID,
+            "target" : target,
+            "config" : config
+        };
+    }
+
+    async getTargets(targetsDirPath : string) {
+        var targets = await workspace.findFiles(new RelativePattern(targetsDirPath, "**/*.class"));
+        var targetPaths = [];
+        for (let target of targets) {
+            targetPaths.push(target.fsPath);
+        }
+        return targetPaths;
+    }
+
+
+    async getLibraries(librariesDirPath : string) {
+        var libraries = await workspace.findFiles(new RelativePattern(librariesDirPath, "*.jar"));
+        var librariePaths = [];
+        for (let librarie of libraries) {
+            librariePaths.push(librarie.fsPath);
+        }
+        return librariePaths;
+    }
+
+    async getProjectPath() {
+        var wsFolders =  workspace.workspaceFolders;
+        if (wsFolders !== undefined) {
+            return wsFolders[0].uri.fsPath;
+        } else {
+            return "";
+        }
     }
 }

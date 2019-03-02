@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.jettyjar+"'", true);
+		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
 	}
 
 	/*
@@ -40,22 +40,33 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * Load Project in OPAL
 	 */
+	// Get status bar
 	let myStatusBarItem: vscode.StatusBarItem;
 	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 	context.subscriptions.push(myStatusBarItem);
 
+	// get project Service
 	var projectloaded = false;
 	var projectService : any = new ProjectService(config.server.url);
-	projectService.load(config.opal).then(function () {
+	// get opal init message
+	var opalInitMessage = await projectService.getOPALInitMessage(config.opal.targetsDir, config.opal.librariesDir, config.opal.config);
+
+	// let opal load the project (this may take a while)
+	projectService.load(opalInitMessage).then(function () {
 		console.log("Project loaded!");
 		myStatusBarItem.text = "Project loaded!";
 		myStatusBarItem.show();
 		projectloaded = true;
 	});
 	
+	// get log message
+	var logMessage = await projectService.getLogMessage("init", config.opal.config);
+	// get logging while opal is loading the project
 	while(!projectloaded) {
+		// wait for new logs
 		await delay(1000);
-		var log = await projectService.requestLOG(config.opal);
+		// show the logs in the status bar 
+		var log = await projectService.requestLOG(logMessage);
 		myStatusBarItem.text = "OPAL: Loading Project: "+log+" ... ";
 		myStatusBarItem.show();
 		console.log(log);

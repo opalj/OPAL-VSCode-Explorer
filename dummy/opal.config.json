@@ -1,12 +1,13 @@
 {
-	"server" : {
-		"url" : "http://localhost:8080"
-	},
-	"opal" : {
-	"projectId" : "abc",
-        "classpath": "test;testitest;blaaa;"
-	},
-	"extension" : {
-		"jettyjar": "C:\\Users\\valyreon\\Documents\\opal-vscode-explorer-dev\\server\\target\\scala-2.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
-	}
+    "server" : {
+        "url" : "http://localhost:8080"
+    },
+    "opal": {
+        "targetsDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target",
+        "librariesDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib"
+    },
+    "extension": {
+        "serverJarPath": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar",
+        "jarOptions" : ""
+    }
 }

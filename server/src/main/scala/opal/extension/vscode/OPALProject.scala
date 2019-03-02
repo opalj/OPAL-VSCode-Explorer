@@ -54,8 +54,9 @@ class StringLogger extends OPALLogger {
     }
 
     def flushLogs(): String = {
-        val tmp = logCache;
+        var tmp = logCache;
         logCache = "";
+        if (tmp == "") tmp = "Logs are empty"
         tmp;
     }
 }
