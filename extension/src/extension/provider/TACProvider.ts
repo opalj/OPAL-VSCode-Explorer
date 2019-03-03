@@ -27,7 +27,7 @@ let seq = 0;
 
 export function encodeLocation(uri: vscode.Uri, pos: vscode.Position): vscode.Uri {
 	const query = JSON.stringify([uri.toString(), pos.line, pos.character]);
-	return vscode.Uri.parse(`${TACProvider.scheme}:References.locations?${query}#${seq++}`);
+	return vscode.Uri.parse(`${TACProvider.scheme}:test.tac?${query}#${seq++}`);
 }
 
 
