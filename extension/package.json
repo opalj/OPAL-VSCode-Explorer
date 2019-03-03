@@ -18,6 +18,10 @@
 			{
 				"command": "extension.tac",
 				"title": "Opal-TAC"
+			},
+			{
+				"command": "editor.printReferences",
+				"title": "Show All References"
 			}
 		],
 		"languages": [
@@ -33,6 +37,15 @@
 				"configuration": "./language-configuration.json"
 			}
 		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "editor.printReferences",
+					"when": "editorHasReferenceProvider",
+					"group": "navigation@1.31"
+				}
+			]
+		},
 		"grammars": [
 			{
 				"language": "tac",
@@ -55,9 +68,7 @@
 		"mocha": "*",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
-		"vscode": "^1.1.29"
-	},
-	"dependencies": {
-		"vscode-textmate": "^4.0.1"
+		"vscode": "^1.1.29",
+		"request-promise-native": "^1.0.7"
 	}
 }

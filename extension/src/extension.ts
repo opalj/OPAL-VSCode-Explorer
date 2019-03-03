@@ -3,54 +3,29 @@
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
-
-
-//var c = "";
-let fs = require("fs");
+import TACProvider, { encodeLocation } from './extension/provider/TACProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
+	const tacProvider = new TACProvider();
+
+	const providerRegistrations = vscode.Disposable.from(
+		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider)
+	);
+
 	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
 	//registering command "Opal-TAC", p.r. to extension/package.json
 	let tacCommand = vscode.commands.registerCommand('extension.tac', async () => {
-		/*var Registry = require('vscode-textmate').Registry;
-		
-		var registry = new Registry({
-			loadGrammar: function (scopeName : any) {
-				var path = "/tac_tmLanguage.tac";//: vscode.Uri = vscode.Uri.parse("untitled:" + "./tac.tmLanguage.json");
-				console.log(path);
-					return new Promise((c,e) => {
-						fs.readFile(path, (error : any, content: any) => {
-							console.log(content)
-							if (error) {
-								e(error);
-								console.log(error);
-							} else {
-							
-				
-								var rawGrammar = Registry.parseRawGrammar(c.toString(), path);
-								c(rawGrammar);
-								console.log(rawGrammar);
-							}
-						});
-					});
-				return null;
-			}
-		});*/
+
 		let tacID = await vscode.window.showInputBox({ placeHolder: 'TAC ID ...' });
 		// Load the JavaScript grammar and any other grammars included by it async.
-		/*registry.loadGrammar('source.js', function(err: any, grammar : any) {
-			if (err) {
-				console.error(err);
-				return;
-			}*/
 			if (tacID) {
 				//executing TacService on Tac ID
 				var tacService = new TacService('http://localhost:8080/tac/');
 				vscode.window.showInformationMessage('TAC requested from Server ..... ');
-			
+
 				tacService.loadTAC(tacID).then(function (res: any) {
 					//return Tac and show it in a Textdocument
 					var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
@@ -61,19 +36,24 @@ export function activate(context: vscode.ExtensionContext) {
 							});
 						 });
 					});
-				
 				});
-				
+			
 			} else {
 				//invalid Tac ID given
 				vscode.window.showInformationMessage('ERROR: something wrong with the TAC ID');
 			}
 		//});
 		//input for Tac ID
-		
 	});
 
-	context.subscriptions.push(tacCommand);
+	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
+		const uri = encodeLocation(editor.document.uri, editor.selection.active);
+		console.log("URI");
+		console.log(uri);
+		return vscode.workspace.openTextDocument(uri).then(doc => vscode.window.showTextDocument(doc, 1));
+	});
+
+	context.subscriptions.push(tacCommand, providerRegistrations, commandRegistration);
 }
 
 // this method is called when your extension is deactivated
