@@ -20,7 +20,7 @@
 			"patterns": [
 				{	
 					"name" : "keyword.control",
-					"match" : "\\b(if|goto)\\b"
+					"match" : "\\b(if|goto|return)\\b"
 				},
 				{	
 					"name" : "keyword.operator",

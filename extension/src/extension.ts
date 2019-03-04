@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Load the JavaScript grammar and any other grammars included by it async.
 			if (tacID) {
 				//executing TacService on Tac ID
-				var tacService = new TacService('http://localhost:8080/tac/');
+				var tacService = new TacService('http://localhost:8080');
 				vscode.window.showInformationMessage('TAC requested from Server ..... ');
 
 				tacService.loadTAC(tacID).then(function (res: any) {
@@ -46,12 +46,13 @@ export function activate(context: vscode.ExtensionContext) {
 		//});
 		//input for Tac ID
 	});
-
+	
 
 	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
 		const uri = encodeLocation(editor.document.uri, editor.selection.active);
 		console.log("URI");
 		console.log(uri);
+		console.log("URI2");
 		try {
 			return vscode.workspace.openTextDocument(uri).then(function(doc) {
 				console.log(doc);

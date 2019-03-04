@@ -24,6 +24,13 @@
 				"title": "Show All References"
 			}
 		],
+		"themes": [
+            {
+                "label": "c",
+                "uiTheme": "vs-dark",
+                "path": "./themes/c-color-theme.json"
+            }
+        ],
 		"languages": [
 			{
 				"id": "tac",
