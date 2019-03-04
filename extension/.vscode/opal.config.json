@@ -1,0 +1,11 @@
+{
+    "server" : {
+        "url" : "http://localhost:8080"
+    },
+    "opal": {
+        "classpath": "test.testitest.opal.extension.for.vs.code"
+    },
+    "extension": {
+        "jettyjar": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\OPALCommandServer-assembly-0.1.0-SNAPSHOT.jar"
+    }
+}

@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.tac"
+		"onCommand:extension.tac",
+		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -69,6 +70,8 @@
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
 		"vscode": "^1.1.29",
-		"request-promise-native": "^1.0.7"
+		"request-promise-native": "^1.0.7",
+		"is-reachable": "^3.0.0",
+		"@types/is-reachable": "^3.0.0"
 	}
 }
