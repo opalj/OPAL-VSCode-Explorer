@@ -22,7 +22,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
         json = write(opalInit);
         post("/project/load", json) {
-            body should equal ("100 % loaded")
+            body should equal ("Project loaded")
             status should equal (200)
         }
     }
