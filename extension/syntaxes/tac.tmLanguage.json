@@ -20,11 +20,15 @@
 			"patterns": [
 				{	
 					"name" : "keyword.control",
-					"match" : "\\b(if|goto|return)\\b"
+					"match" : "\\b(if|goto)\\b"
 				},
 				{	
 					"name" : "keyword.operator",
 					"match" : "\\b(new)\\b"
+				},
+				{	
+					"name" : "keyword.others",
+					"match" : "\\b(return|void|static)\\b"
 				}
 			]
 		},
@@ -59,7 +63,8 @@
 		{
 			"patterns": [{
 				"name": "comment",
-				"match": "\/\\*(\\s|\\.|\\w)*\\*\/"
+				"match": "\/\\*(\\s|\\.|\\w)*\\*\/" 
+			
 			}]
 		}
 	},
