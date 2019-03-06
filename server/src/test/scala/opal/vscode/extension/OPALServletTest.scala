@@ -17,11 +17,19 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
 
     var classesPath = new File(".").getCanonicalPath()+File.separator+"target"+File.separator+"scala-2.12"+File.separator+"classes";
 
-    test("project load ok") {
+    test("Load Project and get TAC for Class") {
         var json = "";
         var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
         json = write(opalInit);
+
         post("/project/load", json) {
+            body should equal ("Project loaded")
+            status should equal (200)
+        }
+
+        var tacForClass = TACForClass("abc", classesPath+File.separator+"JettyLauncher.class", "JettyLauncher", "");
+        json = write(tacForClass);
+        post("/project/tac/class", json) {
             body should equal ("Project loaded")
             status should equal (200)
         }
