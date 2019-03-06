@@ -16,10 +16,12 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     addServlet(classOf[OPALServlet], "/*")
 
     var classesPath = new File(".").getCanonicalPath()+File.separator+"target"+File.separator+"scala-2.12"+File.separator+"classes";
+    var testProject = new File(".").getCanonicalPath()+File.separator+".."+File.separator+"dummy";
 
     test("Load Project and get TAC for Class") {
         var json = "";
-        var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
+        //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
+        var opalInit = OpalInit("abc", Array(testProject+File.separator+"Test.class"), Array(""), Map("key" -> "value"));
         json = write(opalInit);
 
         post("/project/load", json) {
@@ -27,49 +29,11 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var tacForClass = TACForClass("abc", classesPath+File.separator+"JettyLauncher.class", "JettyLauncher", "");
+        var tacForClass = TACForClass("abc", "Test", "Test");
         json = write(tacForClass);
         post("/project/tac/class", json) {
-            body should equal ("Project loaded")
+            body should ( include("java.io.PrintStream") and include("value=String(\"test1123\")[@3;refId=104])))") )
             status should equal (200)
         }
     }
-/*
-    test("project load fail") {
-        
-        post("/project/load", "") {
-            body should equal ("Error: Body is empty!")
-            status should equal (200)
-        }
-
-        post("/project/load", "{\"projectId\":\"abc\"}") {
-            body should equal ("Error: classpath is empty!")
-            status should equal (200)
-        }
-
-        post("/project/load", "{\"projectId\":\"\"}") {
-            body should equal ("Error: Project ID is empty!")
-            status should equal (200)
-        }
-    }
-
-    test("project load log fail") {
-        post("/project/load/log", "{\"projectId\":\"\"}") {
-            body should equal ("Error: Project ID is empty!")
-            status should equal (200)
-        }
-
-        post("/project/load/log", "{\"projectId\":\"xyz\"}") {
-            body should equal ("Error: Project not found!")
-            status should equal (200)
-        }
-    }
-
-    test("project load log ok") {
-        post("/project/load/log", "{\"projectId\":\"abc\"}") {
-            body should equal ("100 % loaded")
-            status should equal (200)
-        }
-    }
-    */
 }
