@@ -39,9 +39,10 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
 
     def getTacForClass(tacForClass : TACForClass) : String = {
         val tacAI = project.get(DefaultTACAIKey)
-        project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
-        val tac = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.findMethod(tacForClass.className,MethodDescriptor(tacForClass.descriptor)).map(tacAI(_)).get
-        ToTxt(tac).mkString("\n")
+        val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)        
+        var tacString = new StringBuilder();
+        val res = tacArray.addString(tacString);
+        res.mkString("");
     }
 }
 
