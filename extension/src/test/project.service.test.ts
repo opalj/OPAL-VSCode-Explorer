@@ -3,14 +3,18 @@ import { ProjectService } from '../extension/service/project.service';
 var config = require('./../../opal.config.json');
 
 suite("OPAL Initialization Test Suit", function () {
-	this.timeout(0);
-    test('assertion success', async () => {
-        var projectService = new ProjectService("http://"+config.server.url);
+//    this.timeout(5000);
+    test('assertion success', (done) => {
+        var projectService = new ProjectService(config.server.url);
         var request = {
 			"projectId": "/bla/projects/projectX",
-			"classpath":"abc"
+			"targets":["C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class"],
+            "libraries": [],
+            "config" : {}
 		};
-        var res : any = await projectService.load(request);
-        expect(res).to.equal("100 % loaded");
-    });
+        projectService.load(request).then(function (res) {
+            expect(res).to.equal("Project loaded");
+            done();
+        });
+    })
 });
