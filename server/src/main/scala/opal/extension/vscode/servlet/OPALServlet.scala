@@ -24,13 +24,39 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     post("/project/load") {
         var opalInit = parsedBody.extract[OpalInit]
         var project : OPALProject = null;
-        if (workspace.get(opalInit.projectID).isEmpty) {
-            project = new OPALProject(opalInit.projectID, opalInit);
-            workspace.put(opalInit.projectID, project);
+        if (workspace.get(opalInit.projectId).isEmpty) {
+            project = new OPALProject(opalInit.projectId, opalInit);
+            workspace.put(opalInit.projectId, project);
         } else {
-            project = workspace.get(opalInit.projectID).get;
+            project = workspace.get(opalInit.projectId).get;
         }
         project.load()
+    }
+
+    post("/project/tac/method") {
+        var tacForMethod = parsedBody.extract[TACForMethod]
+        var project : OPALProject = null;
+        var res = "";
+        if (workspace.get(tacForMethod.projectId).isEmpty) {
+            res = "Error: Project not found!";
+        } else {
+            project = workspace.get(tacForMethod.projectId).get;
+            res = project.getTacForMethod(tacForMethod);
+        }
+        res;
+    }
+
+    post("/project/tac/class") {
+        var tacForClass = parsedBody.extract[TACForClass]
+        var project : OPALProject = null;
+        var res = "";
+        if (workspace.get(tacForClass.projectId).isEmpty) {
+            res = "Error: Project not found! ID = "+tacForClass.projectId;
+        } else {
+            project = workspace.get(tacForClass.projectId).get;
+            res = project.getTacForClass(tacForClass);
+        }
+        res;
     }
 
     post("/project/load/log") {
