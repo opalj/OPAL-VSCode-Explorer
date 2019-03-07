@@ -21,3 +21,4 @@ server/project/.bloop/server-build.json
 server/.metals/metals.log
 server/.metals/metals.h2.db
 server/.metals/metals.lock.db
+server/lib/Atom.lnk
