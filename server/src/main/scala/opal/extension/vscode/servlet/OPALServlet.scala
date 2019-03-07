@@ -10,7 +10,10 @@ import java.io.File
 import opal.extension.vscode._
 import scala.collection.mutable.HashMap;
 
-
+/**
+ * 
+ * /opal/
+ */
 class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
     protected implicit lazy val jsonFormats: Formats = DefaultFormats;
@@ -21,6 +24,10 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         contentType = formats("json")
     }
 
+    /**
+     * OPAL loading the Project
+     * OpalInit Message
+     */
     post("/project/load") {
         var opalInit = parsedBody.extract[OpalInit]
         var project : OPALProject = null;
@@ -33,6 +40,10 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         project.load()
     }
 
+    /**
+     * TAC for one Method
+     * TACForMethod Message
+     */
     post("/project/tac/method") {
         var tacForMethod = parsedBody.extract[TACForMethod]
         var project : OPALProject = null;
@@ -46,6 +57,9 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         res;
     }
 
+    /**
+     * TACForClass Message
+     */
     post("/project/tac/class") {
         var tacForClass = parsedBody.extract[TACForClass]
         var project : OPALProject = null;
@@ -59,6 +73,9 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         res;
     }
 
+    /**
+     * Get Logs
+     */
     post("/project/load/log") {
         var logMessage = parsedBody.extract[Log]
         var res = "";
@@ -70,6 +87,9 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         res;
     }
 
+    /**
+     * Delete OPAL Project
+     */
     post("/project/delete") {
         var json = request.body;
         var params = parse(json).values.asInstanceOf[Map[String, String]];

@@ -10,6 +10,9 @@ import org.opalj.tac.{DefaultTACAIKey, ToTxt}
 import java.io.File
 import org.opalj.br.MethodDescriptor;
 
+/**
+ * Link to OPAL
+ */
 class OPALProject(projectId : String, opalInit : OpalInit) {
 
     protected val logger = new StringLogger();
