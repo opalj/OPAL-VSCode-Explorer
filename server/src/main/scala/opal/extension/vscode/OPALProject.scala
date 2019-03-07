@@ -30,7 +30,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
     }
 
     def getLog() : String = {
-        logger.flushLogs();
+        logger.getLogs;
     }
 
     def getTacForMethod(tacForMethod : TACForMethod) : String = {
@@ -54,13 +54,14 @@ class StringLogger extends OPALLogger {
     protected var logCache = "";
 
     override def log(message: LogMessage)(implicit ctx: LogContext): Unit = {
-        logCache + message.message;
+        logCache = message.message;
     }
 
-    def flushLogs(): String = {
-        var tmp = logCache;
+    def flushLogs()  : Unit = {
         logCache = "";
-        if (tmp == "") tmp = "Logs are empty"
-        tmp;
+    }
+
+    def getLogs() : String = {
+        logCache;
     }
 }

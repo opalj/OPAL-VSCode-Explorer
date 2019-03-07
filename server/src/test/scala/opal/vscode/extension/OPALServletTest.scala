@@ -35,5 +35,12 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             body should ( include("java.io.PrintStream") and include("value=String(\"test1123\")[@3;refId=104])))") )
             status should equal (200)
         }
+
+        var requestLogs = Log("abc", "", Map("key" -> "value"));
+        json = write(requestLogs);
+        post("/project/load/log", json) {
+            body should include ("initialization of DefaultTACAI took")
+            status should equal (200)
+        }
     }
 }
