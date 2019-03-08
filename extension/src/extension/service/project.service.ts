@@ -40,11 +40,11 @@ export class ProjectService {
     }
 
     async getOPALInitMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
-        var projectID = await this.getProjectPath();
+        var projectId = await this.getProjectPath();
         var targets = await this.getTargets(targetsDirPath);
         var libraries = await this.getLibraries(librariesDirPath);
         return {
-            "projectID" : projectID,
+            "projectId" : projectId,
             "targets" : targets,
             "libraries" : libraries,
             "config" : config
@@ -52,9 +52,9 @@ export class ProjectService {
     }
 
     async getLogMessage(target : string, config : Object) {
-        var projectID = await this.getProjectPath();
+        var projectId = await this.getProjectPath();
         return {
-            "projectID" : projectID,
+            "projectId" : projectId,
             "target" : target,
             "config" : config
         };
