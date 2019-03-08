@@ -11,8 +11,13 @@ import opal.extension.vscode._
 import scala.collection.mutable.HashMap;
 
 /**
- * 
- * /opal/
+ * Servlet for /opal/ routes
+ * This is an HTTP Interface for OPAL
+ * To add a command you have to:
+ * 1. add a route in this class for your command (/opal/<command>)
+ * 2. add a Message to model.scala for alle information you need for your command
+ * 3. add a Method to OPALProject.scala where you implement your command
+ * 4. implement corresponding methods at the extension in project.service.ts 
  */
 class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
