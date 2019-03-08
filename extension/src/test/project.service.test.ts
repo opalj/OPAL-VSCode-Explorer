@@ -16,7 +16,7 @@ suite("OPAL Initialization Test Suit", function () {
             expect(res).to.equal("Project loaded");
 
             var message = {
-                "projectID" : "/bla/projects/projectX",
+                "projectId" : "/bla/projects/projectX",
                 "target" : "",
                 "config" : {}
             };
