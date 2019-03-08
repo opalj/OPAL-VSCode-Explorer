@@ -11,10 +11,12 @@ project/plugins/project/
 .history
 .cache
 .lib/
+.metals/
 .metals/metals.h2.db
 .metals/metals.log
 .metals/metals.lock.db
 server/project/.bloop/server-build.json
 .metals/
-server/.bloop/
-server/.idea/
+.bloop/
+.idea/
+server/lib/Atom.lnk
