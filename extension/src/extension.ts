@@ -12,7 +12,8 @@ const isReachable = require('is-reachable');
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
-	const tacProvider = new TACProvider();
+	var projectId = await getProjectId();
+	const tacProvider = new TACProvider(projectId);
 
 	const providerRegistrations = vscode.Disposable.from(
 		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider)
@@ -54,7 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// get project Service
 	var projectloaded = false;
-	var projectService : any = new ProjectService(config.server.url);
+	var projectService : any = new ProjectService(config.server.url, projectId);
 	// get opal init message
 	var opalInitMessage = await projectService.getOPALInitMessage(config.opal.targetsDir, config.opal.librariesDir, config.opal.config);
 
@@ -150,4 +151,13 @@ export function deactivate() {
 
 async function delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+async function getProjectId() {
+	var wsFolders =  vscode.workspace.workspaceFolders;
+	if (wsFolders !== undefined) {
+		return wsFolders[0].uri.fsPath;
+	} else {
+		return "";
+	}
 }

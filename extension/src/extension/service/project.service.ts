@@ -21,13 +21,15 @@ export class ProjectService {
     };
 
     protected serverUrl = "";
+    protected projectId = "";
 
     /**
      * HTTP URL
      * @param _url URL of the OPAL Server
      */
-    constructor(public _url: string){
+    constructor(public _url: string, _projectId : string){
         this.serverUrl = _url;
+        this.projectId = _projectId;
     }
 
     /**
@@ -62,7 +64,7 @@ export class ProjectService {
      * @param config additional config params for opal 
      */
     async getOPALInitMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
-        var projectId = await this.getProjectPath();
+        var projectId = this.projectId;
         var targets = await this.getTargets(targetsDirPath);
         var libraries = await this.getLibraries(librariesDirPath);
         return {
@@ -79,7 +81,7 @@ export class ProjectService {
      * @param config 
      */
     async getLogMessage(target : string, config : Object) {
-        var projectId = await this.getProjectPath();
+        var projectId = this.projectId;
         return {
             "projectId" : projectId,
             "target" : target,

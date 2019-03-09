@@ -8,7 +8,10 @@ export default class TACProvider implements vscode.TextDocumentContentProvider {
 	private _documents = new Map<string, TACDocument>();
 	private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
 
-	constructor() {
+    protected projectId = "";
+
+	constructor(_projectId : string) {
+        this.projectId = _projectId;
     }   
  
     provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
