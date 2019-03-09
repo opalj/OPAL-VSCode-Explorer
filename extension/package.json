@@ -41,6 +41,15 @@
 					".tac"
 				],
 				"configuration": "./language-configuration.json"
+			},
+			{
+				"id": "class",
+				"extensions": [
+					".class"
+				],
+				"aliases": [
+					"class", "Class"
+				]
 			}
 		],
 		"menus": {
