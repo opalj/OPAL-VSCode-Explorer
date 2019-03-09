@@ -54,6 +54,7 @@
 			"explorer/context": [
 				{
 					"command": "extension.menuTac",
+					"when": "!explorerResourceIsFolder",
 					"group": "2_workspace"
 				}]
 		},
