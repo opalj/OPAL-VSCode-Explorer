@@ -54,7 +54,7 @@
 			"explorer/context": [
 				{
 					"command": "extension.menuTac",
-					"when": "!explorerResourceIsFolder && resourceLangId == java",
+					"when": "!explorerResourceIsFolder && (resourceLangId == java || resourceLangId == class)",
 					"group": "2_workspace"
 				}]
 		},
