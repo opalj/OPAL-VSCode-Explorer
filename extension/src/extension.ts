@@ -118,8 +118,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	//menu-command to get tac from .java
-	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', () => {
+	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', (uri:vscode.Uri) => {
 		vscode.window.showInformationMessage('MenuTac command triggered!');
+		vscode.window.showInformationMessage(uri.toString());
 	});
 
 	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
