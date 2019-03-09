@@ -35,7 +35,7 @@ export class TacService {
     /**
      * Get the request body for requesting TAC for a class
      * Check /server/src/main/scala/opal/vscode/model.scala for Details
-     * TACForClass(projectId:String, fqn:String, className:String, descriptor : String)
+     * TACForClass(projectId:String, fqn:String, className:String)
      */
     async getTACForClassMessage() {
         return {};
