@@ -21,6 +21,10 @@
 				"title": "Opal-TAC"
 			},
 			{
+				"command": "extension.menuTac",
+				"title": "TAC from file"
+			},
+			{
 				"command": "editor.printReferences",
 				"title": "Show All References"
 			}
