@@ -5,7 +5,7 @@ var config = require('./../../opal.config.json');
 suite("OPAL Initialization Test Suit", function () {
     this.timeout(10000);
     test('opal load project no fail', (done) => {
-        var projectService = new ProjectService(config.server.url);
+        var projectService = new ProjectService(config.server.url, "/bla/projects/projectX");
         var message = {
 			"projectId": "/bla/projects/projectX",
 			"targets":["C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class"],

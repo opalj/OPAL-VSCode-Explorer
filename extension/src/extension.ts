@@ -3,7 +3,7 @@
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
-import TACProvider, { encodeLocation } from './extension/provider/TACProvider';
+import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
 import { ProjectService } from './extension/service/project.service';
 
 const isReachable = require('is-reachable');

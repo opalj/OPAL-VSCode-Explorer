@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import TACDocument from './TACDocument';
+import TACDocument from './tac.document';
 
 export default class TACProvider implements vscode.TextDocumentContentProvider {
 

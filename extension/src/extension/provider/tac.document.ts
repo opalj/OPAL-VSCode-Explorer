@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {TacService} from './../service/tac.service';
+import {TacService} from '../service/tac.service';
 
 export default class TACDocument {
 
