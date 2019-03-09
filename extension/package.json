@@ -50,7 +50,11 @@
 					"when": "editorHasReferenceProvider",
 					"group": "navigation@1.31"
 				}
-			]
+			],
+			"explorer/context": [
+				{
+					"command": "extension.menuTac"
+				}]
 		},
 		"grammars": [
 			{
