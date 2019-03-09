@@ -53,7 +53,8 @@
 			],
 			"explorer/context": [
 				{
-					"command": "extension.menuTac"
+					"command": "extension.menuTac",
+					"group": "2_workspace"
 				}]
 		},
 		"grammars": [
