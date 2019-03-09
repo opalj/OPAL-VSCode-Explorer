@@ -138,6 +138,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(tacCommand, providerRegistrations, commandRegistration);
+	context.subscriptions.push(menuTacCommand, providerRegistrations, commandRegistration);
 }
 
 // this method is called when your extension is deactivated
