@@ -37,18 +37,22 @@ export class TacService {
      * Check /server/src/main/scala/opal/vscode/model.scala for Details
      * TACForClass(projectId:String, fqn:String, className:String)
      */
-    async getTACForClassMessage() {
-        return {};
+    async getTACForClassMessage(projectId:String, fqn:String, className:String) {
+        return {
+            "projectId" : projectId,
+            "fqn" : fqn,
+            "className" : className,
+        };
     }
 
     /**
      * Requesting TAC from Server
-     * @param id of the tac example (e.g. filename)
      */
-    loadTAC(message: any) {
-        this.options.uri = this.serverUrl + "/tac/"+message;
+    loadTAC(tacForClassMessage: any) {
+        this.options.body = tacForClassMessage;
+        this.options.uri = this.serverUrl + "/opal/project/tac/class";
         console.log(this.options);
         //Promise for sending classpath
-        return  request.get(this.options);
+        return request.post(this.options);
     }
 }
