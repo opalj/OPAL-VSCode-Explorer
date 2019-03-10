@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
 import { ProjectService } from './extension/service/project.service';
+import * as npmPath from 'path';
 
 const isReachable = require('is-reachable');
 
@@ -120,8 +121,27 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	//menu-command to get tac from .java
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', (uri:vscode.Uri) => {
-		vscode.window.showInformationMessage('MenuTac command triggered!');
-		vscode.window.showInformationMessage(uri.toString());
+		//Extract Filename from URI
+		var fileName = npmPath.parse(uri.fsPath).base;
+
+		var tacService = new TacService('http://localhost:8080/tac/');
+		if(fileName.includes(".java") || fileName.includes(".class")){
+			fileName = fileName.replace(".java", "");
+			fileName = fileName.replace(".class", "");
+			//Request TAC for Class
+			tacService.getTACForClassMessage(projectId, "", fileName).then(function (res: any) {
+				vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
+				//return Tac and show it in a Textdocument
+				var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
+				vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
+					vscode.window.showTextDocument(a,1,false).then(e => { 
+						e.edit(edit => {
+							 edit.insert(new vscode.Position(0,0), res.tac);
+						});
+					 });
+				});
+			});
+		}
 	});
 
 	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
