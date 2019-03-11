@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import TACDocument from './tac.document';
 
+
 export default class TACProvider implements vscode.TextDocumentContentProvider {
 
     static scheme = 'tac';
@@ -20,7 +21,9 @@ export default class TACProvider implements vscode.TextDocumentContentProvider {
             return document.value;
         }
 
-        document = new TACDocument(uri, this._onDidChange);
+        let params = decodeLocation(uri);
+        document = new TACDocument(uri, this._onDidChange, this.projectId, params[0]);
+        
         this._documents.set(uri.toString(), document);
         return document.value;
     }
@@ -28,9 +31,12 @@ export default class TACProvider implements vscode.TextDocumentContentProvider {
 
 let seq = 0;
 
-export function encodeLocation(uri: vscode.Uri, pos: vscode.Position): vscode.Uri {
-	const query = JSON.stringify([uri.toString(), pos.line, pos.character]);
+export function encodeLocation(uri: vscode.Uri, projectId: string): vscode.Uri {
+	const query = JSON.stringify([uri.toString(), projectId]);
 	return vscode.Uri.parse(`${TACProvider.scheme}:test.tac?${query}#${seq++}`);
 }
 
-
+export function decodeLocation(uri: vscode.Uri): [vscode.Uri, string] {
+	let [target, projectId] = <[string, string]>JSON.parse(uri.query);
+	return [vscode.Uri.parse(target), projectId];
+}
