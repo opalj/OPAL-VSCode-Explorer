@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {TacService} from '../service/tac.service';
+import * as npmPath from 'path';
 
 export default class TACDocument {
 
@@ -8,10 +9,14 @@ export default class TACDocument {
      */
     private _links: vscode.DocumentLink[];
     private _tacService : TacService;
+    /*
     private _emitter: vscode.EventEmitter<vscode.Uri>;
     private _uri : vscode.Uri;
+    */
+    private _projectId : string;
+    private _target : vscode.Uri;
     
-	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>) {
+	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri) {
         
         this._links = [];
         
@@ -19,8 +24,12 @@ export default class TACDocument {
          * @TODO: provide URL by config
          */
         this._tacService = new TacService("http://localhost:8080");
+        /*
         this._emitter = emitter;
-        this._uri = uri; 
+        this._uri = uri;
+        */
+        this._projectId = projectId;
+        this._target = target;
     }
     
     /**
@@ -37,13 +46,21 @@ export default class TACDocument {
     /**
      * Get the Data of this document
      */
-    private async _populate() {
-        //var tacForClassMessage = await this._tacService.getTACForClassMessage();
-        
-        var tac = await this._tacService.loadTAC("short1.txt");
-        console.log(tac);
-        this._emitter.fire(this._uri);
-        return tac.tac;
-        //return await this._tacService.loadTAC(tacForClassMessage);
+    public async _populate() {
+        //Extract Filename from URI
+		var fileName = npmPath.parse(this._target.fsPath).base;
+		//Set Tac Service up
+		
+		if(fileName.includes(".java") || fileName.includes(".class")) {
+			fileName = fileName.replace(".java", "");
+			fileName = fileName.replace(".class", "");
+			//Request TAC for Class
+			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
+			var tac = await this._tacService.loadTAC(this._tacService.getTACForClassMessage(this._projectId, fileName, fileName));
+            //this._emitter.fire(this._uri);
+            return tac;
+        } else {
+            return "";
+        }
     }
 }
