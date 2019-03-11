@@ -26,7 +26,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      **/
     def load() : String = {
         val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
-        val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)))
+        val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
         project = Project(
             targetClassFiles, 
             libraryClassFiles, 
