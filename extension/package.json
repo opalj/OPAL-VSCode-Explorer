@@ -28,7 +28,7 @@
             {
                 "label": "c",
                 "uiTheme": "vs-dark",
-                "path": "./themes/c-color-theme.json"
+                "path": "./themes/tac-color-theme.json"
             }
         ],
 		"languages": [

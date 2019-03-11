@@ -2,7 +2,7 @@
 	"name": "c",
 	"type": "dark",
 	"colors": {
-		"editor.background": "#3e8eb6",
+		"editor.background": "#1e1e1e",
 		"editor.foreground": "#cde676",
 		"activityBarBadge.background": "#ced4da",
 		"sideBarTitle.foreground": "#bbbbbb"
@@ -28,6 +28,24 @@
 			}
 		},
 		{
+			"name": "jade",
+			"scope": [
+				"string.jade"
+			],
+			"settings": {
+				"foreground": "#0cee32"
+			}
+		},
+		{
+			"name": "tac comment",
+			"scope": [
+				"comment.line"
+			],
+			"settings": {
+				"foreground": "#ee0a0a"
+			}
+		},
+		{
 			"name":  "keyword",
 			"scope": [
 				"storage.type",
@@ -37,7 +55,8 @@
 				"keyword.operator"
 			],
 			"settings": {
-				"foreground": "#AAAAAA"
+				"foreground": "#1da1aa",
+				"fontStyle": "bold"
 			}
 		},
 		{
