@@ -30,6 +30,13 @@
 				"title": "Show All References"
 			}
 		],
+		"themes": [
+            {
+                "label": "c",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tac-color-theme.json"
+            }
+        ],
 		"languages": [
 			{
 				"id": "tac",

@@ -1,0 +1,72 @@
+{
+	"name": "c",
+	"type": "dark",
+	"colors": {
+		"editor.background": "#1e1e1e",
+		"editor.foreground": "#cde676",
+		"activityBarBadge.background": "#ced4da",
+		"sideBarTitle.foreground": "#bbbbbb"
+	},
+	"tokenColors": [
+		
+		{
+			"name":  "support",
+			"scope": [
+				"support.constant"
+			],
+			"settings": {
+				"foreground": "#fa527c"
+			}
+		},
+		{
+			"name":  "kC",
+			"scope": [
+				"keyword"
+			],
+			"settings": {
+				"foreground": "#e00de7"
+			}
+		},
+		{
+			"name": "jade",
+			"scope": [
+				"string.jade"
+			],
+			"settings": {
+				"foreground": "#0cee32"
+			}
+		},
+		{
+			"name": "tac comment",
+			"scope": [
+				"comment.line"
+			],
+			"settings": {
+				"foreground": "#ee0a0a"
+			}
+		},
+		{
+			"name":  "keyword",
+			"scope": [
+				"storage.type",
+				"storage.modifier",
+				"keyword.control",
+				"keyword.others",
+				"keyword.operator"
+			],
+			"settings": {
+				"foreground": "#1da1aa",
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"name":  "keyword",
+			"scope": [
+				"strings"
+			],
+			"settings": {
+				"foreground": "#AAAAAA"
+			}
+		},
+	]
+}

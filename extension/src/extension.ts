@@ -65,6 +65,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log("Project loaded!");
 		myStatusBarItem.text = "Project loaded!";
 		myStatusBarItem.show();
+		vscode.window.showInformationMessage("Project loaded!");
 		projectloaded = true;
 	});
 	
@@ -98,7 +99,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		// Load the JavaScript grammar and any other grammars included by it async.
 			if (tacID) {
 				//executing TacService on Tac ID
-				var tacService = new TacService('http://localhost:8080/tac/');
+				var tacService = new TacService('http://localhost:8080');
 				vscode.window.showInformationMessage('TAC requested from Server ..... ');
 
 				tacService.loadTAC(tacID).then(function (res: any) {
@@ -128,30 +129,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		var doc = await vscode.workspace.openTextDocument(uri);
 		console.log(doc);
 		vscode.window.showTextDocument(doc);
+	});
 
-		return vscode.workspace.openTextDocument(uri).then(function(doc) {
-			console.log(doc);
-			vscode.window.showTextDocument(doc);
-		});
-		
-	});
-/*
-	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
-		const uri = encodeLocation(editor.document.uri, editor.selection.active);
-		console.log("URI");
-		console.log(uri);
-		try {
-			return vscode.workspace.openTextDocument(uri).then(function(doc) {
-				console.log(doc);
-				vscode.window.showTextDocument(doc, 1);
-			});
-		} catch(e) {
-			console.log(e);
-		}
-		
-	});
-*/
-	
 	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
 }
 

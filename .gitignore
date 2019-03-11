@@ -20,3 +20,7 @@ server/project/.bloop/server-build.json
 .bloop/
 .idea/
 server/lib/Atom.lnk
+server/.metals/metals.log
+.metals/
+server/.bloop/
+server/.idea/
