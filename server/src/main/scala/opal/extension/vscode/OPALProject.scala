@@ -53,6 +53,11 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
     }
 
     /**
+     * Get the Bytecode of a Method
+     * TODO
+     **/
+
+    /**
      * Get the TAC of a Class
      **/
     def getTacForClass(tacForClass : TACForClass) : String = {
@@ -62,6 +67,11 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         val res = tacArray.addString(tacString);
         res.mkString("");
     }
+
+    /**
+     * Get the Bytecode of a Class
+     * TODO
+     **/
 }
 
 /**

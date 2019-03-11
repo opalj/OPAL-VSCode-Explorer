@@ -63,6 +63,12 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     }
 
     /**
+     * Bytecode for one Method
+     * BytecodeForMethod
+     * TODO
+     */
+
+    /**
      * TACForClass Message
      */
     post("/project/tac/class") {
@@ -77,6 +83,11 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         }
         res;
     }
+
+    /**
+     * BytecodeForClass
+     * TODO
+     */
 
     /**
      * Get Logs
