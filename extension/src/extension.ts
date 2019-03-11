@@ -125,8 +125,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', (uri:vscode.Uri) => {
 		//Extract Filename from URI
 		var fileName = npmPath.parse(uri.fsPath).base;
-		vscode.window.showInformationMessage(projectId);
-
+		//Set Tac Service up
 		var tacService = new TacService('http://localhost:8080');
 		if(fileName.includes(".java") || fileName.includes(".class")){
 			fileName = fileName.replace(".java", "");
@@ -180,6 +179,7 @@ async function getProjectId() {
 	var wsFolders =  vscode.workspace.workspaceFolders;
 	if (wsFolders !== undefined) {
 		var path = wsFolders[0].uri.fsPath;
+		//Remove Backslashes for further usage as String
 		path = path.replace(/\\/g, "/");
 		return path;
 	} else {
