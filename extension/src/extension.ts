@@ -131,8 +131,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			fileName = fileName.replace(".java", "");
 			fileName = fileName.replace(".class", "");
 			//Request TAC for Class
+			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
 			tacService.loadTAC(tacService.getTACForClassMessage(projectId, "", fileName)).then(function (res: any) {
-				vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
+				
 				//return Tac and show it in a Textdocument
 				var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
 				vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
