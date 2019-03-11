@@ -124,7 +124,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		//Extract Filename from URI
 		var fileName = npmPath.parse(uri.fsPath).base;
 
-		var tacService = new TacService('http://localhost:8080/tac/');
+		var tacService = new TacService('http://localhost:8080');
 		if(fileName.includes(".java") || fileName.includes(".class")){
 			fileName = fileName.replace(".java", "");
 			fileName = fileName.replace(".class", "");
