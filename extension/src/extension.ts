@@ -73,16 +73,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	// get output channel where we can show the opal logs
 	const outputChannel = vscode.window.createOutputChannel("OPAL");
 	// get logging while opal is loading the project
+	var oldLog = "";
 	while(!projectloaded) {
 		// wait for new logs
 		await delay(1000);
 		// show the logs in the status bar 
 		var log = await projectService.requestLOG(logMessage);
-		if (log !== undefined) {
+		if (log !== undefined && oldLog !== log) {
 			myStatusBarItem.text = "OPAL: Loading Project: "+log+" ... ";
 			myStatusBarItem.show();
 			outputChannel.appendLine("[OPAL]: "+log);
 			outputChannel.show();
+			oldLog = log;
 			console.log(log);
 		} 
 	}
