@@ -2,32 +2,52 @@
 	"name": "c",
 	"type": "dark",
 	"colors": {
-		"editor.background": "#263238",
-		"editor.foreground": "#eeffff",
-		//"activityBarBadge.background": "#007acc",
+		"editor.background": "#3e8eb6",
+		"editor.foreground": "#cde676",
+		"activityBarBadge.background": "#ced4da",
 		"sideBarTitle.foreground": "#bbbbbb"
 	},
 	"tokenColors": [
-		{
-			"name":  "keyword",
-			"scope": [
-				"storage.type",
-				"storage.modifier",
-				"keyword.control",
-				"keyword.others"
-			],
-			"settings": {
-				"foreground": "#0d9c14"
-			}
-		},
+		
 		{
 			"name":  "support",
 			"scope": [
 				"support.constant"
 			],
 			"settings": {
-				"foreground": "#bb123c"
+				"foreground": "#fa527c"
 			}
-		}
+		},
+		{
+			"name":  "kC",
+			"scope": [
+				"keyword"
+			],
+			"settings": {
+				"foreground": "#e00de7"
+			}
+		},
+		{
+			"name":  "keyword",
+			"scope": [
+				"storage.type",
+				"storage.modifier",
+				"keyword.control",
+				"keyword.others",
+				"keyword.operator"
+			],
+			"settings": {
+				"foreground": "#AAAAAA"
+			}
+		},
+		{
+			"name":  "keyword",
+			"scope": [
+				"strings"
+			],
+			"settings": {
+				"foreground": "#AAAAAA"
+			}
+		},
 	]
 }
