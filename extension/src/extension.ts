@@ -5,7 +5,6 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
 import { ProjectService } from './extension/service/project.service';
-import * as npmPath from 'path';
 
 const isReachable = require('is-reachable');
 
@@ -14,6 +13,7 @@ const isReachable = require('is-reachable');
 export async function activate(context: vscode.ExtensionContext) {
 
 	var projectId = await getProjectId();
+	console.log(projectId);
 	const tacProvider = new TACProvider(projectId);
 
 	const providerRegistrations = vscode.Disposable.from(
@@ -122,31 +122,20 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	//menu-command to get tac from .java
-	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', (uri:vscode.Uri) => {
-		//Extract Filename from URI
-		var fileName = npmPath.parse(uri.fsPath).base;
-		//Set Tac Service up
-		var tacService = new TacService('http://localhost:8080');
-		if(fileName.includes(".java") || fileName.includes(".class")){
-			fileName = fileName.replace(".java", "");
-			fileName = fileName.replace(".class", "");
-			//Request TAC for Class
-			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
-			tacService.loadTAC(tacService.getTACForClassMessage(projectId, "", fileName)).then(function (res: any) {
-				
-				//return Tac and show it in a Textdocument
-				var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
-				vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
-					vscode.window.showTextDocument(a,1,false).then(e => { 
-						e.edit(edit => {
-							 edit.insert(new vscode.Position(0,0), res.tac);
-						});
-					 });
-				});
-			});
-		}
-	});
+	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
+		uri = encodeLocation(uri, projectId);
+		
+		var doc = await vscode.workspace.openTextDocument(uri);
+		console.log(doc);
+		vscode.window.showTextDocument(doc);
 
+		return vscode.workspace.openTextDocument(uri).then(function(doc) {
+			console.log(doc);
+			vscode.window.showTextDocument(doc);
+		});
+		
+	});
+/*
 	const commandRegistration = vscode.commands.registerTextEditorCommand('editor.printReferences', editor => {
 		const uri = encodeLocation(editor.document.uri, editor.selection.active);
 		console.log("URI");
@@ -161,9 +150,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		
 	});
-
-	context.subscriptions.push(tacCommand, providerRegistrations, commandRegistration);
-	context.subscriptions.push(menuTacCommand, providerRegistrations, commandRegistration);
+*/
+	
+	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
 }
 
 // this method is called when your extension is deactivated
