@@ -31,12 +31,12 @@
 			}
 		],
 		"themes": [
-            {
-                "label": "c",
-                "uiTheme": "vs-dark",
-                "path": "./themes/tac-color-theme.json"
-            }
-        ],
+			{
+				"label": "c",
+				"uiTheme": "vs-dark",
+				"path": "./themes/tac-color-theme.json"
+			}
+		],
 		"languages": [
 			{
 				"id": "tac",
@@ -55,7 +55,8 @@
 					".class"
 				],
 				"aliases": [
-					"class", "Class"
+					"class",
+					"Class"
 				]
 			}
 		],
@@ -72,7 +73,8 @@
 					"command": "extension.menuTac",
 					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
 					"group": "2_workspace"
-				}]
+				}
+			]
 		},
 		"grammars": [
 			{
@@ -90,15 +92,15 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
+		"@types/is-reachable": "^3.0.0",
 		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
-		"chai": "*",
+		"chai": "^4.2.0",
+		"is-reachable": "^3.0.0",
 		"mocha": "*",
+		"request-promise-native": "^1.0.7",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
-		"vscode": "^1.1.29",
-		"request-promise-native": "^1.0.7",
-		"is-reachable": "^3.0.0",
-		"@types/is-reachable": "^3.0.0"
+		"vscode": "^1.1.29"
 	}
 }
