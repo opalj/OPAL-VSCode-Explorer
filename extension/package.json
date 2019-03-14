@@ -16,7 +16,9 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.tac"
+		"onCommand:extension.tac",
+		"onCommand:extension.menuTac",
+		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -24,6 +26,21 @@
 			{
 				"command": "extension.tac",
 				"title": "Opal-TAC"
+			},
+			{
+				"command": "extension.menuTac",
+				"title": "TAC from file"
+			},
+			{
+				"command": "editor.printReferences",
+				"title": "Show All References"
+			}
+		],
+		"themes": [
+			{
+				"label": "c",
+				"uiTheme": "vs-dark",
+				"path": "./themes/tac-color-theme.json"
 			}
 		],
 		"languages": [
@@ -37,8 +54,34 @@
 					".tac"
 				],
 				"configuration": "./language-configuration.json"
+			},
+			{
+				"id": "class",
+				"extensions": [
+					".class"
+				],
+				"aliases": [
+					"class",
+					"Class"
+				]
 			}
 		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "editor.printReferences",
+					"when": "editorHasReferenceProvider",
+					"group": "navigation@1.31"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "extension.menuTac",
+					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
+					"group": "2_workspace"
+				}
+			]
+		},
 		"grammars": [
 			{
 				"language": "tac",
@@ -55,10 +98,13 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
+		"@types/is-reachable": "^3.0.0",
 		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
-		"chai": "*",
+		"chai": "^4.2.0",
+		"is-reachable": "^3.0.0",
 		"mocha": "*",
+		"request-promise-native": "^1.0.7",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
 		"vscode": "^1.1.29"

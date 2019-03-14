@@ -3,6 +3,12 @@
         "url" : "http://localhost:8080"
     },
     "opal": {
-        "classpath": "test.testitest.opal.extension.for.vs.code"
+        "targetsDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target",
+        "librariesDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib",
+        "config": {"key":"value"}
+    },
+    "extension": {
+        "serverJarPath": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar",
+        "jarOptions" : ""
     }
 }

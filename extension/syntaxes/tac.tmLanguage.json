@@ -1,67 +1,63 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "three-address-code",
+	"name": "tac",
 	"patterns": [
 		{
-			"include": "#keyword"
+			"include": "#keywords"
 		},
 		{
-			"include": "#support"
+			"include": "#comment"
 		},
 		{
-			"include": "string"
+			"include": "#string"
 		},
 		{
-			"include": "comment"
+			"include": "#meta"
 		}
 	],
 	"repository": {
-		"keyword": {
+		"keywords": {
 			"patterns": [
 				{	
 					"name" : "keyword.control",
 					"match" : "\\b(if|goto)\\b"
 				},
 				{	
-					"name" : "keyword.operator",
+					"name" : "keyword.others",
+					"match" : "\\b(return|void|static)\\b"
+				},
+				{	
+					"name" : "keyword.operator.new",
 					"match" : "\\b(new)\\b"
+				},
+				{	
+					"name" : "keyword.control.less",
+					"match" : "\\b(exception)\\b"
 				}
 			]
 		},
-		"support": {
-			"patterns" : [
-						{	
-							"name" : "support.constant",
-							"match" : "^\\s+\\d+:"
-						},
-						{	
-							"name" : "support.constant",
-							"match" : "^\\s+\/\/\\s(\\d)+(, \\d+)* \u2192"
-						},
-						{	
-							"name" : "support.constant",
-							"match" : "\/\\*pc=\\d+:\\*\/"
-						}
+		"comment": {
+			"patterns": [
+				{
+					"name": "comment.line",
+					"match": "//(\\s|\\w|\\.|\\d|\\\u216A|\\\u2192)*|/\\*(\\w|\\s|\\(|\\)|\\{|\\}|\\.|-)*\\*/" 
+				}
 			]
 		},
 		"string": {
-			"name": "string.quoted.double.untitled",
-			"begin": "\"",
-			"end": "\"",
 			"patterns": [
 				{
-					"name": "constant.character.escape.untitled",
-					"match": "\\."
+					"name": "string.other",
+					"match": "\"(\\s|\\.|\\w|\\\\|/)*\""  
+				},
+				{
+					"name": "string.jade",
+					"match": "\\d:/\\*pc=\\d+:\\*/"  
 				}
 			]
-		},
-		"comment":
-		{
-			"patterns": [{
-				"name": "comment",
-				"match": "\/\\*(\\s|\\.|\\w)*\\*\/"
-			}]
 		}
 	},
+
+	
 	"scopeName": "source.tac"
 }

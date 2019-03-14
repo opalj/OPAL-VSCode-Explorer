@@ -1,4 +1,4 @@
-var request = require('request');
+var request = require('request-promise-native');
 
 /**
  * Service for loading TAC examples
@@ -12,39 +12,48 @@ export class TacService {
         "uri": "",
         "headers": {
         },
+        "body":{},
         "json": true
     };
 
 
+    protected serverUrl = "";
+
+    constructor(public _url: string){
+        this.serverUrl = _url;
+    }
+
     /**
-     * Constructor
-     * @param _url Full URL of the Server 
+     * Get the request body for requesting TAC for a function
+     * Check /server/src/main/scala/opal/vscode/model.scala for Details
+     * TACForMethod(projectId:String, fqn: String, methodName:String, descriptor : String)
      */
-    constructor(public _url: string) {
-        this.options.uri = this._url;
+    async getTACForMethodMessage() {
+        return {};
+    }
+
+    /**
+     * Get the request body for requesting TAC for a class
+     * Check /server/src/main/scala/opal/vscode/model.scala for Details
+     * TACForClass(projectId:String, fqn:String, className:String)
+     */
+    getTACForClassMessage(projectId:String, fqn:String, className:String) {
+        return {
+            "projectId" : projectId,
+            "fqn" : fqn,
+            "className" : className,
+        };
     }
 
     /**
      * Requesting TAC from Server
-     * @param id of the tac example (e.g. filename)
      */
-    async loadTAC(id: string) {
-        this.options.uri += id;
-        //asynchronous requesting
-        return new Promise((resolve, reject) => {
-            request(this.options, function (error: any, response: any, body: any) {
-                if (error) {
-                    //error handling
-                    console.log("Error: ");
-                    console.log(error);
-                    reject(error);
-                } else {
-                    //response handling
-                    console.log("Response: ");
-                    console.log(response);
-                    resolve(body);
-                }
-            });
-        });
+    loadTAC(tacForClassMessage: any) {
+        console.log(tacForClassMessage);
+        this.options.body = tacForClassMessage;
+        this.options.uri = this.serverUrl + "/opal/project/tac/class";
+        console.log(this.options);
+        //Promise for sending classpath
+        return request.post(this.options);
     }
 }
