@@ -24,3 +24,4 @@ server/.metals/metals.log
 .metals/
 server/.bloop/
 server/.idea/
+dummy/opal.config.json
