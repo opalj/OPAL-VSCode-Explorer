@@ -27,7 +27,7 @@ build:
         - cd ..
     on_success:
         - npm install -g vsce
-        - cp server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar extension/
+        - cp 'server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' extension/
         - cd extension
         - ssh-add ~/.ssh/id_rsa
         - vsce package
