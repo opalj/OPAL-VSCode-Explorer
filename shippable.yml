@@ -1,5 +1,8 @@
 language: none
 
+env:
+  - secure: 0dEu+37zlyeqS0A/nk3y7P2sghZ/ePBX0JEKNzpZr6P2QOh259TlYdnL3ddcQJr0UoV5Wu/filg9FyHKOe0BLbnLZBM5568oT/UstuwiSQwRrhCDx1rFVdBtYhBboBdoZEBTdG1wtbZzLijGIUnOzA3m/uA9u5GUB2xD+PDwxA/I7VXxoeKoKHIOPBG+S7CUB38fV28aYd/PKzuGHuDLJ3pqvPqSXKVXZcHW/5ePJ/qMz61jyvglcmTWGVkaNNvBJwLIlkrOHq48f2KQbfEJyk1e4x45QddYUA5MEwzgMdFGXLd+MGoct+CROSvKX5Rf4O8bkJgO8R/3QpsZW5GYfw==
+
 build:
     pre_ci_boot:
         image_name: agssl123/vscodeextension
@@ -20,13 +23,18 @@ build:
         - java -jar './target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' & 
         - cd ..
         - cd extension
-        - npm install typescript -g
+        # - npm install typescript -g
         - npm install
         - npm run postinstall
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
         - cd ..
-integrations:                               
+        - on_success:
+          - npm install -g vsce
+          - cd extension
+          - vsce package
+          - vsce publish -p $VSCE_TOKEN
+integrations:
   notifications:
     - integrationName: email
       type: email
