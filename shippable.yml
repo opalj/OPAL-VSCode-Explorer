@@ -29,7 +29,6 @@ build:
         - npm install -g vsce
         - cp 'server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' extension/
         - cd extension
-        - ssh-add ~/.ssh/id_rsa
         - vsce package
         - vsce publish -p $VSCE_TOKEN
 integrations:
@@ -40,7 +39,7 @@ integrations:
         - laserconone@tu.katrin.rabow.eu
       sendFailingSnippet: true
       on_success: change
-      on_failure: always
+      on_failure: change
       on_cancel: never
       on_start: never
       on_pull_request: always
