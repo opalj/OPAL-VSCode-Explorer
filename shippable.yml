@@ -25,6 +25,10 @@ build:
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
         - cd ..
+        - on_success:
+          - npm install -g vsce
+          - cd extension
+          - vsce package
 integrations:
   notifications:
     - integrationName: email
