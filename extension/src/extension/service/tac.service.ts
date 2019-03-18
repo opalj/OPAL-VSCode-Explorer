@@ -56,4 +56,11 @@ export class TacService {
         //Promise for sending classpath
         return request.post(this.options);
     }
+
+    getAny(config: any,command: String){
+        console.log();
+        this.options.body = {"config": config,"command": command};
+        this.options.uri = this.serverUrl + "/opal/project/loadAny";
+        return request.post(this.options);
+    }
 }
