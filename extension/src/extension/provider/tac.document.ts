@@ -51,8 +51,7 @@ export default class TACDocument {
 		var fileName = npmPath.parse(this._target.fsPath).base;
 		//Set Tac Service up
 		
-		if(fileName.includes(".java") || fileName.includes(".class")) {
-			fileName = fileName.replace(".java", "");
+		if(fileName.includes(".class")) {
 			fileName = fileName.replace(".class", "");
 			//Request TAC for Class
 			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
