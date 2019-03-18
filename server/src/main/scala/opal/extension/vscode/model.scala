@@ -30,3 +30,9 @@ case class TACForClass(projectId: String, fqn:String, className:String)
  * Message for requesting the Logs
  **/
 case class Log(projectId: String, target: String, config: Map[String, String]);
+
+
+/**
+ * Command for any functionality
+ **/
+case class OpalCommand(projectId: String, config: Map[String, String], command: String);

@@ -62,6 +62,15 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         val res = tacArray.addString(tacString);
         res.mkString("");
     }
+
+     /**
+     * Get the Any
+     **/
+    def getAny(opalCommand : OpalCommand) : String = {
+        var tacString = new StringBuilder();
+        val res = "test";
+        res.mkString("");
+    }
 }
 
 /**

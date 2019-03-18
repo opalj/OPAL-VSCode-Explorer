@@ -46,6 +46,22 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     }
 
     /**
+     * any function from Opal
+     */
+    post("/project/loadAny") {
+        var opalCom = parsedBody.extract[OpalCommand]
+        var project : OPALProject = null;
+        var res = "";
+        if (workspace.get(opalCom.projectId).isEmpty) {
+            res = "Error: Project not found!";
+        } else {
+            project = workspace.get(opalCom.projectId).get;
+            res = project.getAny(opalCom);
+        }
+        res;
+    }
+
+    /**
      * TAC for one Method
      * TACForMethod Message
      */
