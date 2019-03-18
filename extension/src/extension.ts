@@ -126,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		//input for Tac ID
 	});
 
-	//menu-command to get tac from .java
+	//menu-command to get tac from .class
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
 		uri = encodeLocation(uri, projectId);
 		
@@ -136,6 +136,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
+
+	//menu-command to get bc from .java
+	let menuBCCommand = vscode.commands.registerCommand('extension.menuBC', async (uri:vscode.Uri) => {
+		uri = encodeLocation(uri, projectId);
+		
+		var doc = await vscode.workspace.openTextDocument(uri);
+		console.log(doc);
+		vscode.window.showTextDocument(doc);
+	});
+
+	context.subscriptions.push(menuBCCommand, providerRegistrations);
 }
 
 // this method is called when your extension is deactivated
