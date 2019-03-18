@@ -12,6 +12,7 @@
 	"activationEvents": [
 		"onCommand:extension.tac",
 		"onCommand:extension.menuTac",
+		"onCommand:extension.menuBC",
 		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
@@ -24,6 +25,10 @@
 			{
 				"command": "extension.menuTac",
 				"title": "TAC from file"
+			},
+			{
+				"command": "extension.menuBC",
+				"title": "BC from file"
 			},
 			{
 				"command": "editor.printReferences",
@@ -71,7 +76,12 @@
 			"explorer/context": [
 				{
 					"command": "extension.menuTac",
-					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuBC",
+					"when": "!explorerResourceIsFolder && resourceLangId == java",
 					"group": "2_workspace"
 				}
 			]
