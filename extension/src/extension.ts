@@ -26,7 +26,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
+		if (config.extension.hasOwnProperty("serverJarPath") && config.extension.serverJarPath !== "") {
+			terminal.sendText("java -jar '" + config.extension.serverJarPath + "' " + config.extension.jarOptions, true);
+		} else {
+			var jarPath = config.extension.extensionFolder + "/" + config.extension.jarFileName;
+			terminal.sendText("java -jar '" + jarPath + "' " + config.extension.jarOptions, true);
+		}
 	}
 
 	/*
