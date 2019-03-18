@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
 import { ProjectService } from './extension/service/project.service';
+import * as npmPath from 'path';
 
 const isReachable = require('is-reachable');
 
@@ -136,6 +137,20 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
+
+	//menu-command to extract jar file
+	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
+		vscode.window.showInformationMessage("Ectracting Jar ...");
+		var fileName = npmPath.parse(uri.fsPath).base;
+		console.log(fileName);
+
+		terminal = vscode.window.createTerminal("Jar Extracter");
+		terminal.show(false);
+		terminal.sendText(("mkdir " + uri.path.replace(fileName, "")).replace("/", "") + fileName.replace(".jar", "_jar"));
+		terminal.sendText("cd " + fileName.replace(".jar", "_jar"));
+		terminal.sendText("jar -xf " + uri.path.replace("/", ""));
+	});
+	context.subscriptions.push(menuJarCommand, providerRegistrations, tacCommand);
 }
 
 // this method is called when your extension is deactivated
