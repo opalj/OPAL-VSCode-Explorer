@@ -29,6 +29,7 @@ build:
         - npm install -g vsce
         - cp 'server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' extension/
         - cd extension
+        - git config --global --unset-all core.askpass
         - vsce package
         - vsce publish -p $VSCE_TOKEN
 integrations:
