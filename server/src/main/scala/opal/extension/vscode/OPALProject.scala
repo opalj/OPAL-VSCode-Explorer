@@ -57,10 +57,10 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      **/
     def getTacForClass(tacForClass : TACForClass) : String = {
         val tacAI = project.get(DefaultTACAIKey)
-        val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)        
-        var tacString = new StringBuilder();
-        val res = tacArray.addString(tacString);
-        res.mkString("");
+        val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
+        var res = "";
+        tacArray.foreach(res += ToTxt(_).mkString("\n"));
+        res;
     }
 
      /**

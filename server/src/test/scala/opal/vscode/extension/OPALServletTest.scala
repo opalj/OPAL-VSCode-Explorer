@@ -32,7 +32,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         var tacForClass = TACForClass("abc", "Test", "Test");
         json = write(tacForClass);
         post("/project/tac/class", json) {
-            body should ( include("java.io.PrintStream") and include("value=String(\"test1123\")[@3;refId=104])))") )
+            body should ( include("java.io.PrintStream") and include("java.lang.System.out") and include("test1123"))
             status should equal (200)
         }
 
