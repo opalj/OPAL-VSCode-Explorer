@@ -12,6 +12,7 @@
 	"activationEvents": [
 		"onCommand:extension.tac",
 		"onCommand:extension.menuTac",
+		"onCommand:extension.menuJar",
 		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
@@ -24,6 +25,10 @@
 			{
 				"command": "extension.menuTac",
 				"title": "TAC from file"
+			},
+			{
+				"command": "extension.menuJar",
+				"title": "Extract Jar..."
 			},
 			{
 				"command": "editor.printReferences",
@@ -58,6 +63,16 @@
 					"class",
 					"Class"
 				]
+			},
+			{
+				"id": "jar",
+				"extensions": [
+					".jar"
+				],
+				"aliases": [
+					"jar",
+					"Jar"
+				]
 			}
 		],
 		"menus": {
@@ -72,6 +87,11 @@
 				{
 					"command": "extension.menuTac",
 					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuJar",
+					"when": "!explorerResourceIsFolder && resourceLangId == jar",
 					"group": "2_workspace"
 				}
 			]

@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { TacService } from './extension/service/tac.service';
 import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
 import { ProjectService } from './extension/service/project.service';
+import * as npmPath from 'path';
 
 const isReachable = require('is-reachable');
 
@@ -37,9 +38,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Ping Jetty
 	var jettyIsUp = await isReachable(config.server.url);
 	if (!jettyIsUp) {
-		var terminal = vscode.window.createTerminal("jetty");
-		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
+		var jettyTerminal = vscode.window.createTerminal("jetty");
+		jettyTerminal.show(false);
+		jettyTerminal.sendText("java -jar '"+config.server.jar+"' "+config.server.jaroptions, true);
 	}
 
 	/*
@@ -136,6 +137,22 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
+
+	//menu-command to extract jar file
+	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
+		vscode.window.showInformationMessage("Extracting Jar ...");
+		var jarFolder = config.extension.jarExtractionFolder;
+		var fileName = npmPath.parse(uri.fsPath).base;
+		console.log(fileName);
+		vscode.window.showInformationMessage(fileName);
+
+		var jarTerminal = vscode.window.createTerminal("Jar Extracter");
+		jarTerminal.show(false);
+		jarTerminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
+		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
+		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
+	});
+	context.subscriptions.push(menuJarCommand, providerRegistrations, tacCommand);
 }
 
 // this method is called when your extension is deactivated
