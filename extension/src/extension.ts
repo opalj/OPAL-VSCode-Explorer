@@ -126,13 +126,30 @@ export async function activate(context: vscode.ExtensionContext) {
 		//input for Tac ID
 	});
 
-	//menu-command to get tac from .class
+	//menu-command to get bc from .class
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
 		uri = encodeLocation(uri, projectId);
-		
-		var doc = await vscode.workspace.openTextDocument(uri);
-		console.log(doc);
-		vscode.window.showTextDocument(doc);
+		let bcID = await vscode.window.showInputBox({ placeHolder: 'BC ID ...' });
+
+		if(bcID){
+			//executing TacService on Bc ID
+			var bcService = new TacService('http://localhost:8080');
+			vscode.window.showInformationMessage('Bc requested from Server ..... ');
+
+			bcService.getAny(bcID,"getBc").then(function(res: any){
+				var document : vscode.Uri = vscode.Uri.parse("untilted:" + "/test.txt");
+				vscode.workspace.openTextDocument(document).then((a : vscode.TextDocument) => {
+					vscode.window.showTextDocument(a,1,false).then(e => { 
+						e.edit(edit => {
+							 edit.insert(new vscode.Position(0,0), res.bc);
+						});
+					 });
+				});
+			});
+		}else {
+			//invalid Bc ID given
+			vscode.window.showInformationMessage('ERROR: something wrong with the Bc ID');
+		}
 	});
 
 	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
