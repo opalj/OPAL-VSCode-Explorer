@@ -38,9 +38,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Ping Jetty
 	var jettyIsUp = await isReachable(config.server.url);
 	if (!jettyIsUp) {
-		var terminal = vscode.window.createTerminal("jetty");
-		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
+		var jettyTerminal = vscode.window.createTerminal("jetty");
+		jettyTerminal.show(false);
+		jettyTerminal.sendText("java -jar '"+config.server.jar+"' "+config.server.jaroptions, true);
 	}
 
 	/*
@@ -141,15 +141,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	//menu-command to extract jar file
 	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
 		vscode.window.showInformationMessage("Extracting Jar ...");
-		var jarFolder = config.properties.jarExtractionFolder;
+		var jarFolder = config.extension.jarExtractionFolder;
 		var fileName = npmPath.parse(uri.fsPath).base;
 		console.log(fileName);
+		vscode.window.showInformationMessage(fileName);
 
-		terminal = vscode.window.createTerminal("Jar Extracter");
-		terminal.show(false);
-		terminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
-		terminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
-		terminal.sendText("jar -xf " + uri.path.replace("/", ""));
+		var jarTerminal = vscode.window.createTerminal("Jar Extracter");
+		jarTerminal.show(false);
+		jarTerminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
+		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
+		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
 	context.subscriptions.push(menuJarCommand, providerRegistrations, tacCommand);
 }
