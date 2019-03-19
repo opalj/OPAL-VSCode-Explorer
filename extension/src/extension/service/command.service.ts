@@ -1,12 +1,12 @@
 var request = require('request-promise-native');
 
 /**
- * Service for loading TAC examples
- * This Service is responsible for requesting TAC Data from the Server
+ * Service for OPAL Commands
+ * This Service is responsible for requesting Data from the Server using OPAL Commands
  * The request / response body is always json encoded.
  * This Service is responsible for encoding / decoding the body
  */
-export class TacService {
+export class CommandService {
 
     options = {
         "uri": "",
@@ -24,11 +24,35 @@ export class TacService {
     }
 
     /**
+     * Requesting TAC from Server
+     */
+    loadTAC(tacForClassMessage: any) {
+        console.log(tacForClassMessage);
+        this.options.body = tacForClassMessage;
+        this.options.uri = this.serverUrl + "/opal/project/tac/class";
+        console.log(this.options);
+        //Promise for sending classpath
+        return request.post(this.options);
+    }
+
+    /**
+     * Request any command from server
+     * @param command 
+     * @param params 
+     */
+    loadAnyCommand(command: String, projectId : string, params: any) {
+        console.log(command);
+        this.options.body = {"params": params,"command": command, "projectId":projectId};
+        this.options.uri = this.serverUrl + "/opal/project/loadAny";
+        return request.post(this.options);
+    }
+
+    /**
      * Get the request body for requesting TAC for a function
      * Check /server/src/main/scala/opal/vscode/model.scala for Details
      * TACForMethod(projectId:String, fqn: String, methodName:String, descriptor : String)
      */
-    async getTACForMethodMessage() {
+    getTACForMethodMessage() {
         return {};
     }
 
@@ -43,24 +67,5 @@ export class TacService {
             "fqn" : fqn,
             "className" : className,
         };
-    }
-
-    /**
-     * Requesting TAC from Server
-     */
-    loadTAC(tacForClassMessage: any) {
-        console.log(tacForClassMessage);
-        this.options.body = tacForClassMessage;
-        this.options.uri = this.serverUrl + "/opal/project/tac/class";
-        console.log(this.options);
-        //Promise for sending classpath
-        return request.post(this.options);
-    }
-
-    getAny(config: any,command: String){
-        console.log();
-        this.options.body = {"config": config,"command": command};
-        this.options.uri = this.serverUrl + "/opal/project/loadAny";
-        return request.post(this.options);
     }
 }

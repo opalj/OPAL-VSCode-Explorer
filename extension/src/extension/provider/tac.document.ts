@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import {TacService} from '../service/tac.service';
+import { CommandService } from '../service/command.service';
 import * as npmPath from 'path';
+
 
 export default class TACDocument {
 
@@ -8,22 +9,21 @@ export default class TACDocument {
      * Links for the jumps to references
      */
     private _links: vscode.DocumentLink[];
-    private _tacService : TacService;
+    private _tacService : CommandService;
     /*
     private _emitter: vscode.EventEmitter<vscode.Uri>;
     private _uri : vscode.Uri;
     */
     private _projectId : string;
     private _target : vscode.Uri;
+    private _opalConfig: any;
     
-	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri) {
+	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri, config : any) {
         
         this._links = [];
         
-        /**
-         * @TODO: provide URL by config
-         */
-        this._tacService = new TacService("http://localhost:8080");
+        this._opalConfig = config;
+        this._tacService = new CommandService(this._opalConfig.server.url);
         /*
         this._emitter = emitter;
         this._uri = uri;

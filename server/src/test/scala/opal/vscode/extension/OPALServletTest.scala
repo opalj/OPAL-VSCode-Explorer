@@ -36,6 +36,13 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
+        var bcForClass = OpalCommand("abc", "getBC", Map("test" -> "test"));
+        json = write(bcForClass);
+        post("/project/loadAny", json) {
+            body should ( include("test"))
+            status should equal (200)
+        }
+
         var requestLogs = Log("abc", "", Map("key" -> "value"));
         json = write(requestLogs);
         post("/project/load/log", json) {

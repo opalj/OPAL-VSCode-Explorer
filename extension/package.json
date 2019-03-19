@@ -81,7 +81,7 @@
 				},
 				{
 					"command": "extension.menuBC",
-					"when": "!explorerResourceIsFolder && resourceLangId == java",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
 					"group": "2_workspace"
 				}
 			]

@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import {TacService} from '../service/tac.service';
-import {ProjectService} from '../service/project.service';
-import OpalConfig from '../opal.config';
+import {CommandService} from '../service/command.service';
 import * as npmPath from 'path';
 
 export default class BCDocument {
@@ -10,7 +8,7 @@ export default class BCDocument {
      * Links for the jumps to references
      */
     private _links: vscode.DocumentLink[];
-    private _tacService : TacService;
+    private _commandService : CommandService;
     /*
     private _emitter: vscode.EventEmitter<vscode.Uri>;
     private _uri : vscode.Uri;
@@ -19,21 +17,19 @@ export default class BCDocument {
     private _target : vscode.Uri;
     private _opalConfig: any;
     
-	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri) {
+	constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri, config : any) {
         
         this._links = [];
         
-        /**
-         * @TODO: provide URL by config
-         */
-        this._tacService = new TacService("http://localhost:8080");
+        this._opalConfig = config;
+        this._commandService = new CommandService(this._opalConfig.server.url);
         /*
         this._emitter = emitter;
         this._uri = uri;
         */
         this._projectId = projectId;
         this._target = target;
-        this._opalConfig = new OpalConfig().getConfig();
+        
     }
     
     /**
@@ -64,14 +60,17 @@ export default class BCDocument {
 		//Set BC Service up
 		
 		if(fileName.includes(".class")) {
-			fileName = fileName.replace(".java", "");
+            fileName = fileName.replace(".java", "");
+            fileName = fileName.replace(".class", "");
 			//Request BC for Class
             vscode.window.showInformationMessage('BC for Class ' + fileName + ' requested from Server ..... ');
-            var config = {
-                "fqn" : this.getFQN(this._target.fsPath),
-                "className" : fileName
+            
+            var fqn = await this.getFQN(this._target.fsPath);
+            var getBCParams = {
+                "fqn": fqn,
+                "className":fileName
             };
-			var BC = await this._tacService.loadTAC(this._tacService.getAny(config, "getBC"));
+			var BC = await this._commandService.loadAnyCommand("getBC", this._projectId, getBCParams);
             return BC;
         } else {
             return "";
