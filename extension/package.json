@@ -13,6 +13,7 @@
 		"onCommand:extension.tac",
 		"onCommand:extension.menuTac",
 		"onCommand:extension.menuJar",
+		"onCommand:extension.menuBC",
 		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
@@ -28,7 +29,9 @@
 			},
 			{
 				"command": "extension.menuJar",
-				"title": "Extract Jar..."
+				"title": "Extract Jar...",
+				"command": "extension.menuBC",
+				"title": "BC from file"
 			},
 			{
 				"command": "editor.printReferences",
@@ -86,7 +89,12 @@
 			"explorer/context": [
 				{
 					"command": "extension.menuTac",
-					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuBC",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
 					"group": "2_workspace"
 				},
 				{
