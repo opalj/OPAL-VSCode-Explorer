@@ -17,7 +17,7 @@ const isReachable = require('is-reachable');
 export async function activate(context: vscode.ExtensionContext) {
 
 	var projectId = await getProjectId();
-	console.log(projectId);
+	var userHome = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 	const tacProvider = new TACProvider(projectId);
 
 	const providerRegistrations = vscode.Disposable.from(
@@ -27,7 +27,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * Open opal.config.json
 	 */
 	var rootPath = vscode.workspace.rootPath;
-	var path: vscode.Uri = vscode.Uri.parse("file:///"+rootPath+"/opal.config.json");
+	var path: vscode.Uri = vscode.Uri.parse("file:"+rootPath+"/opal.config.json");
 	var document = await vscode.workspace.openTextDocument(path);
 	var config = JSON.parse(document.getText());
 
@@ -39,7 +39,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
+		terminal.sendText("java -jar '"+userHome+"/"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
 	}
 
 	/*
