@@ -1,4 +1,6 @@
+import OpalConfig from "../opal.config";
 var request = require('request-promise-native');
+
 
 /**
  * Service for OPAL Commands
@@ -18,9 +20,11 @@ export class CommandService {
 
 
     protected serverUrl = "";
+    protected _config:any = "";
 
     constructor(public _url: string){
         this.serverUrl = _url;
+        this._config = OpalConfig.getConfig();
     }
 
     /**
@@ -67,5 +71,13 @@ export class CommandService {
             "fqn" : fqn,
             "className" : className,
         };
+    }
+
+    /**
+     * Get fqn path for file
+     * @param targetFilePath Path to target file
+     */
+    async getFQN(targetsFilePath : string) {
+        return targetsFilePath.replace(this._config.opal.targetsDir, "");
     }
 }
