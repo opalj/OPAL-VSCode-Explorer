@@ -46,7 +46,7 @@ export default class TACDocument {
     /**
      * Get the Data of this document
      */
-    public async _populate() {
+    private async _populate() {
         //Extract Filename from URI
         var fileName = npmPath.parse(this._target.fsPath).base;
         var fqn = await this._tacService.getFQN(this._target.fsPath);
@@ -57,10 +57,32 @@ export default class TACDocument {
 			//Request TAC for Class
 			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
 			var tac = await this._tacService.loadTAC(this._tacService.getTACForClassMessage(this._projectId, fqn, fileName));
-            //this._emitter.fire(this._uri);
+            
             return tac;
         } else {
             return "";
+        }
+    }
+
+    public static _parseDoc(tac : string) {
+        let tacLines = tac.split("\n");
+        console.log(tacLines);
+        for (let i=tacLines.length-1; i >= 0; i--) {
+
+            let tacLine = tacLines[i];
+            let lineIndex = tacLine.match("\s\d:");
+            console.log(lineIndex);
+            if (lineIndex !== null && lineIndex.length === 1) {
+                console.log(lineIndex);                
+            }
+
+            let callers = tacLine.match("\/\/ \d(, \d)* →");
+            console.log(callers);
+            if (callers !== null) {
+                callers.forEach(caller => {
+
+                });
+            }
         }
     }
 }

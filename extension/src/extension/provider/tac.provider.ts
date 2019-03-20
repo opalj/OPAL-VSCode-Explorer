@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import TACDocument from './tac.document';
-import {CommandService} from "../service/command.service";
-import OpalConfig from "../opal.config";
-import * as npmPath from 'path';
+
 
 
 export default class TACProvider implements vscode.TextDocumentContentProvider, vscode.DocumentLinkProvider {
@@ -39,23 +37,11 @@ export default class TACProvider implements vscode.TextDocumentContentProvider, 
      * @param document document for which links are requested
      * @param token cancellation token
      */
-    async provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
-        let config = await OpalConfig.getConfig(); 
-        let cmdService = new CommandService(config.server.url);
-        
-        var fileName = npmPath.parse(document.uri.fsPath).base;
-        var cmd = "getLinks";
-        var fqn = await cmdService.getFQN(document.uri.fsPath);
-            var getParams = {
-                "fqn": fqn,
-                "className":fileName
-            };
-
-        var res = await cmdService.loadAnyCommand(cmd, this.projectId, getParams);
-
-        var dummyDocLink = new vscode.DocumentLink(new vscode.Range(new vscode.Position(1,1), new vscode.Position(2,2)), document.uri);
-        var dummyArray = [dummyDocLink];
-        return dummyArray;
+    provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
+        const doc = this._documents.get(document.uri.toString());
+		if (doc) {
+			return doc.links;
+		}
     }
 }
 
