@@ -48,14 +48,15 @@ export default class TACDocument {
      */
     public async _populate() {
         //Extract Filename from URI
-		var fileName = npmPath.parse(this._target.fsPath).base;
+        var fileName = npmPath.parse(this._target.fsPath).base;
+        var fqn = await this._tacService.getFQN(this._target.fsPath);
 		//Set Tac Service up
 		
 		if(fileName.includes(".class")) {
 			fileName = fileName.replace(".class", "");
 			//Request TAC for Class
 			vscode.window.showInformationMessage('TAC for Class ' + fileName + ' requested from Server ..... ');
-			var tac = await this._tacService.loadTAC(this._tacService.getTACForClassMessage(this._projectId, fileName, fileName));
+			var tac = await this._tacService.loadTAC(this._tacService.getTACForClassMessage(this._projectId, fqn, fileName));
             //this._emitter.fire(this._uri);
             return tac;
         } else {
