@@ -29,7 +29,9 @@
 			},
 			{
 				"command": "extension.menuJar",
-				"title": "Extract Jar...",
+				"title": "Extract Jar..."
+			},
+			{
 				"command": "extension.menuBC",
 				"title": "BC from file"
 			},
