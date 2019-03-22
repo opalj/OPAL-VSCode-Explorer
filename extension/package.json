@@ -80,21 +80,21 @@
 				]
 			}
 		],
-		"views": {
-			"opal-explorer": [
-				{
-					"id": "opal-explorer",
-					"name": "OPAL Explorer",
-					"when": "workspaceContains:**/opal.config.json"
-				}
-			]
-		},
 		"viewsContainers": {
 			"activitybar": [
 				{
 					"id": "opal-explorer",
-					"title": "Package Explorer",
+					"title": "OPAL Explorer",
 					"icon": "assets/expicon.svg"
+				}
+			]
+		},
+		"views": {
+			"opal-explorer": [
+				{
+					"id": "package-explorer",
+					"name": "Package Explorer",
+					"when": "workspaceContains:**/opal.config.json && workspaceContains:**/.classpath"
 				}
 			]
 		},
@@ -150,5 +150,8 @@
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
 		"vscode": "^1.1.29"
+	},
+	"dependencies": {
+		"readdirp": "^2.2.1"
 	}
 }
