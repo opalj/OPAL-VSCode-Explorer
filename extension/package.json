@@ -81,11 +81,20 @@
 			}
 		],
 		"views": {
-			"explorer": [
+			"opal-explorer": [
 				{
-					"id": "OPAL Explorer",
+					"id": "opal-explorer",
 					"name": "OPAL Explorer",
 					"when": "workspaceContains:**/opal.config.json"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "opal-explorer",
+					"title": "Package Explorer",
+					"icon": "assets/expicon.svg"
 				}
 			]
 		},
