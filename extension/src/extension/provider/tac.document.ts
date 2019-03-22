@@ -148,6 +148,8 @@ export class LinkParser {
 
                         let eTargetUri : vscode.Uri;
                         eTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(lastMethodStart)+":0"));
+
+                        this.documentLinkComposer(eOriginRange, eTargetUri);
                     break;
                 case LineType.Irrelevant:
                     break;
