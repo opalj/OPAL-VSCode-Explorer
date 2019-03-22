@@ -123,7 +123,7 @@ export class LinkParser {
                         let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
                         targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
 
-                        let res = this.documentLinkComposer(originRange, targetUri);
+                        this.documentLinkComposer(originRange, targetUri);
                     }
                     break;
                 case LineType.GOTO:
@@ -229,7 +229,7 @@ export class LinkParser {
         }
     }
 
-    private sameMethod(line1 : number, line2 : number){
+    private sameMethod(line1 : number, line2 : number) : any{
         if(line1 === line2){
             return true;
         } else if(this.isMethodEnd(this.tacLines[line1])) {
@@ -246,7 +246,7 @@ export class LinkParser {
     private getTargetLine(originLine : number, targetID : number){
         for(let i = this.tacLines.length-1; i >= 0; i--){
             if(this.matchLineIndex(this.tacLines[i])){
-                if(targetID = parseInt(<string>this.matchLineIndex(this.tacLines[i])){
+                if(targetID = parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
                     if(this.sameMethod(i, originLine)){
                         return i;
                     }
