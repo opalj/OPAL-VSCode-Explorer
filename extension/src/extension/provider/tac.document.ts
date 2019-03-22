@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { CommandService } from '../service/command.service';
 import * as npmPath from 'path';
+import { pseudoRandomBytes } from 'crypto';
 
 
 export default class TACDocument {
@@ -87,20 +88,74 @@ export default class TACDocument {
     }
 }
 
+enum LineType{MethodStart, MethodEnd, GOTO, Caller, Irrelevant}
 
 export class LinkParser {
 
     private tacLines : string[];
+    private lineTypes : LineType[]; 
+    private docPath : vscode.Uri;
 
-    constructor(tac : string) {
+    constructor(docPath : vscode.Uri, tac : string) {
         this.tacLines = tac.split("\n");
+        this.lineTypes = [LineType.Irrelevant, this.tacLines.length];
+        this.docPath = docPath;
     }
 
     /**
      * parseJumps
      */
     public parseJumps() {
-        
+        this.analyzeLine();
+        for(let i = this.tacLines.length-1; i >= 0; i--){
+            switch (this.lineTypes[i]){
+                case LineType.Caller:
+                    let tmp = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
+                    for(let j = tmp.length-1; j > 0; j--){
+                        let originRange : vscode.Range;
+                        originRange = new vscode.Range(new vscode.Position(i, tmp[0].indexOf(tmp[j])),
+                        new vscode.Position(i, tmp[0].indexOf(tmp[j])+tmp[j].length));
+                        
+                        
+
+                        let res = this.documentLinkComposer(originRange, );
+                    }
+                    break;
+                case LineType.GOTO:
+                    break;
+                case LineType.MethodStart:
+                    break;
+                case LineType.MethodEnd:
+                    break;
+                case LineType.Irrelevant:
+                    break;
+                default:
+                    console.log("Something went wrong!");
+                    break;
+            }
+        }
+    }
+
+    private documentLinkComposer(originPosition : vscode.Range) : vscode.DocumentLink{
+        const linkTarget = target.with({ fragment: String(1 + match.start.line) });
+        this._links.push(new vscode.DocumentLink(originPosition, linkTarget));
+        return null;
+    }
+
+    private analyzeLine(){
+        for(let i = this.tacLines.length-1; i >= 0; i--){
+            if(this.isCaller(this.tacLines[i])){
+                this.lineTypes[i] = LineType.Caller;
+            } else if (this.isGOTO(this.tacLines[i])){
+                this.lineTypes[i] = LineType.GOTO;
+            } else if (this.isMethodStart(this.tacLines[i])){
+                this.lineTypes[i] = LineType.MethodStart;
+            } else if (this.isMethodEnd(this.tacLines[i])){
+                this.lineTypes[i] = LineType.MethodEnd;
+            } else {
+                this.lineTypes[i] = LineType.Irrelevant;
+            }
+        }
     }
 
     public isMethodStart(tacLine : string) {
@@ -115,23 +170,66 @@ export class LinkParser {
         const regex = /goto (\d+)/gm;
         let res = regex.exec(tacLine);
         if (res !== null) {
-            return res[1];
+            return res;
         }
     }
 
+    private isGOTO(tacLine : string) : boolean{
+        const regex = /goto (\d+)/gm;
+        return regex.test(tacLine);
+    }
+
     public matchCaller(tacLine : string) {
-        const regex = /\/\/(.*?)→/gm;
+        const regex = /\/\/(\\s|,|([0-9])*)*→/gm;
         let res = regex.exec(tacLine);
+        let tmp : string[];
         if (res !== null) {
-            return res[1].replace(new RegExp(' ', 'g'), "").split(",");
+            res[1].replace(new RegExp(' ', 'g'), "");
+            res[1].replace(new RegExp('/', 'g'), "");
+            res[1].replace(new RegExp('→', 'g'), "");
+            tmp = res[1].split(",");
+            res.pop();
+            res.concat(tmp);
+            return res;
         }
+    }
+
+    private isCaller(tacLine : string) : boolean{
+        const regex = /\/\/(\\s|,|([0-9])*)*→/gm;
+        return regex.test(tacLine);
     }
 
     public matchLineIndex(tacLine : string) {
         const regex = /\b(\d):/gm;
         let m = regex.exec(tacLine);
         if (m !== null) {
-            return m[1];
+            return m[1].replace(new RegExp(':', 'g'), "");
+        }
+    }
+
+    private sameMethod(line1 : number, line2 : number){
+        if(line1 === line2){
+            return true;
+        } else if(this.isMethodEnd(this.tacLines[line1])) {
+            return false;
+        }
+        if(line1<line2){
+            return this.sameMethod(line1+1, line2);
+        }
+        if(line1>line2){
+            return this.sameMethod(line2, line1);
+        }
+    }
+
+    private getTargetLine(originLine : number, targetID : number){
+        for(let i = this.tacLines.length-1; i >= 0; i--){
+            if(this.matchLineIndex(this.tacLines[i])){
+                if(targetID = parseInt(<string>this.matchLineIndex(this.tacLines[i])){
+                    if(this.sameMethod(i, originLine)){
+                        return i;
+                    }
+                }
+            }
         }
     }
 }
