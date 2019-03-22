@@ -86,3 +86,52 @@ export default class TACDocument {
         }
     }
 }
+
+
+export class LinkParser {
+
+    private tacLines : string[];
+
+    constructor(tac : string) {
+        this.tacLines = tac.split("\n");
+    }
+
+    /**
+     * parseJumps
+     */
+    public parseJumps() {
+        
+    }
+
+    public isMethodStart(tacLine : string) {
+        return tacLine.indexOf("){") >= 0 && tacLine.indexOf("}") === -1;
+    }
+
+    public isMethodEnd(tacLine : string) {
+        return tacLine.indexOf("}") >= 0 && tacLine.indexOf("{") === -1;
+    }
+
+    public matchGOTO(tacLine : string) {
+        const regex = /goto (\d+)/gm;
+        let res = regex.exec(tacLine);
+        if (res !== null) {
+            return res[1];
+        }
+    }
+
+    public matchCaller(tacLine : string) {
+        const regex = /\/\/(.*?)→/gm;
+        let res = regex.exec(tacLine);
+        if (res !== null) {
+            return res[1].replace(new RegExp(' ', 'g'), "").split(",");
+        }
+    }
+
+    public matchLineIndex(tacLine : string) {
+        const regex = /\b(\d):/gm;
+        let m = regex.exec(tacLine);
+        if (m !== null) {
+            return m[1];
+        }
+    }
+}
