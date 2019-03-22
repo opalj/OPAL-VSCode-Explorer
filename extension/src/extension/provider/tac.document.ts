@@ -108,6 +108,7 @@ export class LinkParser {
      * parseJumps
      */
     public parseJumps() {
+        let lastMethodStart: number = 0;
         this.analyzeLine();
         for(let i = this.tacLines.length-1; i >= 0; i--){
             switch (this.lineTypes[i]){
