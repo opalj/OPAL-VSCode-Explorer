@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { CommandService } from '../service/command.service';
 import * as npmPath from 'path';
-import { pseudoRandomBytes } from 'crypto';
 
 
 export default class TACDocument {
@@ -11,10 +10,10 @@ export default class TACDocument {
      */
     private _links: vscode.DocumentLink[];
     private _tacService : CommandService;
-    /*
-    private _emitter: vscode.EventEmitter<vscode.Uri>;
+    
+    //private _emitter: vscode.EventEmitter<vscode.Uri>;
     private _uri : vscode.Uri;
-    */
+    
     private _projectId : string;
     private _target : vscode.Uri;
     private _opalConfig: any;
@@ -25,10 +24,10 @@ export default class TACDocument {
         
         this._opalConfig = config;
         this._tacService = new CommandService(this._opalConfig.server.url);
-        /*
-        this._emitter = emitter;
+        
+        //this._emitter = emitter;
         this._uri = uri;
-        */
+        
         this._projectId = projectId;
         this._target = target;
     }
@@ -65,7 +64,8 @@ export default class TACDocument {
         }
     }
 
-    public static _parseDoc(tac : string) {
+    public _parseDoc(tac : string) {
+        /* Old? 
         let tacLines = tac.split("\n");
         console.log(tacLines);
         for (let i=tacLines.length-1; i >= 0; i--) {
@@ -84,7 +84,10 @@ export default class TACDocument {
 
                 });
             }
-        }
+        }*/
+        const parser = new LinkParser(this._uri, tac);
+        parser.parseJumps();
+        this._links = parser.getLinks();
     }
 }
 
@@ -108,8 +111,8 @@ export class LinkParser {
      * parseJumps
      */
     public parseJumps() {
-        let lastMethodStart: number = 0;
         this.analyzeLine();
+        let lastMethodStart: number = 0;
         for(let i = this.tacLines.length-1; i >= 0; i--){
             switch (this.lineTypes[i]){
                 case LineType.Caller:
@@ -127,7 +130,7 @@ export class LinkParser {
                     }
                     break;
                 case LineType.GOTO:
-                let gArray = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
+                    let gArray = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
                     let gOriginRange : vscode.Range;
                     gOriginRange = new vscode.Range(new vscode.Position(i, gArray[0].indexOf(gArray[1])),
                                                      new vscode.Position(i, gArray[0].indexOf(gArray[1])+gArray[1].length));
@@ -142,14 +145,14 @@ export class LinkParser {
                     lastMethodStart = i;
                     break;
                 case LineType.MethodEnd:
-                let eOriginRange : vscode.Range;
-                        eOriginRange = new vscode.Range(new vscode.Position(i, 0),
-                                                        new vscode.Position(i, 1));
+                    let eOriginRange : vscode.Range;
+                    eOriginRange = new vscode.Range(new vscode.Position(i, 0),
+                                                    new vscode.Position(i, 1));
 
-                        let eTargetUri : vscode.Uri;
-                        eTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(lastMethodStart)+":0"));
+                    let eTargetUri : vscode.Uri;
+                    eTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(lastMethodStart)+":0"));
 
-                        this.documentLinkComposer(eOriginRange, eTargetUri);
+                    this.documentLinkComposer(eOriginRange, eTargetUri);
                     break;
                 case LineType.Irrelevant:
                     break;
@@ -253,5 +256,9 @@ export class LinkParser {
                 }
             }
         }
+    }
+
+    public getLinks() : vscode.DocumentLink[]{
+        return this.links;
     }
 }
