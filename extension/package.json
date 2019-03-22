@@ -80,6 +80,15 @@
 				]
 			}
 		],
+		"views": {
+			"explorer": [
+				{
+					"id": "OPAL Explorer",
+					"name": "OPAL Explorer",
+					"when": "workspaceContains:**/opal.config.json"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
