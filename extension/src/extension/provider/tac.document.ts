@@ -92,11 +92,13 @@ enum LineType{MethodStart, MethodEnd, GOTO, Caller, Irrelevant}
 
 export class LinkParser {
 
+    private links: vscode.DocumentLink[];
     private tacLines : string[];
     private lineTypes : LineType[]; 
     private docPath : vscode.Uri;
 
     constructor(docPath : vscode.Uri, tac : string) {
+        this.links = [];
         this.tacLines = tac.split("\n");
         this.lineTypes = [LineType.Irrelevant, this.tacLines.length];
         this.docPath = docPath;
@@ -114,11 +116,13 @@ export class LinkParser {
                     for(let j = tmp.length-1; j > 0; j--){
                         let originRange : vscode.Range;
                         originRange = new vscode.Range(new vscode.Position(i, tmp[0].indexOf(tmp[j])),
-                        new vscode.Position(i, tmp[0].indexOf(tmp[j])+tmp[j].length));
+                                                         new vscode.Position(i, tmp[0].indexOf(tmp[j])+tmp[j].length));
                         
-                        
+                        let targetUri : vscode.Uri;
+                        let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
+                        targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
 
-                        let res = this.documentLinkComposer(originRange, );
+                        let res = this.documentLinkComposer(originRange, targetUri);
                     }
                     break;
                 case LineType.GOTO:
@@ -136,10 +140,8 @@ export class LinkParser {
         }
     }
 
-    private documentLinkComposer(originPosition : vscode.Range) : vscode.DocumentLink{
-        const linkTarget = target.with({ fragment: String(1 + match.start.line) });
-        this._links.push(new vscode.DocumentLink(originPosition, linkTarget));
-        return null;
+    private documentLinkComposer(originRange : vscode.Range, targetUri : vscode.Uri){
+        this.links.push(new vscode.DocumentLink(originRange, targetUri));
     }
 
     private analyzeLine(){
