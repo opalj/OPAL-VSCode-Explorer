@@ -139,6 +139,7 @@ export class LinkParser {
                     this.documentLinkComposer(gOriginRange, gTargetUri);
                     break;
                 case LineType.MethodStart:
+                    lastMethodStart = i;
                     break;
                 case LineType.MethodEnd:
                     break;
