@@ -135,6 +135,7 @@ export class LinkParser {
                     let gTargetLine = <number> this.getTargetLine(i, Number(gArray[1].replace("goto ", "")));     
                     gTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(gTargetLine)+":0"));
 
+                    this.documentLinkComposer(gOriginRange, gTargetUri);
                     break;
                 case LineType.MethodStart:
                     break;
