@@ -126,6 +126,15 @@ export class LinkParser {
                     }
                     break;
                 case LineType.GOTO:
+                let gArray = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
+                    let gOriginRange : vscode.Range;
+                    gOriginRange = new vscode.Range(new vscode.Position(i, gArray[0].indexOf(gArray[1])),
+                                                     new vscode.Position(i, gArray[0].indexOf(gArray[1])+gArray[1].length));
+
+                    let gTargetUri : vscode.Uri;
+                    let gTargetLine = <number> this.getTargetLine(i, Number(gArray[1].replace("goto ", "")));     
+                    gTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(gTargetLine)+":0"));
+
                     break;
                 case LineType.MethodStart:
                     break;
