@@ -20,29 +20,29 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 		this._onDidChangeTreeData.fire();
 	}
 
-	public getTreeItem(package: Package): vscode.TreeItem {
-		return package;
+	public getTreeItem(p: Package): vscode.TreeItem {
+		return p;
 	}
 
-	public getChildren(package?: Package): Thenable<Package[]> {
-		if (this.hasSubPackages(package)) {
-			return Promise.resolve(this.getSubPackages(package));
+	public getChildren(p: Package): Thenable<Package[]> {
+		if (this.hasSubPackages(p)) {
+			return Promise.resolve(this.getSubPackages(p));
 		} else {
 			return Promise.resolve([]);
 		}
 
 	}
 
-	hasSubPackages(package : Package | undefined){
-		if(package){
+	hasSubPackages(p : Package | undefined){
+		if(p){
 			return false;
 		} else {
 			return false;
 		}
 	}
 
-	getSubPackages(package){
-		let a = [new Package("test", vscode.TreeItemCollapsibleState.Collapsed);
+	getSubPackages(p: Package){
+		let a = [new Package("test", vscode.TreeItemCollapsibleState.Collapsed)];
 		return a;
 	}
 
