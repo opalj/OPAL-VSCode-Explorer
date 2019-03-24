@@ -24,7 +24,7 @@
 				},
 				{	
 					"name" : "keyword.others",
-					"match" : "\\b(return|void|static)\\b"
+					"match" : "\\b(return|void|static|throw)\\b"
 				},
 				{	
 					"name" : "keyword.operator.new",
@@ -40,11 +40,11 @@
 			"patterns": [
 				{
 					"name": "comment.line",
-					"match": "//(\\s|\\w|\\.|\\d|\\\u216A|\\\u2192)*|/\\*(\\w|\\s|\\(|\\)|\\{|\\}|\\.|-)*\\*/" 
+					"match": "//(\\s|\\w|\\.|\\\u216A|\\\u2192|.|\\$)*|/\\*(\\w|\\s|\\(|\\)|\\{|\\}|\\.|-)*\\*/" 
 				},
 				{
 					"name": "comment.block",
-					"match": "/\\* PARAMETERS:(\\s|\\.|\\w|/|!)*|param[0-9]*: .*|\\*/"
+					"match": "/\\* PARAMETERS:(\\s|\\.|\\w|.)*|param[0-9]*: .*|\\*/"
 				}
 			]
 		},
@@ -52,7 +52,7 @@
 			"patterns": [
 				{
 					"name": "string.other",
-					"match": "\"(\\s|\\.|\\w|\\\\|/)*\""  
+					"match": "\"(\\s|\\.|\\w|\\\\|.|/)*\""  
 				},
 				{
 					"name": "string.jade",
