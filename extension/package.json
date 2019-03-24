@@ -14,6 +14,7 @@
 		"onCommand:extension.menuTac",
 		"onCommand:extension.menuJar",
 		"onCommand:extension.menuBC",
+		"onCommand:extension.menuSvg",
 		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
@@ -34,6 +35,10 @@
 			{
 				"command": "extension.menuBC",
 				"title": "BC from file"
+			},
+			{
+				"command": "extension.menuSvg",
+				"title": "SVG from file"
 			},
 			{
 				"command": "editor.printReferences",

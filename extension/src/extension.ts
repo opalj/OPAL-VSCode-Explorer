@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
 import BCProvider, { encodeBCLocation } from './extension/provider/bc.provider';
+import SVGProvider, {encodeSVGLocation} from './extension/provider/svg.provider'; 
 import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
@@ -32,9 +33,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	const tacProvider = new TACProvider(projectId, config);
 	const bcProvider = new BCProvider(projectId, config);
+	const svgProvider = new SVGProvider(projectId, config);
 	const providerRegistrations = vscode.Disposable.from(
 		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider),
-		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider)
+		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider),
+		vscode.workspace.registerTextDocumentContentProvider(SVGProvider.scheme, svgProvider)
 	);
 	
 	
@@ -101,6 +104,29 @@ export async function activate(context: vscode.ExtensionContext) {
 		} 
 	}
 
+	//menu-command to get svg for .class
+	let menuSvgCommand = vscode.commands.registerCommand('extension.menuSvg', async (uri:vscode.Uri) => {
+		/**
+		 * Get URI for a virtual svg Document
+		 */
+		var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";//encodeSVGLocation(uri, projectId);
+		var testing = "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif";
+	
+		let htmlContent2 = "<iframe height=\"180\" width=\"400\" src=\""+svgURI+"\">"+
+		"<img src=\"svgURI.png\" width=\"220\" height=\"220\" alt=\"svgUri\" />"+
+	 "</iframe>\"";
+		let htmlContent = "<!DOCTYPE html><html lang=\"de\"><body><img src= \"" + svgURI +"\" height=\"350\" width=\"300\"/></body></html>";
+		const panel = vscode.window.createWebviewPanel(
+			'catCoding',
+			'Cat Coding',
+			vscode.ViewColumn.One,
+			{}
+		  );
+	
+		  // And set its HTML content
+		  panel.webview.html = htmlContent2;
+	});
+
 	//menu-command to get tac from .class
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
 		/**
@@ -153,7 +179,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
 	
-	context.subscriptions.push(menuTacCommand, menuBCCommand, menuJarCommand, providerRegistrations);
+	context.subscriptions.push(menuTacCommand, menuBCCommand, menuSvgCommand, menuJarCommand, providerRegistrations);
 }
 
 // this method is called when your extension is deactivated
