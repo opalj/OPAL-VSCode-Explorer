@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-
 import { Package } from "./package";
 
-var readdirp = require('readdirp');
+const dirTree = require("directory-tree");
+const tree = dirTree("/some/path");
 
 
 
@@ -32,7 +32,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 	public getChildren(p?: Package): Thenable<Package[]> {
 		if(p){
 			if (p.hasSubPackages()) {
-			return Promise.resolve(p.getChildren());
+				return Promise.resolve(p.getChildren());
 			} else {
 				return Promise.resolve([]);
 			}
@@ -45,14 +45,14 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 	}
 
 	public setPackageTree(root : vscode.Uri)  : Package {
+		var paths: string[];
+		paths = [];
+
+		/**
 		var settings = {
 			root: this._projectFolder.fsPath,
 			entryType: 'directory'
 		};
-
-		var paths: string[];
-		paths = [];
-
 		function pushPaths(fileInfo : any){
 			paths.push(
 				<string> fileInfo.fullPath
@@ -68,8 +68,13 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 			}
 		}
 
+		
 		readdirp(settings, pushPaths, callback);
-
+		 */
+		 
+		const tree = dirTree(root.fsPath, {normalizePath:true});
+		console.log(tree);
+		/**
 		for(let i = 0; i < paths.length; i++){
 			let relPath : string;
 				relPath = paths[i];
@@ -88,7 +93,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 				}
 			}
 			this._tree[i].setChildren(subPackages);
-		}
+		} */
 		return this._tree[0];
 	}
 }
