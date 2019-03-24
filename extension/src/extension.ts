@@ -155,7 +155,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
+	vscode.window.showInformationMessage("Package Explorer is loading...");
 	vscode.window.registerTreeDataProvider('package-explorer', pVP);
+	vscode.window.showInformationMessage("Package Explorer is ready.");
 	
 	context.subscriptions.push(menuTacCommand, menuBCCommand, menuJarCommand, providerRegistrations);
 }
