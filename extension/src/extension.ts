@@ -3,11 +3,12 @@
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
-import BCProvider, { encodeBCLocation } from './extension/provider/bc.provider';
-import SVGProvider, {encodeSVGLocation} from './extension/provider/svg.provider'; 
+import BCProvider, { encodeBCLocation }from './extension/provider/bc.provider';
+import { decodeBCLocation } from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
+import SVGDocument from './extension/provider/svg.document';
 
 
 const isReachable = require('is-reachable');
@@ -33,11 +34,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	const tacProvider = new TACProvider(projectId, config);
 	const bcProvider = new BCProvider(projectId, config);
-	const svgProvider = new SVGProvider(projectId, config);
 	const providerRegistrations = vscode.Disposable.from(
 		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider),
-		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider),
-		vscode.workspace.registerTextDocumentContentProvider(SVGProvider.scheme, svgProvider)
+		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider)
 	);
 	
 	
@@ -109,9 +108,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		/**
 		 * Get URI for a virtual svg Document
 		 */
-		var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";//encodeSVGLocation(uri, projectId);
-		var svgDoc = await vscode.workspace.openTextDocument(svgURI);
-		let text = svgDoc.getText();
+		
+		//_commandService = new CommandService(config.server.url);
+		let params = decodeBCLocation(uri);
+		let document = new SVGDocument(uri, new vscode.EventEmitter<vscode.Uri>(), projectId, params[0], config);
+		//var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";//encodeSVGLocation(uri, projectId);
+		//var svgDoc = await vscode.workspace.openTextDocument(svgURI);
+		let text = document.getDocText();
 		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><body><div id=\"__svg\"> "+text+"</div></body></html>";
 		const panel = vscode.window.createWebviewPanel(
 			'SVG-View',

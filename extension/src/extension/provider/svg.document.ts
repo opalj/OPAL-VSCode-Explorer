@@ -29,6 +29,10 @@ export default class SVGDocument {
         return this._populate();	
     }
 
+    public getDocText(){
+        return this._populate;
+    }
+
     /**
      * Get fqn path for file
      * @param targetFilePath Path to target file
