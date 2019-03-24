@@ -110,21 +110,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		 * Get URI for a virtual svg Document
 		 */
 		var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";//encodeSVGLocation(uri, projectId);
-		var testing = "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif";
-	
-		let htmlContent2 = "<iframe height=\"180\" width=\"400\" src=\""+svgURI+"\">"+
-		"<img src=\"svgURI.png\" width=\"220\" height=\"220\" alt=\"svgUri\" />"+
-	 "</iframe>\"";
-		let htmlContent = "<!DOCTYPE html><html lang=\"de\"><body><img src= \"" + svgURI +"\" height=\"350\" width=\"300\"/></body></html>";
+		var svgDoc = await vscode.workspace.openTextDocument(svgURI);
+		let text = svgDoc.getText();
+		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><body><div id=\"__svg\"> "+text+"</div></body></html>";
 		const panel = vscode.window.createWebviewPanel(
-			'catCoding',
-			'Cat Coding',
+			'SVG-View',
+			'SVG-View',
 			vscode.ViewColumn.One,
 			{}
 		  );
-	
 		  // And set its HTML content
-		  panel.webview.html = htmlContent2;
+		  panel.webview.html = htmlforSVG;
 	});
 
 	//menu-command to get tac from .class
