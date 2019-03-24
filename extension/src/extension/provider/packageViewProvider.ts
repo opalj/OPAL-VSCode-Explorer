@@ -2,9 +2,6 @@ import * as vscode from 'vscode';
 import { Package } from "./package";
 
 const dirTree = require("directory-tree");
-const tree = dirTree("/some/path");
-
-
 
 export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 
@@ -12,12 +9,18 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 	readonly onDidChangeTreeData: vscode.Event<Package | undefined> = this._onDidChangeTreeData.event;
 	private _projectFolder : vscode.Uri;
 	private _treeRoot: Package;
-	private _tree: Package[];
 
 	constructor(projectFolder: vscode.Uri) {
 		this._projectFolder = projectFolder;
-		this._tree = [];
-		this._treeRoot = this.setPackageTree(this._projectFolder);
+		let rootRes = this.setPackageTree(this._projectFolder.fsPath);
+		if(rootRes){
+			this._treeRoot = rootRes;
+		} else {
+			this._treeRoot = new Package(<any>projectFolder.fsPath.split("/").reverse().pop(), 
+											vscode.TreeItemCollapsibleState.Collapsed, 
+											projectFolder.fsPath);
+		}
+		
 		
 	}
 
@@ -44,56 +47,27 @@ export class PackageViewProvider implements vscode.TreeDataProvider<Package> {
 
 	}
 
-	public setPackageTree(root : vscode.Uri)  : Package {
-		var paths: string[];
-		paths = [];
-
-		/**
-		var settings = {
-			root: this._projectFolder.fsPath,
-			entryType: 'directory'
-		};
-		function pushPaths(fileInfo : any){
-			paths.push(
-				<string> fileInfo.fullPath
-			);
-			vscode.window.showInformationMessage(<string> fileInfo.fullPath);
-		}
-
-		function callback(err : any, res : any) {
-			if(err){
-				console.log(err);
-			} else {
-				console.log("Recursive Search successfull");
-			}
-		}
-
-		
-		readdirp(settings, pushPaths, callback);
-		 */
+	public setPackageTree(root : string)  : Package | undefined {
 		 
-		const tree = dirTree(root.fsPath, {normalizePath:true});
-		console.log(tree);
-		/**
-		for(let i = 0; i < paths.length; i++){
-			let relPath : string;
-				relPath = paths[i];
-			let name = <any> (relPath.split("/").reverse().pop);
-			this._tree[i] = new Package(name, vscode.TreeItemCollapsibleState.Collapsed, relPath);
-		}
+		const tree = dirTree(root, {normalizePath:true});
+		var subPackages: Package[];
+		subPackages = [];
 
-		for(let i = 0; i < this._tree.length; i++){
-			let subPackages: Package[];
-			subPackages = [];
-			for(let j = 0; j < this._tree.length; j++){
-				if(!(i === j) && this._tree[j].getPath().includes(this._tree[i].getPath())){
-					if(this._tree[j].getPath().replace(this._tree[j].getPath(), "").split("/").length === 1){
-						subPackages.push(this._tree[j]);
+		if(tree.type === "directory"){
+			for(let i = 0; i < tree.children.length; i++){
+				if(tree.children[i].type === "directory"){
+					let resTmp = this.setPackageTree(tree.children[i].path);
+					if(resTmp){
+						subPackages.push(resTmp);
 					}
+					
 				}
 			}
-			this._tree[i].setChildren(subPackages);
-		} */
-		return this._tree[0];
+			let res : Package;
+				res = new Package(tree.name, vscode.TreeItemCollapsibleState.Collapsed, tree.path);
+				res.setChildren(subPackages);
+				vscode.window.showInformationMessage('Verarbeitet: ' + res.getName());
+				return res;
+		} 		
 	}
 }
