@@ -7,6 +7,7 @@ import BCProvider, { encodeBCLocation } from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
+import { PackageViewProvider } from './extension/provider/packageViewProvider';
 
 
 const isReachable = require('is-reachable');
@@ -152,6 +153,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
 		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
+
+	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
+	vscode.window.registerTreeDataProvider('package-explorer', pVP);
 	
 	context.subscriptions.push(menuTacCommand, menuBCCommand, menuJarCommand, providerRegistrations);
 }
