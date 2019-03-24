@@ -92,7 +92,7 @@
 		"views": {
 			"opal-explorer": [
 				{
-					"id": "java-explorer",
+					"id": "package-explorer",
 					"name": "Package Explorer"
 				}
 			]
