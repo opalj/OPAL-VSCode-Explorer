@@ -4,6 +4,7 @@ export class Package extends vscode.TreeItem {
 
 	private _path: string;
 	private _children: Package[];
+	private _parent: Package | undefined;
 
 	constructor(
 		public readonly label: string,
@@ -13,6 +14,7 @@ export class Package extends vscode.TreeItem {
 		super(label, collapsibleState);
 		this._children = [];
 		this._path = path;
+		this._parent = undefined;
 	}
 
 	/** 
@@ -35,6 +37,14 @@ export class Package extends vscode.TreeItem {
 
 	public setChildren(children : Package[]) {
 		this._children = children;
+	}
+
+	public getParent() : Package | undefined {
+		return this._parent;
+	}
+
+	public setParent(parent : Package) {
+		this._parent = parent;
 	}
 
 	hasSubPackages() : boolean {
