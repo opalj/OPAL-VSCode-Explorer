@@ -4,7 +4,6 @@
 import * as vscode from 'vscode';
 import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
 import BCProvider, { encodeBCLocation }from './extension/provider/bc.provider';
-import { decodeBCLocation } from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
