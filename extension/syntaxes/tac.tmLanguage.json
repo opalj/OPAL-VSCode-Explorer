@@ -44,8 +44,13 @@
 				},
 				{
 					"name": "comment.block",
-					"match": "/\\* PARAMETERS:(\\s|\\.|\\w|.)*|param[0-9]*: .*|\\*/"
+					"match": "/\\* PARAMETERS:(\\s|\\.|\\w|.)*|\\*/"
+				},
+				{
+					"name": "comment.block.documentation",
+					"match": "param[0-9]*: .*"
 				}
+
 			]
 		},
 		"string": {
@@ -56,7 +61,7 @@
 				},
 				{
 					"name": "string.jade",
-					"match": "\\d:/\\*pc=\\d+:\\*/"  
+					"match": "(\\d)*:/\\*pc=\\d+:\\*/"  
 				}
 			]
 		}

@@ -46,6 +46,24 @@
 			}
 		},
 		{
+			"name": "tac commentblock",
+			"scope": [
+				"comment.block"
+			],
+			"settings": {
+				"foreground": "#b0b30e"
+			}
+		},
+		{
+			"name": "tac comment block docu",
+			"scope": [
+				"comment.block.documentation"
+			],
+			"settings": {
+				"foreground": "#1891d8"
+			}
+		},
+		{
 			"name":  "keyword",
 			"scope": [
 				"storage.type",
