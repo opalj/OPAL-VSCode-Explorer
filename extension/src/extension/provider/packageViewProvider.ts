@@ -1,22 +1,22 @@
 import * as vscode from 'vscode';
-import { opalNode } from "./opalNode";
+import { OpalNode } from "./OpalNode";
 
 const dirTree = require("directory-tree");
 
-export class PackageViewProvider implements vscode.TreeDataProvider<opalNode> {
+export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 
-	private _onDidChangeTreeData: vscode.EventEmitter<opalNode | undefined> = new vscode.EventEmitter<opalNode | undefined>();
-	readonly onDidChangeTreeData: vscode.Event<opalNode | undefined> = this._onDidChangeTreeData.event;
+	private _onDidChangeTreeData: vscode.EventEmitter<OpalNode | undefined> = new vscode.EventEmitter<OpalNode | undefined>();
+	readonly onDidChangeTreeData: vscode.Event<OpalNode | undefined> = this._onDidChangeTreeData.event;
 	private _projectFolder : vscode.Uri;
-	private _treeRoot: opalNode;
+	private _treeRoot: OpalNode;
 
 	constructor(projectFolder: vscode.Uri) {
 		this._projectFolder = projectFolder;
-		let rootRes = this.setopalNodeTree(this._projectFolder.fsPath);
+		let rootRes = this.setOpalNodeTree(this._projectFolder.fsPath);
 		if(rootRes){
 			this._treeRoot = rootRes;
 		} else {
-			this._treeRoot = new opalNode(<any>projectFolder.fsPath.split("/").reverse().pop(), 
+			this._treeRoot = new OpalNode(<any>projectFolder.fsPath.split("/").reverse().pop(), 
 											vscode.TreeItemCollapsibleState.Collapsed, 
 											projectFolder.fsPath);
 		}
@@ -26,58 +26,60 @@ export class PackageViewProvider implements vscode.TreeDataProvider<opalNode> {
 		this._onDidChangeTreeData.fire();
 	}
 
-	public getTreeItem(p: opalNode): vscode.TreeItem | Thenable<vscode.TreeItem>{
+	public getTreeItem(p: OpalNode): vscode.TreeItem | Thenable<vscode.TreeItem>{
 		return p;
 	}
 
-	public getChildren(p?: opalNode): vscode.ProviderResult<opalNode[]> {
-		console.log(p);
+	public getChildren(p?: OpalNode): vscode.ProviderResult<OpalNode[]> {
 		if(p){
-			if (p.hasSubopalNodes()) {
+			if (p.hasSubOpalNodes()) {
 				return Promise.resolve(p.getChildren());
 			} else {
 				return Promise.resolve([]);
-				vscode.window.showInformationMessage('Kein SubopalNode enthalten!');
+				vscode.window.showInformationMessage('Kein SubOpalNode enthalten!');
 			}
 		} else {
-			let p = this.setopalNodeTree(this._projectFolder.fsPath);
+			let p = this.setOpalNodeTree(this._projectFolder.fsPath);
 			if(p){
 				return Promise.resolve(p.getChildren());
 			} else {
 				return Promise.resolve([]);
 			}
-			
 		}
 	}
 
-	public getParent(p: opalNode): vscode.ProviderResult<opalNode>{
+	public getParent(p: OpalNode): vscode.ProviderResult<OpalNode>{
 		return new Promise(p.getParent);
 	}
 
-	public setopalNodeTree(root : string)  : opalNode | undefined {
+	public setOpalNodeTree(root : string)  : OpalNode | undefined {
 		 
 		const tree = dirTree(root, {normalizePath:true});
-		console.log(tree);
-		var subopalNodes = [];
-		subopalNodes = [];
+		var subOpalNodes = [];
+		subOpalNodes = [];
 		if(tree.type === "directory"){
 			for(let i = 0; i < tree.children.length; i++){
 				
 				if(tree.children[i].type === "directory"){
-					let resTmp = this.setopalNodeTree(tree.children[i].path);
+					let resTmp = this.setOpalNodeTree(tree.children[i].path);
 					if(resTmp){
-						subopalNodes.push(resTmp);
+						subOpalNodes.push(resTmp);
 					}
-				}else if(tree.children[i].type === "file" && (tree.children[i].extension === ".class" ||
-																tree.children[i].name === ".classpath")) {
-					let resTmp = new opalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
-					subopalNodes.push(resTmp);
+				}else if(tree.children[i].type === "file"){
+					if(tree.children[i].extension === ".class"){
+						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
+					subOpalNodes.push(resTmp);
+					} else if(tree.children[i].name === ".classpath"){
+						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.None, tree.children[i].path);
+					subOpalNodes.push(resTmp);
+					}
 				}
+
 			}
 
-			let res : opalNode;
-				res = new opalNode(tree.name, vscode.TreeItemCollapsibleState.Collapsed, tree.path);
-				res.setChildren(subopalNodes);
+			let res : OpalNode;
+				res = new OpalNode(tree.name, vscode.TreeItemCollapsibleState.Collapsed, tree.path);
+				res.setChildren(subOpalNodes);
 				for(let i = 0; i < res.getChildren().length; i++){
 					res.getChildren()[i].setParent(res);
 				}
