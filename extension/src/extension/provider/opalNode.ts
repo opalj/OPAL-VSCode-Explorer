@@ -1,11 +1,21 @@
 import * as vscode from 'vscode';
 
+/**
+ * Class representing OpalNode
+ */
 export class OpalNode extends vscode.TreeItem {
 
 	private _path: string;
 	private _children: OpalNode[];
 	private _parent: OpalNode | undefined;
 
+	/**
+	 * Constructor for OpalNode
+	 * @param label name label
+	 * @param collapsibleState	collapsibleState, Collapsed, Not or None 
+	 * @param path data path
+	 * @param command on-click command
+	 */
 	constructor(
 		public readonly label: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -16,6 +26,10 @@ export class OpalNode extends vscode.TreeItem {
 		this._children = [];
 		this._path = path;
 		this._parent = undefined;
+		/**
+		 * Setting contextValues and static Subnodes in
+		 * Depencency of data type
+		 */
 		if(label.includes("class")){
 			this.contextValue = "opalNodeClass";
 			this.setChildren([new OpalNode("TAC", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
@@ -47,10 +61,17 @@ export class OpalNode extends vscode.TreeItem {
 		dark: "assets/expicon.svg"
 	};*/
 
+	/**
+	 * get name/label node
+	 */
 	public getName() : string{
 		return this.label;
 	}
 
+	/**
+	 * set name/label of node
+	 * @param name new name/label
+	 */
 	public setName(name : string) {
 		super.label = name;
 		if(this.label.includes("class") || this.label.includes(".classpath")){
@@ -60,32 +81,52 @@ export class OpalNode extends vscode.TreeItem {
 		}
 	}
 
+	/**
+	 * method to get path of node data
+	 */
 	public getPath() : string{
 		return this._path;
 	}
 
+	/**
+	 * method to get children nodes
+	 */
 	public getChildren() : OpalNode[] {
 		return this._children;
 	}
 
+	/**
+	 * method to set children nodes
+	 * @param children children nodes
+	 */
 	public setChildren(children : OpalNode[]) {
 		this._children = children;
 	}
 
+	/**
+	 * method to get parent node
+	 */
 	public getParent() : OpalNode | undefined {
 		return this._parent;
 	}
 
+	/**
+	 * method to set parent node
+	 * @param parent parent node
+	 */
 	public setParent(parent : OpalNode) {
 		this._parent = parent;
 	}
 
+	/**
+	 * method to get status of children nodes:
+	 * true, if existent; false, if not
+	 */
 	hasSubOpalNodes() : boolean {
 		if(this._children.length === 0){
 			return false;
 		} else {
 			return true;
 		}
-		
 	}
 }
