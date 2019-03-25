@@ -47,7 +47,7 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
     /**
      * Load anything from OPAL
-     * This route can be used for anny command specified in OpalCommand Message (see model.scala)
+     * This route can be used for any command specified in OpalCommand Message (see model.scala)
      */
     post("/project/loadAny") {
         var opalCom = parsedBody.extract[OpalCommand]
