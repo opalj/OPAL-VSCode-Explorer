@@ -32,8 +32,6 @@ export class OpalNode extends vscode.TreeItem {
 												arguments: [vscode.Uri.parse(path)]
 											}
 			)]);
-		} else if(label.includes("classpath")){
-			this.contextValue = "opalNodeClasspath";
 		} else if(label=== "TAC"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "BC"){
