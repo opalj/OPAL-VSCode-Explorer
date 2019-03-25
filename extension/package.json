@@ -121,6 +121,12 @@
 					"when": "!explorerResourceIsFolder && resourceLangId == jar",
 					"group": "2_workspace"
 				}
+			],
+			"view/item/context": [
+				{
+					"command": "extension.menuTac",
+					"when": "viewItem == opalNodeClass"
+				}
 			]
 		},
 		"grammars": [
