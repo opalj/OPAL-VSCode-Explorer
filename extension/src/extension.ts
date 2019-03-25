@@ -27,7 +27,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * Get the config
 	 */
-	var config = await OpalConfig.getConfig();
+	var configClass = new OpalConfig();
+	await configClass.loadConfig();
+	var config = configClass.getConfig();
 
 	/**
 	 * Get the Providers and register them to there sheme
