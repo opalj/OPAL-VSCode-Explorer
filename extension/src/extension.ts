@@ -154,6 +154,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
 
+	/**
+	 * Setting up and displaying Opal Tree View
+	 */
 	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
 	vscode.window.showInformationMessage("Package Explorer is loading...");
 	vscode.window.registerTreeDataProvider('package-explorer', pVP);
