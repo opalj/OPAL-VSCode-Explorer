@@ -9,7 +9,8 @@ export class OpalNode extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		path: string
+		path: string,
+		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
 		this._children = [];
@@ -17,8 +18,20 @@ export class OpalNode extends vscode.TreeItem {
 		this._parent = undefined;
 		if(label.includes("class")){
 			this.contextValue = "opalNodeClass";
-			this.setChildren([new OpalNode("TAC", vscode.TreeItemCollapsibleState.None, path.concat("/TAC")),
-			new OpalNode("BC", vscode.TreeItemCollapsibleState.None, path.concat("/BC"))]);
+			this.setChildren([new OpalNode("TAC", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
+											{
+												command: 'extension.menuTac',
+												title: '',
+												arguments: [vscode.Uri.parse(path)]
+											}
+			),
+			new OpalNode("BC", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
+											{
+												command: 'extension.menuBC',
+												title: '',
+												arguments: [vscode.Uri.parse(path)]
+											}
+			)]);
 		} else if(label.includes("classpath")){
 			this.contextValue = "opalNodeClasspath";
 		} else if(label=== "TAC"){
