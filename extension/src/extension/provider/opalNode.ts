@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 
-export class Package extends vscode.TreeItem {
+export class opalNode extends vscode.TreeItem {
 
 	private _path: string;
-	private _children: Package[];
-	private _parent: Package | undefined;
+	private _children: opalNode[];
+	private _parent: opalNode | undefined;
 
 	constructor(
 		public readonly label: string,
@@ -27,27 +27,31 @@ export class Package extends vscode.TreeItem {
 		return this.label;
 	}
 
+	public setName(name : string) {
+		super.label = name;
+	}
+
 	public getPath() : string{
 		return this._path;
 	}
 
-	public getChildren() : Package[] {
+	public getChildren() : opalNode[] {
 		return this._children;
 	}
 
-	public setChildren(children : Package[]) {
+	public setChildren(children : opalNode[]) {
 		this._children = children;
 	}
 
-	public getParent() : Package | undefined {
+	public getParent() : opalNode | undefined {
 		return this._parent;
 	}
 
-	public setParent(parent : Package) {
+	public setParent(parent : opalNode) {
 		this._parent = parent;
 	}
 
-	hasSubPackages() : boolean {
+	hasSubopalNodes() : boolean {
 		if(this._children.length === 0){
 			return false;
 		} else {
@@ -55,5 +59,5 @@ export class Package extends vscode.TreeItem {
 		}
 	}
 
-	contextValue = 'package';
+	contextValue = 'opalNode';
 }
