@@ -64,6 +64,14 @@
 					"match": "(\\d)*:/\\*pc=\\d+:\\*/"  
 				}
 			]
+		},
+		"support": {
+			"patterns": [
+				{
+					"name": "support.class",
+					"match": "<init>"  
+				}
+			]
 		}
 	},
 
