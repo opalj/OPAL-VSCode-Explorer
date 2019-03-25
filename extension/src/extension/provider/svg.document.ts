@@ -30,7 +30,7 @@ export default class SVGDocument {
     }
 
     public getDocText(){
-        return this._populate;
+        return this._populate();
     }
 
     /**
@@ -41,7 +41,7 @@ export default class SVGDocument {
         return targetsFilePath.replace(this._opalConfig.opal.targetsDir, "");
     }
 
-    public async _populate() {
+    public async _populate(){
         //Extract Filename from URI
 		var fileName:String = npmPath.parse(this._target.fsPath).base;
 		//Set BC Service up
@@ -53,11 +53,13 @@ export default class SVGDocument {
             vscode.window.showInformationMessage('SVG for Class ' + fileName + ' requested from Server ..... ');
             
             var fqn = await this.getFQN(this._target.fsPath);
+            console.log('Target' +this._target);
             var getSVGParams = {
                 "fqn": fqn,
                 "className":fileName
             };
-			var svg = await this._svgService.loadAnyCommand("getBC", this._projectId, getSVGParams);
+            console.log('Fqn '+fqn);
+            var svg = await this._svgService.loadAnyCommand("getSVG", this._projectId, getSVGParams);
             return svg;
         } else {
             return "";

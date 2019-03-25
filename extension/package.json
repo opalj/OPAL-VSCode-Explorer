@@ -83,6 +83,16 @@
 					"jar",
 					"Jar"
 				]
+			},
+			{
+				"id": "svg",
+				"extensions": [
+					".svg"
+				],
+				"aliases": [
+					"svg",
+					"Svg"
+				]
 			}
 		],
 		"menus": {
@@ -107,6 +117,11 @@
 				{
 					"command": "extension.menuJar",
 					"when": "!explorerResourceIsFolder && resourceLangId == jar",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuSvg",
+					"when": "!explorerResourceIsFolder && resourceLangId == svg",
 					"group": "2_workspace"
 				}
 			]

@@ -108,14 +108,18 @@ export async function activate(context: vscode.ExtensionContext) {
 		/**
 		 * Get URI for a virtual svg Document
 		 */
-		
+		console.log('hi '+uri);
 		//_commandService = new CommandService(config.server.url);
-		let params = decodeBCLocation(uri);
-		let document = new SVGDocument(uri, new vscode.EventEmitter<vscode.Uri>(), projectId, params[0], config);
-		//var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";//encodeSVGLocation(uri, projectId);
+		//let [target, projectId] = <[string, string]>JSON.parse(uri.query);
+		//let params: [vscode.Uri, string] = [vscode.Uri.parse(target), projectId];
+		
+		let document = new SVGDocument(uri, new vscode.EventEmitter<vscode.Uri>(), projectId, uri, config);
+
+		//var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";
 		//var svgDoc = await vscode.workspace.openTextDocument(svgURI);
-		let text = document.getDocText();
-		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><body><div id=\"__svg\"> "+text+"</div></body></html>";
+
+		var text = await document.getDocText();
+		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><head></head><body><div id=\"__svg\"> "+text+"</div></body></html>";
 		const panel = vscode.window.createWebviewPanel(
 			'SVG-View',
 			'SVG-View',
@@ -151,7 +155,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		 * Get URI for a virtual BC Document
 		 */
 		uri = encodeBCLocation(uri, projectId);
-		
 		/**
 		 * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
 		 */
