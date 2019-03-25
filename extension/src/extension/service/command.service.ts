@@ -1,4 +1,3 @@
-import OpalConfig from "../opal.config";
 var request = require('request-promise-native');
 
 
@@ -18,13 +17,10 @@ export class CommandService {
         "json": true
     };
 
-
     protected serverUrl = "";
-    protected _config:any = "";
 
     constructor(public _url: string){
         this.serverUrl = _url;
-        this._config = OpalConfig.getConfig();
     }
 
     /**
@@ -77,7 +73,18 @@ export class CommandService {
      * Get fqn path for file
      * @param targetFilePath Path to target file
      */
-    async getFQN(targetsFilePath : string) {
-        return targetsFilePath.replace(this._config.opal.targetsDir, "");
+    getFQN(targetsFilePath : string, targetsDir : string, fileName : string) : string {
+        /**
+         * replace directory seperators with .
+         */
+        targetsFilePath = targetsFilePath.replace(/\\/g, ".");
+        targetsFilePath = targetsFilePath.replace(/\//g, ".");
+        
+        /**
+         * Remove path to Project
+         */
+        targetsDir = targetsDir.replace(/\\/g, ".");
+        targetsDir = targetsDir.replace(/\//g, ".");
+        return targetsFilePath.replace(targetsDir, "").replace(fileName, "").replace("\\", "").replace("/", "");
     }
 }
