@@ -73,18 +73,34 @@ export class CommandService {
      * Get fqn path for file
      * @param targetFilePath Path to target file
      */
-    getFQN(targetsFilePath : string, targetsDir : string, fileName : string) : string {
-        /**
-         * replace directory seperators with .
-         */
-        targetsFilePath = targetsFilePath.replace(/\\/g, ".");
-        targetsFilePath = targetsFilePath.replace(/\//g, ".");
-        
-        /**
-         * Remove path to Project
-         */
-        targetsDir = targetsDir.replace(/\\/g, ".");
-        targetsDir = targetsDir.replace(/\//g, ".");
-        return targetsFilePath.replace(targetsDir, "").replace(fileName, "").replace("\\", "").replace("/", "");
+    getFQN(targetFilePath : string, targetsDir : string, fileName : string) : string {
+        let targetFileParts = this.getPathParts(targetFilePath);
+        let targetsDirParts = this.getPathParts(targetsDir);
+
+        console.log(targetFileParts);
+        console.log(targetsDirParts);
+
+        let path = "";
+        if (targetFileParts !== null && targetsDirParts !== null) {
+            targetFileParts = targetFileParts.filter(function(filePart) {
+                return targetsDirParts.indexOf(filePart) < 0 && targetsDirParts.indexOf(filePart.toLocaleUpperCase()) < 0;
+            });
+            path = targetFileParts.join(".");
+        }
+
+        return path.replace(".class", "");
+    }
+
+    getPathParts(path : string) {
+        const regex = /[a-zA-Z]+/gm;
+        let match;
+        let result = [];
+        while ((match = regex.exec(path)) !== null) {
+            if (match.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            result.push(match[0]);
+        }
+        return result;
     }
 }
