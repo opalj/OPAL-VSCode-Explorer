@@ -102,11 +102,9 @@ export class LinkParser {
     public parseJumps() {
         this.analyzeLine();
         let lastMethodStart: number = 0;
-        console.log("I started Parsing!");
         for(let i = this.tacLines.length-1; i >= 0; i--){
             switch (this.lineTypes[i]){
                 case LineType.Caller:
-                    console.log("I found a caller");
                     let tmp = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
                     for(let j = tmp.length-1; j > 0; j--){
                         let originRange : vscode.Range;
@@ -119,10 +117,7 @@ export class LinkParser {
                         }
                         let targetUri : vscode.Uri;
                         let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
-                        console.log(targetLine);
-                        //targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
                         targetUri = this.docPath.with({ fragment : String(targetLine) });
-                        console.log("I am about to push a link"+ originRange +targetUri);
                         this.documentLinkComposer(originRange, targetUri);
                     }
                     break;
@@ -161,7 +156,6 @@ export class LinkParser {
     }
 
     private documentLinkComposer(originRange : vscode.Range, targetUri : vscode.Uri){
-        console.log("I pushed a link!");
         this.links.push(new vscode.DocumentLink(originRange, targetUri));
     }
 
@@ -205,7 +199,6 @@ export class LinkParser {
     }
 
     public matchCaller(tacLine : string) {
-        console.log("I searched for a caller!");
         const regex = /\/\/(.*?)→/gm;
         let res = regex.exec(tacLine);
         let tmp : string[];
@@ -228,7 +221,6 @@ export class LinkParser {
         const regex = /\b(\d):/gm;
         let m = regex.exec(tacLine);
         if (m !== null) {
-            console.log("Ich bin der LineIndex"+ m[1]);
             return m[1].replace(new RegExp(':', 'g'), "");
         }
     }
