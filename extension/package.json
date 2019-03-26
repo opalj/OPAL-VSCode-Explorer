@@ -19,6 +19,63 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration":[
+			{
+				"type": "object",
+				"title": "OPAL VSCode Explorer",
+				"properties": {
+					"OPAL.server.url":{
+						"type":[
+							"string"
+						],
+						"default": "http://localhost:8080",
+						"description": "URL of the OPAL Server you want to connect."
+					},
+					"OPAL.server.jar":{
+						"type":[
+							"string"
+						],
+						"default":"",
+						"description": "Describes the path to the server jar."
+					},
+					"OPAL.server.jaroptions":{
+						"type":[
+							"string"
+						],
+						"default":"",
+						"description": "Describes jar options."
+					},
+					"OPAL.opal.targetDir":{
+						"type":[
+							"string"
+						],
+						"default":"",
+						"description": "This option sets the project directory."
+					},
+					"OPAL.opal.librariesDir":{
+						"type":[
+							"string"
+						],
+						"default":"",
+						"description": "This option sets the project library directory."
+					},
+					"OPAL.opal.config":{
+						"type":[
+							"object"
+						],
+						"default":{"key":"value"},
+						"description": "Project configuration."
+					},
+					"OPAL.extension.jarExtractionFolder":{
+						"type":[
+							"string"
+						],
+						"default":"./.vscode",
+						"description": "This option sets the folder to which the project jar will be unpacked."
+					}
+				}
+			}
+		],
 		"commands": [
 			{
 				"command": "extension.tac",
