@@ -122,7 +122,7 @@ export class LinkParser {
                     }
                     break;
                 case LineType.GOTO:
-                    let gArray = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
+                    let gArray = <RegExpExecArray> this.matchGOTO(this.tacLines[i]);
                     let gOriginRange : vscode.Range;
                     gOriginRange = new vscode.Range(new vscode.Position(i, gArray[0].indexOf(gArray[1])),
                                                      new vscode.Position(i, gArray[0].indexOf(gArray[1])+gArray[1].length));
