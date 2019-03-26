@@ -76,7 +76,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var methodName = opalCommand.params.get("methodName").get;
             var descriptor = opalCommand.params.get("descriptor").get;
             var method = project.allClassFiles.find(_.fqn  == fqn).get.findMethod(methodName,MethodDescriptor(descriptor)).get;
-            result = method.toString();
+            result = method.body.toString();
         }
         result
     }
