@@ -38,10 +38,10 @@ export default class TACProvider implements vscode.TextDocumentContentProvider, 
      * @param token cancellation token
      */
     provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
-        const doc = this._documents.get(document.uri.toString());
-		if (doc) {
-			return doc.links;
-		}
+        let doc : TACDocument;
+        doc = <any> this._documents.get(document.uri.toString());
+        doc._parseDoc(<any>doc.value);
+        return Promise.resolve(doc.links);
     }
 }
 

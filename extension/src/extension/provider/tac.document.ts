@@ -67,26 +67,6 @@ export default class TACDocument {
     }
 
     public _parseDoc(tac : string) {
-        /* Old? 
-        let tacLines = tac.split("\n");
-        console.log(tacLines);
-        for (let i=tacLines.length-1; i >= 0; i--) {
-
-            let tacLine = tacLines[i];
-            let lineIndex = tacLine.match("\s\d:");
-            console.log(lineIndex);
-            if (lineIndex !== null && lineIndex.length === 1) {
-                console.log(lineIndex);                
-            }
-
-            let callers = tacLine.match("\/\/ \d(, \d)* →");
-            console.log(callers);
-            if (callers !== null) {
-                callers.forEach(caller => {
-
-                });
-            }
-        }*/
         const parser = new LinkParser(this._uri, tac);
         parser.parseJumps();
         this._links = parser.getLinks();
