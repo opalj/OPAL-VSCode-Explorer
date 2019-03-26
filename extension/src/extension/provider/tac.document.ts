@@ -129,7 +129,8 @@ export class LinkParser {
 
                     let gTargetUri : vscode.Uri;
                     let gTargetLine = <number> this.getTargetLine(i, Number(gArray[1].replace("goto ", "")));     
-                    gTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(gTargetLine)+":0"));
+                    //gTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(gTargetLine)+":0"));
+                    gTargetUri = this.docPath.with({ fragment : String(gTargetLine) });
 
                     this.documentLinkComposer(gOriginRange, gTargetUri);
                     break;
@@ -142,7 +143,8 @@ export class LinkParser {
                                                     new vscode.Position(i, 1));
 
                     let eTargetUri : vscode.Uri;
-                    eTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(lastMethodStart)+":0"));
+                    //eTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(lastMethodStart)+":0"));
+                    eTargetUri = this.docPath.with({ fragment : String(lastMethodStart) });
 
                     this.documentLinkComposer(eOriginRange, eTargetUri);
                     break;
