@@ -39,6 +39,13 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	}
 
 	/**
+	 * method for getting tree root item
+	 */
+	public getTreeRoot(): OpalNode {
+		return this._treeRoot;
+	}
+
+	/**
 	 * necessary method for getting tree item from constructs
 	 * @param p construct
 	 */
