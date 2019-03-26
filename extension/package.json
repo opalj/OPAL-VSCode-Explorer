@@ -104,6 +104,14 @@
 				}
 			]
 		},
+		"views": {
+			"opal-explorer": [
+				{
+					"id": "package-explorer",
+					"name": "Package Explorer"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
