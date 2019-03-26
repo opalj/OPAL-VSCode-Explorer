@@ -95,6 +95,23 @@
 				]
 			}
 		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "opal-explorer",
+					"title": "OPAL Explorer",
+					"icon": "assets/expicon.svg"
+				}
+			]
+		},
+		"views": {
+			"opal-explorer": [
+				{
+					"id": "package-explorer",
+					"name": "Package Explorer"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
@@ -149,6 +166,7 @@
 		"is-reachable": "^3.0.0",
 		"mocha": "*",
 		"request-promise-native": "^1.0.7",
+		"directory-tree": "^2.2.1",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
 		"vscode": "^1.1.29"
