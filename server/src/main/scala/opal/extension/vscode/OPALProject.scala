@@ -68,16 +68,22 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      **/
     def getAny(opalCommand : OpalCommand) : String = {
         var tacString = new StringBuilder();
-        val res = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">"+
+        var command = opalCommand.command;
+        var res = "";
+        command match{
+            case "getSVG" => res= "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">"+
             "<path d=\"M30,1h40l29,29v40l-29,29h-40l-29-29v-40z\" stroke=\"#000\" fill=\"none\"/>" +
             "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
             "<text x=\"50\" y=\"68\" font-size=\"48\" fill=\"#FFF\" text-anchor=\"middle\"><![CDATA[410]]></text>"+
           "</svg>";
+          case "getBC" => res = "svg";
+        }
+        
         res.mkString("");
     }
 }
 
-/**
+/*
  * This is a small implementation of the OPAL Logger.
  * This is necessary for providing the logs to the client (in a diffrent process)
  */
