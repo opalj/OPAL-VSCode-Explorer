@@ -63,7 +63,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res.mkString("");
     }
  
-    def getBC(opalCommand : OpalCommand) : String = {
+    def getBCForMethod(opalCommand : OpalCommand) : String = {
         var result = "";
         if (opalCommand.params.contains("fqn")) {
             result = "Missing fqn (fully qualified name)"
