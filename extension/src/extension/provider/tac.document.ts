@@ -86,14 +86,14 @@ export class LinkParser {
     private tacLines : string[];
     private lineTypes : LineType[]; 
     private docPath : vscode.Uri;
-    private hasMethods : boolean; 
+    //private hasMethods : boolean; 
 
     constructor(docPath : vscode.Uri, tac : string) {
         this.links = [];
         this.tacLines = tac.split("\n");
         this.lineTypes = [LineType.Irrelevant, this.tacLines.length];
         this.docPath = docPath;
-        this.hasMethods = false;
+        //this.hasMethods = false;
     }
 
     /**
@@ -174,10 +174,10 @@ export class LinkParser {
                 this.lineTypes[i] = LineType.GOTO;
             } else if (this.isMethodStart(this.tacLines[i])){
                 this.lineTypes[i] = LineType.MethodStart;
-                this.hasMethods = true;
+                //this.hasMethods = true;
             } else if (this.isMethodEnd(this.tacLines[i])){
                 this.lineTypes[i] = LineType.MethodEnd;
-                this.hasMethods = true;
+                //this.hasMethods = true;
             } else {
                 this.lineTypes[i] = LineType.Irrelevant;
             }

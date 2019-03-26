@@ -22,10 +22,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * Get the config
 	 */
-	var rootPath = vscode.workspace.rootPath;
-	var path: vscode.Uri = vscode.Uri.parse("file:"+rootPath+"/opal.config.json");
-	var document = await vscode.workspace.openTextDocument(path);
-	var config = JSON.parse(document.getText());
+	var configClass = new OpalConfig();
+	await configClass.loadConfig();
+	var config = configClass.getConfig();
 
 	/**
 	 * Get the current Project ID
