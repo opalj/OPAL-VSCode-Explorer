@@ -102,19 +102,21 @@ export class LinkParser {
     public parseJumps() {
         this.analyzeLine();
         let lastMethodStart: number = 0;
+        let start = 0;
+        let end = 0;
         for(let i = this.tacLines.length-1; i >= 0; i--){
             switch (this.lineTypes[i]){
                 case LineType.Caller:
                     let tmp = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
                     for(let j = 1; j < tmp.length; j++){
                         let originRange : vscode.Range;
-                        var start = this.tacLines[i].indexOf(tmp[j]);
+                        start = this.tacLines[i].indexOf(tmp[j]);
                         if (start < 0) { continue; } // // ⚡️ <uncaught exception ⇒ abnormal return>, ⚡️ java.io.IOException →
-                        var end = start + tmp[j].length;
+                        end = start + tmp[j].length;
                         originRange = new vscode.Range(new vscode.Position(i, start),
                                                          new vscode.Position(i, end));
                         let targetUri : vscode.Uri;
-                        let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
+                        let targetLine = <number> this.getTargetLineAbove(i, Number(tmp[j]));     
                         targetUri = this.docPath.with({ fragment : String(targetLine) });
                         this.documentLinkComposer(originRange, targetUri);
                     }
@@ -122,11 +124,16 @@ export class LinkParser {
                 case LineType.GOTO:
                     let gArray = <RegExpExecArray> this.matchGOTO(this.tacLines[i]);
                     let gOriginRange : vscode.Range;
-                    gOriginRange = new vscode.Range(new vscode.Position(i, gArray[0].indexOf(gArray[1])),
-                                                     new vscode.Position(i, gArray[0].indexOf(gArray[1])+gArray[1].length));
+                    
+                    start = this.tacLines[i].indexOf(gArray[0]);
+                    if (start < 0) { continue; }
+                    end = start + gArray[0].length;
+
+                    gOriginRange = new vscode.Range(new vscode.Position(i, start),
+                                                     new vscode.Position(i, end));
 
                     let gTargetUri : vscode.Uri;
-                    let gTargetLine = <number> this.getTargetLine(i, Number(gArray[1].replace("goto ", "")));     
+                    let gTargetLine = <number> this.getTargetLineGlobal(i, Number(gArray[1].replace("goto ", "")));     
                     //gTargetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(gTargetLine)+":0"));
                     gTargetUri = this.docPath.with({ fragment : String(gTargetLine) });
 
@@ -239,23 +246,23 @@ export class LinkParser {
         }
     }
 
-    private getTargetLine(originLine : number, targetID : number){
-        if(this.hasMethods){
-            for(let i = this.tacLines.length-1; i >= 0; i--){
-                if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
-                    if(this.sameMethod(i, originLine)){
-                        return i+1;
-                    }
-                 }
-            }
-        } else {
-            for(let i = originLine-1; i >= 0; i--){
+    private getTargetLineAbove(originLine : number, targetID : number){
+        for(let i = originLine-1; i >= 0; i--){
                 if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
                     if(this.sameMethod(i, originLine)){
                         return i+1;
                     }
                 }
             }
+    }
+
+    private getTargetLineGlobal(originLine : number, targetID : number) {
+        for(let i = this.tacLines.length-1; i >= 0; i--){
+            if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
+                if(this.sameMethod(i, originLine)){
+                    return i+1;
+                }
+             }
         }
     }
 
