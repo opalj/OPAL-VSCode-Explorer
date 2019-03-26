@@ -8,6 +8,8 @@ import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
 import SVGDocument from './extension/provider/svg.document';
+import { PackageViewProvider } from './extension/provider/packageViewProvider';
+
 
 
 const isReachable = require('is-reachable');
@@ -182,6 +184,14 @@ export async function activate(context: vscode.ExtensionContext) {
 		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
 		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
+
+	/**
+	 * Setting up and displaying Opal Tree View
+	 */
+	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
+	vscode.window.showInformationMessage("Package Explorer is loading...");
+	vscode.window.registerTreeDataProvider('package-explorer', pVP);
+	vscode.window.showInformationMessage("Package Explorer is ready.");
 	
 	context.subscriptions.push(menuTacCommand, menuBCCommand, menuSvgCommand, menuJarCommand, providerRegistrations);
 }
