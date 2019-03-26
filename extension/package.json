@@ -95,6 +95,15 @@
 				]
 			}
 		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "opal-explorer",
+					"title": "OPAL Explorer",
+					"icon": "assets/expicon.svg"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
