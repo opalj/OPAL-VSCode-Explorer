@@ -86,12 +86,14 @@ export class LinkParser {
     private tacLines : string[];
     private lineTypes : LineType[]; 
     private docPath : vscode.Uri;
+    private hasMethods : boolean; 
 
     constructor(docPath : vscode.Uri, tac : string) {
         this.links = [];
         this.tacLines = tac.split("\n");
         this.lineTypes = [LineType.Irrelevant, this.tacLines.length];
         this.docPath = docPath;
+        this.hasMethods = false;
     }
 
     /**
@@ -171,8 +173,10 @@ export class LinkParser {
                 this.lineTypes[i] = LineType.GOTO;
             } else if (this.isMethodStart(this.tacLines[i])){
                 this.lineTypes[i] = LineType.MethodStart;
+                this.hasMethods = true;
             } else if (this.isMethodEnd(this.tacLines[i])){
                 this.lineTypes[i] = LineType.MethodEnd;
+                this.hasMethods = true;
             } else {
                 this.lineTypes[i] = LineType.Irrelevant;
             }
@@ -244,12 +248,22 @@ export class LinkParser {
     }
 
     private getTargetLine(originLine : number, targetID : number){
-        for(let i = originLine-1; i >= 0; i--){
-            if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
-                if(this.sameMethod(i, originLine)){
-                    return i+1;
+        if(this.hasMethods){
+            for(let i = this.tacLines.length-1; i >= 0; i--){
+                if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
+                    if(this.sameMethod(i, originLine)){
+                        return i+1;
+                    }
+                 }
+            }
+        } else {
+            for(let i = originLine-1; i >= 0; i--){
+                if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
+                    if(this.sameMethod(i, originLine)){
+                        return i+1;
+                    }
                 }
-             }
+            }
         }
     }
 
