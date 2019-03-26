@@ -106,15 +106,13 @@ export class LinkParser {
             switch (this.lineTypes[i]){
                 case LineType.Caller:
                     let tmp = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
-                    for(let j = tmp.length-1; j > 0; j--){
+                    for(let j = 1; j < tmp.length; j++){
                         let originRange : vscode.Range;
-                        if (j === 1){
-                            originRange = new vscode.Range(new vscode.Position(i, 9),
-                                                         new vscode.Position(i, 10));
-                        } else {
-                            originRange = new vscode.Range(new vscode.Position(i, 9+(3*j)),
-                            new vscode.Position(i, 10+(3*j))); 
-                        }
+                        var start = this.tacLines[i].indexOf(tmp[j]);
+                        if (start < 0) { continue; } // // ⚡️ <uncaught exception ⇒ abnormal return>, ⚡️ java.io.IOException →
+                        var end = start + tmp[j].length;
+                        originRange = new vscode.Range(new vscode.Position(i, start),
+                                                         new vscode.Position(i, end));
                         let targetUri : vscode.Uri;
                         let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
                         targetUri = this.docPath.with({ fragment : String(targetLine) });
@@ -220,7 +218,7 @@ export class LinkParser {
     }
 
     public matchLineIndex(tacLine : string) {
-        const regex = /\b(\d):/gm;
+        const regex = /\b(\d+):/gm;
         let m = regex.exec(tacLine);
         if (m !== null) {
             return m[1].replace(new RegExp(':', 'g'), "");
