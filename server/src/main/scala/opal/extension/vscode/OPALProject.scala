@@ -62,6 +62,24 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         val res = tacArray.addString(tacString);
         res.mkString("");
     }
+ 
+    def getBC(opalCommand : OpalCommand) : String = {
+        var result = "";
+        if (opalCommand.params.contains("fqn")) {
+            result = "Missing fqn (fully qualified name)"
+        } else if (opalCommand.params.contains("methodName")) {
+            result = "Missing method name"
+        } else if (opalCommand.params.contains("descriptor")) {
+            result = "Missing Method descriptor"
+        } else {
+            var fqn = opalCommand.params.get("fqn").get;
+            var methodName = opalCommand.params.get("methodName").get;
+            var descriptor = opalCommand.params.get("descriptor").get;
+            var method = project.allClassFiles.find(_.fqn  == fqn).get.findMethod(methodName,MethodDescriptor(descriptor)).get;
+            result = method.toString();
+        }
+        result
+    }
 
      /**
      * Get the Any
