@@ -18,6 +18,9 @@
 	"activationEvents": [
 		"onCommand:extension.tac",
 		"onCommand:extension.menuTac",
+		"onCommand:extension.menuJar",
+		"onCommand:extension.menuBC",
+		"onCommand:extension.menuSvg",
 		"workspaceContains:**/opal.config.json"
 	],
 	"main": "./out/extension.js",
@@ -30,6 +33,18 @@
 			{
 				"command": "extension.menuTac",
 				"title": "TAC from file"
+			},
+			{
+				"command": "extension.menuJar",
+				"title": "Extract Jar..."
+			},
+			{
+				"command": "extension.menuBC",
+				"title": "BC from file"
+			},
+			{
+				"command": "extension.menuSvg",
+				"title": "SVG from file"
 			},
 			{
 				"command": "editor.printReferences",
@@ -64,8 +79,45 @@
 					"class",
 					"Class"
 				]
+			},
+			{
+				"id": "jar",
+				"extensions": [
+					".jar"
+				],
+				"aliases": [
+					"jar",
+					"Jar"
+				]
+			},
+			{
+				"id": "svg",
+				"extensions": [
+					".svg"
+				],
+				"aliases": [
+					"svg",
+					"Svg"
+				]
 			}
 		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "opal-explorer",
+					"title": "OPAL Explorer",
+					"icon": "assets/expicon.svg"
+				}
+			]
+		},
+		"views": {
+			"opal-explorer": [
+				{
+					"id": "package-explorer",
+					"name": "Package Explorer"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
@@ -77,7 +129,22 @@
 			"explorer/context": [
 				{
 					"command": "extension.menuTac",
-					"when": "!explorerResourceIsFolder && resourceLangId =~ /(java|class)/",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuBC",
+					"when": "!explorerResourceIsFolder && resourceLangId == class",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuJar",
+					"when": "!explorerResourceIsFolder && resourceLangId == jar",
+					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuSvg",
+					"when": "!explorerResourceIsFolder && resourceLangId == svg",
 					"group": "2_workspace"
 				}
 			]
@@ -105,6 +172,7 @@
 		"is-reachable": "^3.0.0",
 		"mocha": "*",
 		"request-promise-native": "^1.0.7",
+		"directory-tree": "^2.2.1",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",
 		"vscode": "^1.1.29"

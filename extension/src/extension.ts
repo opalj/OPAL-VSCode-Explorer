@@ -2,29 +2,25 @@
 // Import the module and reference it with the alias vscode in your code below
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
-import { TacService } from './extension/service/tac.service';
-import TACProvider, { encodeLocation } from './extension/provider/tac.provider';
+import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
+import BCProvider, { encodeBCLocation }from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
+import * as npmPath from 'path';
+import OpalConfig from './extension/opal.config';
+import SVGDocument from './extension/provider/svg.document';
+import { PackageViewProvider } from './extension/provider/packageViewProvider';
+
+
 
 const isReachable = require('is-reachable');
 
-//Testen Chai --> Setup
-//var assert = require('chai').assert;
-//var expect = require('chai').expect;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 
-	var projectId = await getProjectId();
-	var userHome = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-	const tacProvider = new TACProvider(projectId);
-
-	const providerRegistrations = vscode.Disposable.from(
-		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider)
-	);
 	/**
-	 * Open opal.config.json
+	 * Get the config
 	 */
 	var rootPath = vscode.workspace.rootPath;
 	var path: vscode.Uri = vscode.Uri.parse("file:"+rootPath+"/opal.config.json");
@@ -32,10 +28,29 @@ export async function activate(context: vscode.ExtensionContext) {
 	var config = JSON.parse(document.getText());
 
 	/**
+	 * Get the current Project ID
+	 * The Project ID is the fs Path to the Project
+	 */
+	var projectId = await getProjectId();
+	var userHome = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+	
+	/**
+	 * Get the Providers and register them to there sheme
+	 */
+	const tacProvider = new TACProvider(projectId, config);
+	const bcProvider = new BCProvider(projectId, config);
+	const providerRegistrations = vscode.Disposable.from(
+		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider),
+		vscode.languages.registerDocumentLinkProvider({scheme: TACProvider.scheme}, tacProvider),
+		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider)
+	);
+	
+	
+	/**
 	 * If jetty not already started, start jetty
 	 */
 	// Ping Jetty
-	var jettyIsUp = await isReachable(config.server.url);
+	var jettyIsUp = await isReachable(config.server.url.replace("http://", ""));
 	if (!jettyIsUp) {
 		var terminal = vscode.window.createTerminal("jetty");
 		terminal.show(false);
@@ -47,7 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	while (!jettyIsUp) {
 		await delay(100);
-		jettyIsUp = await isReachable("localhost:8080");
+		jettyIsUp = await isReachable(config.server.url.replace("http://", ""));
 	}
 
 	/**
@@ -62,10 +77,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	var projectloaded = false;
 	var projectService : any = new ProjectService(config.server.url, projectId);
 	// get opal init message
-	var opalInitMessage = await projectService.getOPALInitMessage(config.opal.targetsDir, config.opal.librariesDir, config.opal.config);
+	var opalLoadMessage = await projectService.getOPALLoadMessage(config.opal.targetsDir, config.opal.librariesDir, config.opal.config);
 
 	// let opal load the project (this may take a while)
-	projectService.load(opalInitMessage).then(function () {
+	projectService.load(opalLoadMessage).then(function () {
 		console.log("Project loaded!");
 		myStatusBarItem.text = "Project loaded!";
 		myStatusBarItem.show();
@@ -94,48 +109,93 @@ export async function activate(context: vscode.ExtensionContext) {
 		} 
 	}
 
-	
-	console.log('Congratulations, your extension "opal-vscode-explorer" is now active!');
-	//registering command "Opal-TAC", p.r. to extension/package.json
-	let tacCommand = vscode.commands.registerCommand('extension.tac', async () => {
+	//menu-command to get svg for .class
+	let menuSvgCommand = vscode.commands.registerCommand('extension.menuSvg', async (uri:vscode.Uri) => {
+		/**
+		 * Get URI for a virtual svg Document
+		 */
+		console.log('hi '+uri);
+		//_commandService = new CommandService(config.server.url);
+		//let [target, projectId] = <[string, string]>JSON.parse(uri.query);
+		//let params: [vscode.Uri, string] = [vscode.Uri.parse(target), projectId];
+		
+		let document = new SVGDocument(uri, new vscode.EventEmitter<vscode.Uri>(), projectId, uri, config);
 
-		let tacID = await vscode.window.showInputBox({ placeHolder: 'TAC ID ...' });
-		// Load the JavaScript grammar and any other grammars included by it async.
-			if (tacID) {
-				//executing TacService on Tac ID
-				var tacService = new TacService('http://localhost:8080');
-				vscode.window.showInformationMessage('TAC requested from Server ..... ');
+		//var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";
+		//var svgDoc = await vscode.workspace.openTextDocument(svgURI);
 
-				tacService.loadTAC(tacID).then(function (res: any) {
-					//return Tac and show it in a Textdocument
-					var setting: vscode.Uri = vscode.Uri.parse("untitled:" + "/test.txt");
-					vscode.workspace.openTextDocument(setting).then((a : vscode.TextDocument) => {
-						vscode.window.showTextDocument(a,1,false).then(e => { 
-							e.edit(edit => {
-								 edit.insert(new vscode.Position(0,0), res.tac);
-							});
-						 });
-					});
-				});
-			
-			} else {
-				//invalid Tac ID given
-				vscode.window.showInformationMessage('ERROR: something wrong with the TAC ID');
-			}
-		//});
-		//input for Tac ID
+		var text = await document.getDocText();
+		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><head></head><body><div id=\"__svg\"> "+text+"</div></body></html>";
+		const panel = vscode.window.createWebviewPanel(
+			'SVG-View',
+			'SVG-View',
+			vscode.ViewColumn.One,
+			{}
+		  );
+		  // And set its HTML content
+		  panel.webview.html = htmlforSVG;
 	});
 
-	//menu-command to get tac from .java
+	//menu-command to get tac from .class
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
-		uri = encodeLocation(uri, projectId);
+		/**
+		 * Get URI for a virtual TAC Document
+		 */
+		var tacURI = encodeTACLocation(uri, projectId);
 		
+		/**
+		 * Get a virtual TAC Document from TAC Provider (see provider/tac.provider.ts);
+		 */
+		var tacDoc = await vscode.workspace.openTextDocument(tacURI);
+		/**
+		 * Open virtual TAC Document.
+		 * This will fire the value() Method in the tac.document.ts and issue a HTTP request to the OPAL Server
+		 */
+		vscode.window.showTextDocument(tacDoc);
+	});
+
+
+	//menu-command to get bc from .class
+	let menuBCCommand = vscode.commands.registerCommand('extension.menuBC', async (uri:vscode.Uri) => {
+		/**
+		 * Get URI for a virtual BC Document
+		 */
+		uri = encodeBCLocation(uri, projectId);
+		/**
+		 * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
+		 */
 		var doc = await vscode.workspace.openTextDocument(uri);
-		console.log(doc);
+		/**
+		 * Open virtual TAC Document.
+		 * This will fire the value() Method in the tac.document.ts and issue a HTTP request to the OPAL Server
+		 */
 		vscode.window.showTextDocument(doc);
 	});
 
-	context.subscriptions.push(menuTacCommand, providerRegistrations, tacCommand);
+	//menu-command to extract jar file
+	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
+		vscode.window.showInformationMessage("Extracting Jar ...");
+		var jarFolder = config.extension.jarExtractionFolder;
+		var fileName = npmPath.parse(uri.fsPath).base;
+		console.log(fileName);
+		vscode.window.showInformationMessage(fileName);
+
+		var jarTerminal = vscode.window.createTerminal("Jar Extracter");
+		jarTerminal.show(false);
+		jarTerminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
+		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
+		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
+	});
+
+	/**
+	 * Setting up and displaying Opal Tree View
+	 */
+	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
+	vscode.window.showInformationMessage("Package Explorer is loading...");
+	vscode.window.registerTreeDataProvider('package-explorer', pVP);
+	vscode.window.showInformationMessage("Package Explorer is ready.");
+	
+	context.subscriptions.push(menuTacCommand, menuBCCommand, menuSvgCommand, menuJarCommand, providerRegistrations);
 }
 
 // this method is called when your extension is deactivated

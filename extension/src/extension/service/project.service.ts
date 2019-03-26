@@ -58,12 +58,12 @@ export class ProjectService {
     }
 
     /**
-     * Create the OPAL Initialize Message.
+     * Create the OPAL Load Message.
      * @param targetsDirPath Path to the targets. Targets are class files that can be analyzed by OPAl
      * @param librariesDirPath Path to the libraries. Libraries are jar Files that may necessary for analyzing
      * @param config additional config params for opal 
      */
-    async getOPALInitMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
+    async getOPALLoadMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
         var projectId = this.projectId;
         var targets = await this.getTargets(targetsDirPath);
         var libraries = await this.getLibraries(librariesDirPath);
