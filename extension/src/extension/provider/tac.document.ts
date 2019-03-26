@@ -118,7 +118,8 @@ export class LinkParser {
                         let targetUri : vscode.Uri;
                         let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
                         console.log(targetLine);
-                        targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
+                        //targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
+                        targetUri = this.docPath.with({ fragment : String(targetLine) });
                         console.log("I am about to push a link"+ originRange +targetUri);
                         this.documentLinkComposer(originRange, targetUri);
                     }
