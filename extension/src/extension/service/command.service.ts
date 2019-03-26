@@ -1,5 +1,6 @@
 var request = require('request-promise-native');
 
+
 /**
  * Service for OPAL Commands
  * This Service is responsible for requesting Data from the Server using OPAL Commands
@@ -15,7 +16,6 @@ export class CommandService {
         "body":{},
         "json": true
     };
-
 
     protected serverUrl = "";
 
@@ -67,5 +67,40 @@ export class CommandService {
             "fqn" : fqn,
             "className" : className,
         };
+    }
+
+    /**
+     * Get fqn path for file
+     * @param targetFilePath Path to target file
+     */
+    getFQN(targetFilePath : string, targetsDir : string, fileName : string) : string {
+        let targetFileParts = this.getPathParts(targetFilePath);
+        let targetsDirParts = this.getPathParts(targetsDir);
+
+        console.log(targetFileParts);
+        console.log(targetsDirParts);
+
+        let path = "";
+        if (targetFileParts !== null && targetsDirParts !== null) {
+            targetFileParts = targetFileParts.filter(function(filePart) {
+                return targetsDirParts.indexOf(filePart) < 0 && targetsDirParts.indexOf(filePart.toLocaleUpperCase()) < 0;
+            });
+            path = targetFileParts.join(".");
+        }
+
+        return path.replace(".class", "");
+    }
+
+    getPathParts(path : string) {
+        const regex = /[a-zA-Z]+/gm;
+        let match;
+        let result = [];
+        while ((match = regex.exec(path)) !== null) {
+            if (match.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            result.push(match[0]);
+        }
+        return result;
     }
 }

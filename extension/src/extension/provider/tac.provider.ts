@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import TACDocument from './tac.document';
 
 
-export default class TACProvider implements vscode.TextDocumentContentProvider {
+
+export default class TACProvider implements vscode.TextDocumentContentProvider, vscode.DocumentLinkProvider {
 
     static scheme = 'tac';
 
@@ -28,6 +29,19 @@ export default class TACProvider implements vscode.TextDocumentContentProvider {
         
         this._documents.set(uri.toString(), document);
         return document.value;
+    }
+
+    /**
+    * Method for requesting links for a tac document
+     * 
+     * @param document document for which links are requested
+     * @param token cancellation token
+     */
+    provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
+        let doc : TACDocument;
+        doc = <any> this._documents.get(document.uri.toString());
+        doc._parseDoc(doc.value.toString());
+        return Promise.resolve(doc.links);
     }
 }
 

@@ -3,10 +3,11 @@
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
-import BCProvider, { encodeBCLocation } from './extension/provider/bc.provider';
+import BCProvider, { encodeBCLocation }from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
 import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
+import SVGDocument from './extension/provider/svg.document';
 
 
 const isReachable = require('is-reachable');
@@ -25,7 +26,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	/**
 	 * Get the config
 	 */
-	var config = await OpalConfig.getConfig();
+	var configClass = new OpalConfig();
+	await configClass.loadConfig();
+	var config = configClass.getConfig();
 
 	/**
 	 * Get the Providers and register them to there sheme
@@ -34,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const bcProvider = new BCProvider(projectId, config);
 	const providerRegistrations = vscode.Disposable.from(
 		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider),
+		vscode.languages.registerDocumentLinkProvider({scheme: TACProvider.scheme}, tacProvider),
 		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider)
 	);
 	
@@ -101,6 +105,33 @@ export async function activate(context: vscode.ExtensionContext) {
 		} 
 	}
 
+	//menu-command to get svg for .class
+	let menuSvgCommand = vscode.commands.registerCommand('extension.menuSvg', async (uri:vscode.Uri) => {
+		/**
+		 * Get URI for a virtual svg Document
+		 */
+		console.log('hi '+uri);
+		//_commandService = new CommandService(config.server.url);
+		//let [target, projectId] = <[string, string]>JSON.parse(uri.query);
+		//let params: [vscode.Uri, string] = [vscode.Uri.parse(target), projectId];
+		
+		let document = new SVGDocument(uri, new vscode.EventEmitter<vscode.Uri>(), projectId, uri, config);
+
+		//var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";
+		//var svgDoc = await vscode.workspace.openTextDocument(svgURI);
+
+		var text = await document.getDocText();
+		let htmlforSVG = "<!DOCTYPE html><html lang=\"de\"><head></head><body><div id=\"__svg\"> "+text+"</div></body></html>";
+		const panel = vscode.window.createWebviewPanel(
+			'SVG-View',
+			'SVG-View',
+			vscode.ViewColumn.One,
+			{}
+		  );
+		  // And set its HTML content
+		  panel.webview.html = htmlforSVG;
+	});
+
 	//menu-command to get tac from .class
 	let menuTacCommand = vscode.commands.registerCommand('extension.menuTac', async (uri:vscode.Uri) => {
 		/**
@@ -126,7 +157,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		 * Get URI for a virtual BC Document
 		 */
 		uri = encodeBCLocation(uri, projectId);
-		
 		/**
 		 * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
 		 */
@@ -153,7 +183,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
 	});
 	
-	context.subscriptions.push(menuTacCommand, menuBCCommand, menuJarCommand, providerRegistrations);
+	context.subscriptions.push(menuTacCommand, menuBCCommand, menuSvgCommand, menuJarCommand, providerRegistrations);
 }
 
 // this method is called when your extension is deactivated

@@ -64,13 +64,13 @@ export default class BCDocument {
             fileName = fileName.replace(".class", "");
 			//Request BC for Class
             vscode.window.showInformationMessage('BC for Class ' + fileName + ' requested from Server ..... ');
-            
             var fqn = await this.getFQN(this._target.fsPath);
+
             var getBCParams = {
                 "fqn": fqn,
                 "className":fileName
             };
-			var BC = await this._commandService.loadAnyCommand("getBC", this._projectId, getBCParams);
+            var BC = await this._commandService.loadAnyCommand("getBC", this._projectId, getBCParams);
             return BC;
         } else {
             return "";

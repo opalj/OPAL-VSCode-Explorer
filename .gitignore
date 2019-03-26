@@ -25,3 +25,4 @@ server/.metals/metals.log
 server/.bloop/
 server/.idea/
 dummy/opal.config.json
+extension/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar
