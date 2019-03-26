@@ -14,6 +14,8 @@ export default class TACDocument {
     //private _emitter: vscode.EventEmitter<vscode.Uri>;
     private _uri : vscode.Uri;
     
+    private _content : string;
+
     private _projectId : string;
     private _target : vscode.Uri;
     private _opalConfig: any;
@@ -30,13 +32,15 @@ export default class TACDocument {
         
         this._projectId = projectId;
         this._target = target;
+
+        this._content = <string><unknown>this._populate();
     }
     
     /**
      * Get the TAC Code of this TAC Document
      */
     get value() {
-        return this._populate();	
+        return this._content;	
     }
 
     get links() {
@@ -60,6 +64,7 @@ export default class TACDocument {
             } catch (e) {
                 console.log(e);
             }
+            this._content = tac;
             return tac;
         } else {
             return "";
@@ -95,19 +100,26 @@ export class LinkParser {
     public parseJumps() {
         this.analyzeLine();
         let lastMethodStart: number = 0;
+        console.log("I started Parsing!");
         for(let i = this.tacLines.length-1; i >= 0; i--){
             switch (this.lineTypes[i]){
                 case LineType.Caller:
+                    console.log("I found a caller");
                     let tmp = <RegExpExecArray> this.matchCaller(this.tacLines[i]);
                     for(let j = tmp.length-1; j > 0; j--){
                         let originRange : vscode.Range;
-                        originRange = new vscode.Range(new vscode.Position(i, tmp[0].indexOf(tmp[j])),
-                                                         new vscode.Position(i, tmp[0].indexOf(tmp[j])+tmp[j].length));
-                        
+                        if (j === 1){
+                            originRange = new vscode.Range(new vscode.Position(i, 9),
+                                                         new vscode.Position(i, 10));
+                        } else {
+                            originRange = new vscode.Range(new vscode.Position(i, 9+(3*j)),
+                            new vscode.Position(i, 10+(3*j))); 
+                        }
                         let targetUri : vscode.Uri;
                         let targetLine = <number> this.getTargetLine(i, Number(tmp[j]));     
+                        console.log(targetLine);
                         targetUri = vscode.Uri.parse(this.docPath.toString().concat(":"+String(targetLine)+":0"));
-
+                        console.log("I am about to push a link"+ originRange +targetUri);
                         this.documentLinkComposer(originRange, targetUri);
                     }
                     break;
@@ -146,6 +158,7 @@ export class LinkParser {
     }
 
     private documentLinkComposer(originRange : vscode.Range, targetUri : vscode.Uri){
+        console.log("I pushed a link!");
         this.links.push(new vscode.DocumentLink(originRange, targetUri));
     }
 
@@ -187,22 +200,22 @@ export class LinkParser {
     }
 
     public matchCaller(tacLine : string) {
-        const regex = /\/\/(\\s|,|([0-9])*)*→/gm;
+        console.log("I searched for a caller!");
+        const regex = /\/\/(.*?)→/gm;
         let res = regex.exec(tacLine);
         let tmp : string[];
         if (res !== null) {
-            res[1].replace(new RegExp(' ', 'g'), "");
-            res[1].replace(new RegExp('/', 'g'), "");
-            res[1].replace(new RegExp('→', 'g'), "");
+            res[1] = res[1].split(" ").join("");
             tmp = res[1].split(",");
-            res.pop();
-            res.concat(tmp);
+            for(let i = 0; i < tmp.length; i++){
+                res[i+1] = tmp[i]; 
+            }
             return res;
         }
     }
 
     private isCaller(tacLine : string) : boolean{
-        const regex = /\/\/(\\s|,|([0-9])*)*→/gm;
+        const regex = /\/\/(.*?)→/gm;
         return regex.test(tacLine);
     }
 
@@ -210,6 +223,7 @@ export class LinkParser {
         const regex = /\b(\d):/gm;
         let m = regex.exec(tacLine);
         if (m !== null) {
+            console.log("Ich bin der LineIndex"+ m[1]);
             return m[1].replace(new RegExp(':', 'g'), "");
         }
     }
@@ -229,14 +243,12 @@ export class LinkParser {
     }
 
     private getTargetLine(originLine : number, targetID : number){
-        for(let i = this.tacLines.length-1; i >= 0; i--){
-            if(this.matchLineIndex(this.tacLines[i])){
-                if(targetID = parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
-                    if(this.sameMethod(i, originLine)){
-                        return i;
-                    }
+        for(let i = originLine-1; i >= 0; i--){
+            if(targetID === parseInt(<string>this.matchLineIndex(this.tacLines[i]))){
+                if(this.sameMethod(i, originLine)){
+                    return i+1;
                 }
-            }
+             }
         }
     }
 

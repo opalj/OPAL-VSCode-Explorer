@@ -37,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const bcProvider = new BCProvider(projectId, config);
 	const providerRegistrations = vscode.Disposable.from(
 		vscode.workspace.registerTextDocumentContentProvider(TACProvider.scheme, tacProvider),
+		vscode.languages.registerDocumentLinkProvider({scheme: TACProvider.scheme}, tacProvider),
 		vscode.workspace.registerTextDocumentContentProvider(BCProvider.scheme, bcProvider)
 	);
 	
