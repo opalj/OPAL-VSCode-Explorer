@@ -57,10 +57,19 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      **/
     def getTacForClass(tacForClass : TACForClass) : String = {
         val tacAI = project.get(DefaultTACAIKey)
-        val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
-        var res = "";
-        tacArray.foreach(res += ToTxt(_).mkString("\n"));
-        res;
+        var res = ""
+        project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.foreach({
+            m => 
+            var tac = tacAI(m);
+            res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
+            res += "\n{\n";
+            res += ToTxt(m)
+            res += "\n}\n"
+        })
+        //val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
+        //var res = "";
+        //tacArray.foreach(res += ToTxt(_).mkString("\n"));
+        res
     }
 
     def getBCForMethod(opalCommand : OpalCommand) : String = {
