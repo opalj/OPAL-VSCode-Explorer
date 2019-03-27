@@ -1,231 +1,221 @@
 {
-	"name": "opal-vscode-explorer",
-	"displayName": "opal vscode explorer",
-	"description": "VS Code Explorer for the OPAL Application",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.30.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.tac",
-		"onCommand:extension.menuTac",
-		"onCommand:extension.menuJar",
-		"onCommand:extension.menuBC",
-		"onCommand:extension.menuSvg",
-		"workspaceContains:**/opal.config.json"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"configuration":[
-			{
-				"type": "object",
-				"title": "OPAL VSCode Explorer",
-				"properties": {
-					"OPAL.server.url":{
-						"type":[
-							"string"
-						],
-						"default": "http://localhost:8080",
-						"description": "URL of the OPAL Server you want to connect."
-					},
-					"OPAL.server.jar":{
-						"type":[
-							"string"
-						],
-						"default":"",
-						"description": "Describes the path to the server jar."
-					},
-					"OPAL.server.jaroptions":{
-						"type":[
-							"string"
-						],
-						"default":"",
-						"description": "Describes jar options."
-					},
-					"OPAL.opal.targetDir":{
-						"type":[
-							"string"
-						],
-						"default":"",
-						"description": "This option sets the project directory."
-					},
-					"OPAL.opal.librariesDir":{
-						"type":[
-							"string"
-						],
-						"default":"",
-						"description": "This option sets the project library directory."
-					},
-					"OPAL.opal.config":{
-						"type":[
-							"object"
-						],
-						"default":{"key":"value"},
-						"description": "Project configuration."
-					},
-					"OPAL.extension.jarExtractionFolder":{
-						"type":[
-							"string"
-						],
-						"default":"./.vscode",
-						"description": "This option sets the folder to which the project jar will be unpacked."
-					}
-				}
-			}
-		],
-		"commands": [
-			{
-				"command": "extension.tac",
-				"title": "Opal-TAC"
-			},
-			{
-				"command": "extension.menuTac",
-				"title": "TAC from file"
-			},
-			{
-				"command": "extension.menuJar",
-				"title": "Extract Jar..."
-			},
-			{
-				"command": "extension.menuBC",
-				"title": "BC from file"
-			},
-			{
-				"command": "extension.menuSvg",
-				"title": "SVG from file"
-			},
-			{
-				"command": "editor.printReferences",
-				"title": "Show All References"
-			}
-		],
-		"themes": [
-			{
-				"label": "c",
-				"uiTheme": "vs-dark",
-				"path": "./themes/tac-color-theme.json"
-			}
-		],
-		"languages": [
-			{
-				"id": "tac",
-				"aliases": [
-					"three-address code",
-					"tac"
-				],
-				"extensions": [
-					".tac"
-				],
-				"configuration": "./language-configuration.json"
-			},
-			{
-				"id": "class",
-				"extensions": [
-					".class"
-				],
-				"aliases": [
-					"class",
-					"Class"
-				]
-			},
-			{
-				"id": "jar",
-				"extensions": [
-					".jar"
-				],
-				"aliases": [
-					"jar",
-					"Jar"
-				]
-			},
-			{
-				"id": "svg",
-				"extensions": [
-					".svg"
-				],
-				"aliases": [
-					"svg",
-					"Svg"
-				]
-			}
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "opal-explorer",
-					"title": "OPAL Explorer",
-					"icon": "assets/expicon.svg"
-				}
-			]
-		},
-		"views": {
-			"opal-explorer": [
-				{
-					"id": "package-explorer",
-					"name": "Package Explorer"
-				}
-			]
-		},
-		"menus": {
-			"editor/context": [
-				{
-					"command": "editor.printReferences",
-					"when": "editorHasReferenceProvider",
-					"group": "navigation@1.31"
-				}
-			],
-			"explorer/context": [
-				{
-					"command": "extension.menuTac",
-					"when": "!explorerResourceIsFolder && resourceLangId == class",
-					"group": "2_workspace"
-				},
-				{
-					"command": "extension.menuBC",
-					"when": "!explorerResourceIsFolder && resourceLangId == class",
-					"group": "2_workspace"
-				},
-				{
-					"command": "extension.menuJar",
-					"when": "!explorerResourceIsFolder && resourceLangId == jar",
-					"group": "2_workspace"
-				},
-				{
-					"command": "extension.menuSvg",
-					"when": "!explorerResourceIsFolder && resourceLangId == svg",
-					"group": "2_workspace"
-				}
-			]
-		},
-		"grammars": [
-			{
-				"language": "tac",
-				"scopeName": "source.tac",
-				"path": "./syntaxes/tac.tmLanguage.json"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
-	},
-	"devDependencies": {
-		"@types/is-reachable": "^3.0.0",
-		"@types/mocha": "^2.2.42",
-		"@types/node": "^8.10.25",
-		"chai": "^4.2.0",
-		"is-reachable": "^3.0.0",
-		"mocha": "*",
-		"request-promise-native": "^1.0.7",
-		"directory-tree": "^2.2.1",
-		"tslint": "^5.8.0",
-		"typescript": "^3.1.4",
-		"vscode": "^1.1.29"
-	}
+  "name": "opal-vscode-explorer",
+  "displayName": "opal vscode explorer",
+  "description": "VS Code Explorer for the OPAL Application",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.30.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.tac",
+    "onCommand:extension.menuTac",
+    "onCommand:extension.menuJar",
+    "onCommand:extension.menuBC",
+    "onCommand:extension.menuSvg",
+    "workspaceContains:**/opal.config.json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": [
+      {
+        "type": "object",
+        "title": "OPAL VSCode Explorer",
+        "properties": {
+          "OPAL.server.port": {
+            "type": [
+              "number"
+            ],
+            "default": 8080,
+            "description": "Port of the OPAL Server you want to connect."
+          },
+          "OPAL.server.jar": {
+            "type": [
+              "string"
+            ],
+            "default": "",
+            "description": "(This has to be configured)Describes the path to the server jar."
+          },
+          "OPAL.server.options": {
+            "type": [
+              "string"
+            ],
+            "default": "",
+            "description": "Java parameter for the OPAL Server."
+          },
+          "OPAL.opal.targetDirs": {
+            "type": [
+              "array"
+            ],
+            "default": [
+              ""
+            ],
+            "description": "(This has to be configured)This option sets the project directory."
+          },
+          "OPAL.opal.librariesDirs": {
+            "type": [
+              "array"
+            ],
+            "default": [
+              ""
+            ],
+            "description": "(This has to be configured)This option sets the project library directory."
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "extension.tac",
+        "title": "Opal-TAC"
+      },
+      {
+        "command": "extension.menuTac",
+        "title": "TAC from file"
+      },
+      {
+        "command": "extension.menuJar",
+        "title": "Extract Jar..."
+      },
+      {
+        "command": "extension.menuBC",
+        "title": "BC from file"
+      },
+      {
+        "command": "extension.menuSvg",
+        "title": "SVG from file"
+      },
+      {
+        "command": "editor.printReferences",
+        "title": "Show All References"
+      }
+    ],
+    "themes": [
+      {
+        "label": "c",
+        "uiTheme": "vs-dark",
+        "path": "./themes/tac-color-theme.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "tac",
+        "aliases": [
+          "three-address code",
+          "tac"
+        ],
+        "extensions": [
+          ".tac"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "class",
+        "extensions": [
+          ".class"
+        ],
+        "aliases": [
+          "class",
+          "Class"
+        ]
+      },
+      {
+        "id": "jar",
+        "extensions": [
+          ".jar"
+        ],
+        "aliases": [
+          "jar",
+          "Jar"
+        ]
+      },
+      {
+        "id": "svg",
+        "extensions": [
+          ".svg"
+        ],
+        "aliases": [
+          "svg",
+          "Svg"
+        ]
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "opal-explorer",
+          "title": "OPAL Explorer",
+          "icon": "assets/expicon.svg"
+        }
+      ]
+    },
+    "views": {
+      "opal-explorer": [
+        {
+          "id": "package-explorer",
+          "name": "Package Explorer"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "editor.printReferences",
+          "when": "editorHasReferenceProvider",
+          "group": "navigation@1.31"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "extension.menuTac",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuBC",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuJar",
+          "when": "!explorerResourceIsFolder && resourceLangId == jar",
+          "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuSvg",
+          "when": "!explorerResourceIsFolder && resourceLangId == svg",
+          "group": "2_workspace"
+        }
+      ]
+    },
+    "grammars": [
+      {
+        "language": "tac",
+        "scopeName": "source.tac",
+        "path": "./syntaxes/tac.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/is-reachable": "^3.0.0",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "chai": "^4.2.0",
+    "is-reachable": "^3.0.0",
+    "mocha": "*",
+    "request-promise-native": "^1.0.7",
+    "directory-tree": "^2.2.1",
+    "tslint": "^5.8.0",
+    "typescript": "^3.1.4",
+    "vscode": "^1.1.29"
+  }
 }
