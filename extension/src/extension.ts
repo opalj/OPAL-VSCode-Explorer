@@ -178,7 +178,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log(fileName);
 		vscode.window.showInformationMessage(fileName);
 
-		var jarTerminal = vscode.window.createTerminal("Jar Extracter");
+		var jarTerminal = vscode.window.createTerminal("Jar Extractor");
 		jarTerminal.show(false);
 		jarTerminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
 		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
