@@ -35,8 +35,8 @@
             "type": [
               "string"
             ],
-            "default": "",
-            "description": "(This has to be configured)Describes the path to the server jar."
+            "default": ".vscode\\extensions\\stg.java-bytecode-workbench-0.0.12\\OPALCommand Server-assembly-0.1.0-SNAPSHOT.jar",
+            "description": "Describes the path to the server jar. Example: C:\\USER\\Document\\Projects\\OPALCommandServer.jar"
           },
           "OPAL.server.options": {
             "type": [
@@ -45,23 +45,23 @@
             "default": "",
             "description": "Java parameter for the OPAL Server."
           },
-          "OPAL.opal.targetDirs": {
+          "OPAL.opal.targetDir": {
             "type": [
-              "array"
+              "string"
             ],
             "default": [
               ""
             ],
-            "description": "(This has to be configured)This option sets the project directory."
+            "description": "(This has to be configured) This option sets the project directory. [\"C:\\USER\\Document\\Projects\\SnakeInJava\", \"C:\\USER\\Document\\Projects\\PacManInJava\"]"
           },
-          "OPAL.opal.librariesDirs": {
+          "OPAL.opal.librariesDir": {
             "type": [
-              "array"
+              "string"
             ],
             "default": [
               ""
             ],
-            "description": "(This has to be configured)This option sets the project library directory."
+            "description": "(This has to be configured) This option sets the project library directory. [\"C:\\USER\\Document\\Projects\\lib1\", \"C:\\USER\\Document\\Projects\\lib2\"]"
           }
         }
       }
