@@ -114,10 +114,11 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
      */
     get("/project/delete/:projectId") {
         var projectId = params("projectId");
+        var res = "";
         if (projectId.isEmpty) {
             res = "Error: Project ID is empty!";
         } else {
-            workspace -= projectId.get;
+            workspace -= projectId;
         }
         res;
     }
