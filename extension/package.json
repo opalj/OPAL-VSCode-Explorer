@@ -26,7 +26,7 @@
 			},
 			{
 				"command": "extension.menuTac",
-				"title": "TAC from file"
+				"title": "Three-Address-Code ..."
 			},
 			{
 				"command": "extension.menuJar",
@@ -34,7 +34,7 @@
 			},
 			{
 				"command": "extension.menuBC",
-				"title": "BC from file"
+				"title": "Bytecode ..."
 			},
 			{
 				"command": "extension.menuSvg",
