@@ -32,23 +32,23 @@ export class OpalNode extends vscode.TreeItem {
 		 */
 		if(label.includes("class")){
 			this.contextValue = "opalNodeClass";
-			this.setChildren([new OpalNode("TAC", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
+			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
 											{
 												command: 'extension.menuTac',
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
 			),
-			new OpalNode("BC", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
+			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
 											{
 												command: 'extension.menuBC',
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
 			)]);
-		} else if(label=== "TAC"){
+		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
-		} else if(label === "BC"){
+		} else if(label === "Bytecode"){
 			this.contextValue = "opalNodeBC";
 		} else {
 			this.contextValue = "opalNodePackage";

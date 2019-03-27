@@ -85,10 +85,10 @@ export class CommandService {
             targetFileParts = targetFileParts.filter(function(filePart) {
                 return targetsDirParts.indexOf(filePart) < 0 && targetsDirParts.indexOf(filePart.toLocaleUpperCase()) < 0;
             });
-            path = targetFileParts.join(".");
+            path = targetFileParts.join("/");
         }
 
-        return path.replace(".class", "");
+        return path.replace("/class", "");
     }
 
     getPathParts(path : string) {

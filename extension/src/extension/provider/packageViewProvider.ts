@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { OpalNode } from "./OpalNode";
+import { OpalNode } from "./opalNode";
 
 //dirTree for recursively reading directories and its contents
 const dirTree = require("directory-tree");

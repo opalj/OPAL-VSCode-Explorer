@@ -21,7 +21,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     test("Load Project and get TAC for Class") {
         var json = "";
         //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
-        var opalInit = OpalInit("abc", Array(testProject+File.separator+"Test.class"), Array(""), Map("key" -> "value"));
+        var opalInit = OpalInit("abc", Array(testProject+File.separator+"cmdsnake"+File.separator+"Direction.class"), Array(""), Map("key" -> "value"));
         json = write(opalInit);
 
         post("/project/load", json) {
@@ -29,10 +29,10 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var tacForClass = TACForClass("abc", "Test", "Test");
+        var tacForClass = TACForClass("abc", "cmdsnake/Direction", "Direction");
         json = write(tacForClass);
         post("/project/tac/class", json) {
-            body should ( include("java.io.PrintStream") and include("java.lang.System.out") and include("test1123"))
+            body should ( include("4:/*pc=7:*/ op_0/*(non-virtual) cmdsnake.Direction*/.<init>(op_2, op_3)") and include("13:/*pc=29:*") and include("5:/*pc=9:*/ return op_0"))
             status should equal (200)
         }
 

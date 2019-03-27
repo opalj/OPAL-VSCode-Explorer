@@ -1,48 +1,29 @@
 # opal-vscode-explorer README
+##Description
+This extension aims to bring the advantages of [Opal-Project](http://www.opal-project.de/) into VSCode.
+Features include Java bytecode processing, engineering, manipulation and analysis functionality like three-Address-Code oder bytecode View.
 
-## Installation
--------------------------------
+##Before you start
+1. Please configure the necessary settings as follows:
 
-# Server
--------------------------------
-1. Auf der Kommandozeile in Ordner extension wechseln: 
-cd server
+1.1. Open File > Preferences > Settings > OPAL VSCode Explorer: Set the following paths as in our example
 
-2. sbt starten
-sbt
+1.2. Add "OPAL.opal.targetDir": "C:\\Users\\Documents\\Projectfolder" 
+1.3. Add "OPAL.opal.librariesDir": "C:\\Users\\Documents\\Libraries"
 
-3. JAR Datei bauen
-assembly
+##Usage
+1. VSCode file explorer context menu
 
-# Konfiguration der extension
--------------------------------
-In opal.config.json:
+1.1 Right click a class file in your file explorer and choose
 
-targetsDir: 
-- Auf den Pfad zum target Ordner im Projekt setzen. Dort sind die zu analysierenden class Dateien.
-- Diese Dateien werden von OPAL eingelesen
+1.2 "Three-Address-Code ..." to open its three-address-code
 
-librariesDir:
-- Auf den lib Order im Projekt setzen. Dort sollten die .jar Dateien sein von denen das Projekt abhängt.
+1.3 "Bytecode ..." to open its bytecode
 
-serverJarPath:
-- Jar Datei zum server. (Wurde vorher mit assembly erstellt)
+2 . Opal Explorer - Tree-View (lens symbol inside the activitybar)
 
-# Extension starten
--------------------------------
-1. Auf der Kommandozeile in Ordner extension wechseln: 
-cd extension
 
-2. Abhängigkeiten installieren:
-npm install
+2.1. Find and select the class you wish to analyze
 
-3. VS Code starten: 
-code .
+2.1.1. By choosing the Bytecode node or Three-Address-Code node you can open the desired representation
 
-4. extension.ts öffnen und F5 drücken. Es öffnet sich ein VS Code Fenster in dem die Extenson installiert ist.
-
-Mehr Infos: https://code.visualstudio.com/api/get-started/your-first-extension
-
-## Tests
-
-https://code.visualstudio.com/api/working-with-extensions/testing-extension
