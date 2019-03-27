@@ -38,14 +38,14 @@ export class OpalNode extends vscode.TreeItem {
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-			),
+			)/**,
 			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
 											{
 												command: 'extension.menuBC',
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-			)]);
+			)*/]);
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
