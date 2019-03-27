@@ -49,18 +49,14 @@
             "type": [
               "string"
             ],
-            "default": [
-              ""
-            ],
+            "default": "",
             "description": "(This has to be configured) This option sets the project directory. [\"C:\\USER\\Document\\Projects\\SnakeInJava\", \"C:\\USER\\Document\\Projects\\PacManInJava\"]"
           },
           "OPAL.opal.librariesDir": {
             "type": [
               "string"
             ],
-            "default": [
-              ""
-            ],
+            "default": "",
             "description": "(This has to be configured) This option sets the project library directory. [\"C:\\USER\\Document\\Projects\\lib1\", \"C:\\USER\\Document\\Projects\\lib2\"]"
           }
         }

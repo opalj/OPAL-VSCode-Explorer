@@ -22,11 +22,11 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   var projectId = await getProjectId();
   console.log(projectId);
-
   /**
    * Get the config
    */
   const conf = vscode.workspace.getConfiguration();
+
   if (conf.get("OPAL.opal.targetDir") === "") {
     vscode.window.showErrorMessage(
       "You have to configure your project folder first. Check ReadMe."
