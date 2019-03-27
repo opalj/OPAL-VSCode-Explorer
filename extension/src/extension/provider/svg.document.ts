@@ -1,68 +1,82 @@
-import * as vscode from 'vscode';
-import {CommandService} from '../service/command.service';
-import * as npmPath from 'path';
+import * as vscode from "vscode";
+import { CommandService } from "../service/command.service";
+import * as npmPath from "path";
 
 export default class SVGDocument {
+  private _svgService: CommandService;
+  private _projectId: string;
+  private _target: vscode.Uri;
+  private _opalConfig: any;
 
-    private _svgService : CommandService;
-    private _projectId : string;
-    private _target : vscode.Uri;
-    private _opalConfig: any;
-
-    constructor(uri: vscode.Uri, emitter: vscode.EventEmitter<vscode.Uri>, projectId: string, target: vscode.Uri, config : any) {
-        
-        this._opalConfig = config;
-        this._svgService = new CommandService(this._opalConfig.server.url);
-        /*
+  constructor(
+    uri: vscode.Uri,
+    emitter: vscode.EventEmitter<vscode.Uri>,
+    projectId: string,
+    target: vscode.Uri,
+    config: any
+  ) {
+    this._opalConfig = config;
+    this._svgService = new CommandService(
+      "http://localhost:" + this._opalConfig.get("OPAL.server.port")
+    );
+    /*
         this._emitter = emitter;
         */
-        
-        this._projectId = projectId;
-        this._target = target;
-        
-    }
 
-    /**
-     * Get the svg Text for this svg Document
-     */
-    get value() {
-        return this._populate();	
-    }
+    this._projectId = projectId;
+    this._target = target;
+  }
 
-    public getDocText(){
-        return this._populate();
-    }
+  /**
+   * Get the svg Text for this svg Document
+   */
+  get value() {
+    return this._populate();
+  }
 
-    /**
-     * Get fqn path for file
-     * @param targetFilePath Path to target file
-     */
-    async getFQN(targetsFilePath : string) {
-        return targetsFilePath.replace(this._opalConfig.opal.targetsDir, "");
-    }
+  public getDocText() {
+    return this._populate();
+  }
 
-    public async _populate(){
-        //Extract Filename from URI
-		var fileName:String = npmPath.parse(this._target.fsPath).base;
-		//Set BC Service up
-		
-		if(fileName.includes(".svg")) {
-            fileName = fileName.replace(".svg", "");
+  /**
+   * Get fqn path for file
+   * @param targetFilePath Path to target file
+   */
+  async getFQN(targetsFilePath: string) {
+    return targetsFilePath.replace(
+      this._opalConfig.get("OPAL.opal.targetDir"),
+      ""
+    );
+  }
 
-			//Request SVG for Class
-            vscode.window.showInformationMessage('SVG for Class ' + fileName + ' requested from Server ..... ');
-            
-            var fqn = await this.getFQN(this._target.fsPath);
-            console.log('Target' +this._target);
-            var getSVGParams = {
-                "fqn": fqn,
-                "className":fileName
-            };
-            console.log('Fqn '+fqn);
-            var svg = await this._svgService.loadAnyCommand("getSVG", this._projectId, getSVGParams);
-            return svg;
-        } else {
-            return "";
-        }
+  public async _populate() {
+    //Extract Filename from URI
+    var fileName: String = npmPath.parse(this._target.fsPath).base;
+    //Set BC Service up
+
+    if (fileName.includes(".svg")) {
+      fileName = fileName.replace(".svg", "");
+
+      //Request SVG for Class
+      vscode.window.showInformationMessage(
+        "SVG for Class " + fileName + " requested from Server ..... "
+      );
+
+      var fqn = await this.getFQN(this._target.fsPath);
+      console.log("Target" + this._target);
+      var getSVGParams = {
+        fqn: fqn,
+        className: fileName
+      };
+      console.log("Fqn " + fqn);
+      var svg = await this._svgService.loadAnyCommand(
+        "getSVG",
+        this._projectId,
+        getSVGParams
+      );
+      return svg;
+    } else {
+      return "";
     }
+  }
 }
