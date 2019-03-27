@@ -76,14 +76,6 @@
         "title": "Extract Jar..."
       },
       {
-        "command": "extension.menuBC",
-        "title": "Bytecode ..."
-      },
-      {
-        "command": "extension.menuSvg",
-        "title": "SVG from file"
-      },
-      {
         "command": "editor.printReferences",
         "title": "Show All References"
       }
@@ -170,18 +162,8 @@
           "group": "2_workspace"
         },
         {
-          "command": "extension.menuBC",
-          "when": "!explorerResourceIsFolder && resourceLangId == class",
-          "group": "2_workspace"
-        },
-        {
           "command": "extension.menuJar",
           "when": "!explorerResourceIsFolder && resourceLangId == jar",
-          "group": "2_workspace"
-        },
-        {
-          "command": "extension.menuSvg",
-          "when": "!explorerResourceIsFolder && resourceLangId == svg",
           "group": "2_workspace"
         }
       ]
