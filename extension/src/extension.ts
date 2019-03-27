@@ -173,7 +173,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	//menu-command to extract jar file
 	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
 		vscode.window.showInformationMessage("Extracting Jar ...");
-		var jarFolder = config.extension.jarExtractionFolder;
+		var jarFolder = npmPath.parse(uri.fsPath).dir;
 		var fileName = npmPath.parse(uri.fsPath).base;
 		console.log(fileName);
 		vscode.window.showInformationMessage(fileName);
