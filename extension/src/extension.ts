@@ -29,12 +29,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
   if (conf.get("OPAL.opal.targetDir") === "") {
     vscode.window.showErrorMessage(
-      "You have to configure your project folder first. Check ReadMe."
+      "You have to configure your project folder first. Check ReadMe for more information."
     );
   }
   if (conf.get("OPAL.opal.librariesDir") === "") {
     vscode.window.showErrorMessage(
-      "You have to configure your library folder first. Check ReadMe."
+      "You have to configure your library folder first. Check ReadMe for more information."
+    );
+  }
+  if (conf.get("OPAL.server.jar") === "") {
+    vscode.window.showErrorMessage(
+      "You have to configure your OPAL Command Server jar. Check ReadMe for more information."
     );
   }
 
