@@ -21,6 +21,19 @@ Server-assembly-X.X.X-SNAPSHOT.jar"
 For Linux and Mac users this jar can be found at
 "$HOME/.vscode/extensions/stg.java-bytecode-workbench-X.X.X/OPAL Command Server-assembly-X.X.X-SNAPSHOT.jar"
 
+Do not forget to seperate the settings with commas. A valid setting.json (on Windows) could look like this:
+
+```
+{
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "java.configuration.checkProjectSettingsExclusions": false,
+    "OPAL.opal.targetDir": "C:\\Users\\AUser\\Documents\\myProjekt",
+    "OPAL.opal.librariesDir": "C:\\Users\\AUser\\Documents\\myLibs",
+    "OPAL.server.jar": "C:\\Users\\AUser\\.vscode\\extensions\\stg.java-bytecode-workbench-0.1.3\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
+}
+```
+
 ##Usage
 1. VSCode file explorer context menu
 
