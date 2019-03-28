@@ -13,7 +13,7 @@ export default class OpalNodeProvider {
      */
     public static getClassesFromJar(jarPath : string) : string[] {
         //ToDo
-        return ["Testclass 1", "Testclass 2"];
+        return ["Class1", "Class2"];
     }
 
     /**
@@ -23,6 +23,6 @@ export default class OpalNodeProvider {
      */
     public static getMethodsForClass(classPath : string) : string[] {
         //ToDo
-        return ["Testmethod 1", "Testmethod 2", "Testmethod 3"];
+        return ["Method1", "Method2", "Method3"];
     }
 }
