@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import OpalNodeProvider from "./opalNodeProvider";
 
 /**
  * Class representing OpalNode
@@ -30,7 +31,7 @@ export class OpalNode extends vscode.TreeItem {
 		 * Setting contextValues and static Subnodes in
 		 * Depencency of data type
 		 */
-		if(label.includes("class")){
+		if(label.includes(".class")){
 			this.contextValue = "opalNodeClass";
 			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
 											{
@@ -46,6 +47,16 @@ export class OpalNode extends vscode.TreeItem {
 												arguments: [vscode.Uri.parse(path)]
 											}
 			)]);
+		} else if(label.includes(".jar")){
+			this.contextValue = "opalNodeJar";
+			let classes: string[];
+			classes = OpalNodeProvider.getClassesFromJar(path);
+			let childArray: OpalNode[];
+			childArray = [];
+			for(let i = 0; i < classes.length; i++){
+				childArray.push(new OpalNode("Class"+classes[i], vscode.TreeItemCollapsibleState.Collapsed, this._path+classes[i]));
+			}
+			this._children = childArray;
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
