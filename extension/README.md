@@ -10,9 +10,14 @@ Features include Java bytecode processing, engineering, manipulation and analysi
 (Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
 
 1.2. Add "OPAL.opal.targetDir": "Path to your project / target folder" 
+
 1.3. Add "OPAL.opal.librariesDir": "Path to your libraries folder"
+
 1.4. Add "OPAL.server.jar": "Path to your Opal Command Server jar"
-For Windows users this jar can be found at "%userprofile%\\.vscode\\extensions\\stg.java-bytecode-workbench-X.X.X\\OPAL Command Server-assembly-X.X.X-SNAPSHOT.jar"
+
+For Windows users this jar can be found at "%userprofile%\\.vscode\\extensions\\stg.java-bytecode-workbench-X.X.X\\OPAL Command 
+Server-assembly-X.X.X-SNAPSHOT.jar"
+
 For Linux and Mac users this jar can be found at
 "$HOME/.vscode/extensions/stg.java-bytecode-workbench-X.X.X/OPAL Command Server-assembly-X.X.X-SNAPSHOT.jar"
 
