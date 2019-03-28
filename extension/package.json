@@ -1,8 +1,14 @@
 {
-  "name": "opal-vscode-explorer",
-  "displayName": "opal vscode explorer",
+  "name": "java-bytecode-workbench",
+  "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.0.1",
+  "version": "0.1.4",
+  "publisher": "stg",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/delors/opal-vscode-explorer.git"
+  },
+  "license": "SEE LICENSE File",
   "engines": {
     "vscode": "^1.30.0"
   },
@@ -15,7 +21,7 @@
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
-    "workspaceContains:**/opal.config.json"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -35,7 +41,7 @@
             "type": [
               "string"
             ],
-            "default": ".vscode\\extensions\\stg.java-bytecode-workbench-0.0.12\\OPALCommand Server-assembly-0.1.0-SNAPSHOT.jar",
+            "default": "",
             "description": "Describes the path to the server jar. Example: C:\\USER\\Document\\Projects\\OPALCommandServer.jar"
           },
           "OPAL.server.options": {
@@ -73,7 +79,7 @@
       },
       {
         "command": "extension.menuJar",
-        "title": "Extract Jar..."
+        "title": "Extract Jar ..."
       },
       {
         "command": "extension.menuBC",
@@ -81,7 +87,7 @@
       },
       {
         "command": "extension.menuSvg",
-        "title": "SVG from file"
+        "title": "Callgraph ..."
       },
       {
         "command": "editor.printReferences",
@@ -170,18 +176,18 @@
           "group": "2_workspace"
         },
         {
-          "command": "extension.menuBC",
-          "when": "!explorerResourceIsFolder && resourceLangId == class",
-          "group": "2_workspace"
-        },
-        {
           "command": "extension.menuJar",
           "when": "!explorerResourceIsFolder && resourceLangId == jar",
           "group": "2_workspace"
         },
         {
           "command": "extension.menuSvg",
-          "when": "!explorerResourceIsFolder && resourceLangId == svg",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuBC",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
         }
       ]
@@ -205,6 +211,8 @@
     "@types/is-reachable": "^3.0.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
+    "@types/request": "^2.48.1",
+    "@types/request-promise-native": "^1.0.15",
     "chai": "^4.2.0",
     "is-reachable": "^3.0.0",
     "mocha": "*",
@@ -213,5 +221,20 @@
     "tslint": "^5.8.0",
     "typescript": "^3.1.4",
     "vscode": "^1.1.29"
+  },
+  "dependencies": {
+    "@types/is-reachable": "^3.0.0",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "@types/request": "^2.48.1",
+    "@types/request-promise-native": "^1.0.15",
+    "chai": "^4.2.0",
+    "directory-tree": "^2.2.1",
+    "is-reachable": "^3.0.0",
+    "mocha": "*",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "tslint": "^5.8.0",
+    "typescript": "^3.1.4"
   }
 }
