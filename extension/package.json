@@ -41,7 +41,7 @@
             "type": [
               "string"
             ],
-            "default": ".vscode\\extensions\\stg.java-bytecode-workbench-0.0.12\\OPALCommand Server-assembly-0.1.0-SNAPSHOT.jar",
+            "default": "",
             "description": "Describes the path to the server jar. Example: C:\\USER\\Document\\Projects\\OPALCommandServer.jar"
           },
           "OPAL.server.options": {
