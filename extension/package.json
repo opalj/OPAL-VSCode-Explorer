@@ -1,8 +1,14 @@
 {
-  "name": "opal-vscode-explorer",
-  "displayName": "opal vscode explorer",
+  "name": "java-bytecode-workbench",
+  "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.0.1",
+  "version": "0.0.15",
+  "publisher": "stg",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/delors/opal-vscode-explorer.git"
+  },
+  "license": "SEE LICENSE File",
   "engines": {
     "vscode": "^1.30.0"
   },
