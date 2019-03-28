@@ -15,7 +15,7 @@
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
-    "workspaceContains:**/opal.config.json"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
