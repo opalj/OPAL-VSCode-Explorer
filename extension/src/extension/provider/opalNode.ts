@@ -67,7 +67,7 @@ export class OpalNode extends vscode.TreeItem {
 				childArray.push(new OpalNode("Method: "+methods[i], vscode.TreeItemCollapsibleState.Collapsed, methods[i]));
 			}
 			this._children = childArray;
-		} else if(label.includes("Method:"){
+		} else if(label.includes("Method:")){
 			this.contextValue = "opalNodeJarMethod";
 			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
 											{
