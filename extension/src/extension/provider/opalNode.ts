@@ -54,11 +54,19 @@ export class OpalNode extends vscode.TreeItem {
 			let childArray: OpalNode[];
 			childArray = [];
 			for(let i = 0; i < classes.length; i++){
-				childArray.push(new OpalNode("Class"+classes[i], vscode.TreeItemCollapsibleState.Collapsed, this._path+classes[i]));
+				childArray.push(new OpalNode("Class: "+classes[i], vscode.TreeItemCollapsibleState.Collapsed, classes[i]));
 			}
 			this._children = childArray;
-		} else if(label.includes("Class")){
+		} else if(label.includes("Class:")){
 			this.contextValue = "opalNodeJarClass";
+			let methods: string[];
+			methods = OpalNodeProvider.getMethodsForClass(path);
+			let childArray: OpalNode[];
+			childArray = [];
+			for(let i = 0; i < methods.length; i++){
+				childArray.push(new OpalNode("Method: "+methods[i], vscode.TreeItemCollapsibleState.Collapsed, methods[i]));
+			}
+			this._children = childArray;
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
