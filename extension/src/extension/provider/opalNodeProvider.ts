@@ -4,7 +4,7 @@ import { OpalNode } from "./opalNode";
 import { CommandService } from '../service/command.service';
 import OpalConfig from '../opal.config';
  */
-export class OpalNodeProvider {
+export default class OpalNodeProvider {
     
     /**
      * this method expects the path to a jar file
@@ -12,9 +12,17 @@ export class OpalNodeProvider {
      * class files (containing file name and file extension!)
      */
     public static getClassesFromJar(jarPath : string) : string[] {
-        /** let oConfig = new OpalConfig();
-        oConfig.loadConfig();
-        let cService = new CommandService(oConfig.getConfig().server.url);*/
-            return [];
+        //ToDo
+        return ["Testclass 1", "Testclass 2"];
+    }
+
+    /**
+     * this method expects the path to a class file (inside and 
+     * relative to a a jar) and returns an Array of its methods
+     * 
+     */
+    public static getMethodsForClass(classPath : string) : string[] {
+        //ToDo
+        return ["Testmethod 1", "Testmethod 2", "Testmethod 3"];
     }
 }
