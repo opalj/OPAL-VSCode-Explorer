@@ -6,10 +6,11 @@ Features include Java bytecode processing, engineering, manipulation and analysi
 ##Before you start
 1. Please configure the necessary settings as follows:
 
-1.1. Open File > Preferences > Settings > OPAL VSCode Explorer: Set the following paths as in our example
+1.1. (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
+(Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
 
 1.2. Add "OPAL.opal.targetDir": "C:\\Users\\Documents\\Projectfolder" 
-1.3. Add "OPAL.opal.librariesDir": "C:\\Users\\Documents\\Libraries"
+1.3. Add "OPAL.opal.librariesDir": "C:\\Users\\Documents\\LibrariesFolder"
 
 ##Usage
 1. VSCode file explorer context menu
