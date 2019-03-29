@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as npmPath from "path";
 var fs = require('file-system');
-const osHomedir = require('os-homedir');
 
 
 /**
@@ -11,7 +10,6 @@ export default class SettingService {
 
     public static setDefaults(activationContext: vscode.ExtensionContext){
       const conf = vscode.workspace.getConfiguration();
-      console.log("User's home directory at " + osHomedir);
 
       if (conf.get("OPAL.opal.targetDir") === "") {
           conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
@@ -20,9 +18,9 @@ export default class SettingService {
           conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
       }
       if (conf.get("OPAL.server.jar") === "") {
-          let version = this.getCurrentVersion(activationContext);
-          let jarPath = ""+osHomedir+"/.vscode/extensions/stg.java-bytecode-workbench-"
-                          +version+"/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar";
+          console.log(activationContext.extensionPath);
+          let jarPath = ""+activationContext.extensionPath+"/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar";
+          
           conf.update("OPAL.server.jar", jarPath, true);
       }
     }
