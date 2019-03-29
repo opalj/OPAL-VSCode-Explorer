@@ -30,9 +30,9 @@ Features include Java bytecode processing, engineering, manipulation and analysi
 
 ### Examples, how to change settings
 
-1.2. Add "OPAL.opal.targetDir": "Path to your project / target folder" 
+1.2. Add "OPAL.opal.targetDirs": "Paths to your project / target folders seperated by ';'" 
 
-1.3. Add "OPAL.opal.librariesDir": "Path to your libraries folder"
+1.3. Add "OPAL.opal.librariesDirs": "Paths to your libraries folders sperated by ';'" 
 
 1.4. Add "OPAL.server.jar": "Path to your Opal Command Server jar"
 
@@ -49,8 +49,8 @@ Do not forget to seperate the settings with commas. A valid setting.json (on Win
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "java.configuration.checkProjectSettingsExclusions": false,
-    "OPAL.opal.targetDir": "C:\\Users\\AUser\\Documents\\myProjekt",
-    "OPAL.opal.librariesDir": "C:\\Users\\AUser\\Documents\\myLibs",
+    "OPAL.opal.targetDirs": "C:\\Users\\AUser\\Documents\\myProject;C:\\Users\\AUser\\Documents\\secondProject",
+    "OPAL.opal.librariesDirs": "C:\\Users\\AUser\\Documents\\myLibs;C:\\Users\\AUser\\otherLibs\\",
     "OPAL.server.jar": "C:\\Users\\AUser\\.vscode\\extensions\\stg.java-bytecode-workbench-0.1.3\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
 }
 ```
