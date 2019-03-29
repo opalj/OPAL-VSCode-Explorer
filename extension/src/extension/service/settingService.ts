@@ -20,6 +20,7 @@ export default class SettingService {
           conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
       }
       if (conf.get("OPAL.server.jar") === "") {
+          let version = this.getCurrentVersion(activationContext);
           let jarPath = ""+osHomedir+"/.vscode/extensions/stg.java-bytecode-workbench-"
                           +version+"/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar";
           conf.update("OPAL.server.jar", jarPath, true);
