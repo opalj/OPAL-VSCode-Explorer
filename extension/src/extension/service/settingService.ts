@@ -9,41 +9,23 @@ const osHomedir = require('os-homedir');
  */
 export default class SettingService {
 
-    public static setDefaults(activationContext: vscode.ExtensionContext){
-        const conf = vscode.workspace.getConfiguration();
-        let version : string;
-        console.log("User's home directory at " + osHomedir);
+  public static setDefaults(activationContext: vscode.ExtensionContext){
+    const conf = vscode.workspace.getConfiguration();
+    console.log("User's home directory at " + osHomedir);
 
-        var packageJsonFile = JSON.parse(fs.readFileSync(npmPath.join(activationContext.extensionPath, "package.json"), 'utf8'));
-
-        if (packageJsonFile) {
-            version = packageJsonFile.version;
-            console.log("Active Extension Version: " + packageJsonFile.version);
-        } else {
-          console.log("Something went wrong with fetching the active version, setting it statically...");
-          console.log("This could cause setting errors which require manually changing settings.");
-          let extension : vscode.Extension<any>;
-          extension = <any>vscode.extensions.getExtension("java-bytecode-workbench");
-          if(extension){
-            version = extension.packageJSON.version;
-          } else {
-            vscode.window.showErrorMessage(
-              "Configuring the Opal Server jar path failed. Please do so manually. Check ReadMe for more information."
-            );
-          }
-        }
-
-
-        if (conf.get("OPAL.opal.targetDir") === "") {
-            conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
-          }
-          if (conf.get("OPAL.opal.librariesDir") === "") {
-            conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
-          }
-          if (conf.get("OPAL.server.jar") === "") {
-            let jarPath = ""+osHomedir+"/.vscode/extensions/stg.java-bytecode-workbench-0.1.3"
-          }
+    if (conf.get("OPAL.opal.targetDir") === "") {
+        conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
     }
+    if (conf.get("OPAL.opal.librariesDir") === "") {
+        conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
+    }
+    if (conf.get("OPAL.server.jar") === "") {
+        let jarPath = ""+osHomedir+"/.vscode/extensions/stg.java-bytecode-workbench-"
+                        +version+"/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar";
+        conf.update("OPAL.server.jar", jarPath, true);
+    }
+  }
+
 
     public static checkContent(){
         const conf = vscode.workspace.getConfiguration();
