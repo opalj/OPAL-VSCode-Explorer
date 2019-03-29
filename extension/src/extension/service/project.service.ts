@@ -103,14 +103,19 @@ export class ProjectService {
     }
 
     /**
-     * Get alle jar Files in the libraries dir path
-     * @param librariesDirPath Path to the folder which contains libraries
+     * Get all jar files in the libraries dir paths
+     * @param librariesDirPaths Paths to the folder which contains libraries
      */
-    async getLibraries(librariesDirPath : string) {
-        var libraries = await workspace.findFiles(new RelativePattern(librariesDirPath, "*.jar"));
+    async getLibraries(librariesDirPaths : string) {
+        let libFolders = [];
+        libFolders = librariesDirPaths.split(";");
         var librariePaths = [];
-        for (let librarie of libraries) {
-            librariePaths.push(librarie.fsPath);
+
+        for(let i = 0; i < libFolders.length; i++){
+            var libraries = await workspace.findFiles(new RelativePattern(libFolders[i], "*.jar"));
+            for (let librarie of libraries) {
+                librariePaths.push(librarie.fsPath);
+            }
         }
         return librariePaths;
     }
