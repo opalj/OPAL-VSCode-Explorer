@@ -39,7 +39,9 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      * Get the Logs from OPAl
      */
     def getLog() : String = {
-        logger.getLogs;
+        var logs = logger.getLogs;
+        logger.flushLogs();
+        logs;
     }
 
     /**
@@ -121,7 +123,7 @@ class StringLogger extends OPALLogger {
     protected var logCache = "";
 
     override def log(message: LogMessage)(implicit ctx: LogContext): Unit = {
-        logCache = message.message;
+        logCache = logCache + message.message + "\n";
     }
 
     def flushLogs()  : Unit = {
