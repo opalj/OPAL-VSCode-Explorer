@@ -51,12 +51,12 @@
             "default": "",
             "description": "Java parameter for the OPAL Server."
           },
-          "OPAL.opal.targetDirs": {
+          "OPAL.opal.targetDir": {
             "type": [
               "string"
             ],
             "default": "",
-            "description": "This option sets the project directories, seperated by ';'. E.g. 'C:\\USER\\Document\\Projects\\Project1;C:\\USER\\Document\\Projects\\Project2'."
+            "description": "This option sets the project directory. E.g. 'C:\\USER\\Document\\Projects\\myProject'."
           },
           "OPAL.opal.librariesDirs": {
             "type": [
