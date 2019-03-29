@@ -63,8 +63,7 @@ export default class TACDocument {
       fileName = fileName.replace(".class", "");
       var fqn = this._tacService.getFQN(
         this._target.fsPath,
-        this._opalConfig.get("OPAL.opal.targetDir"),
-        fileName
+        this._opalConfig.get("OPAL.opal.targetDir")
       );
       //Request TAC for Class
       vscode.window.showInformationMessage(

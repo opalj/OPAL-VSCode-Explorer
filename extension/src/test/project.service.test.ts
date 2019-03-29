@@ -3,7 +3,7 @@ import { ProjectService } from '../extension/service/project.service';
 var config = require('./../../opal.config.json');
 
 suite("OPAL Initialization Test Suit", function () {
-    this.timeout(10000);
+    this.timeout(20000);
     test('opal load project no fail', (done) => {
         var projectService = new ProjectService(config.server.url, "/bla/projects/projectX");
         var message = {
@@ -26,6 +26,14 @@ suite("OPAL Initialization Test Suit", function () {
             }).catch(function (error) {
                 console.log(error);
             });
+        });
+    });
+
+    test("opal project load libs", (done) => {
+        var projectService = new ProjectService(config.server.url, "/bla/projects/projectX");
+        projectService.getLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar").then(function (libs) {
+            done();
+            expect(libs[0]).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar");
         });
     });
 });

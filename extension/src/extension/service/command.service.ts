@@ -50,7 +50,7 @@ export class CommandService {
     /**
      * Get the request body for requesting TAC for a function
      * Check /server/src/main/scala/opal/vscode/model.scala for Details
-     * TACForMethod(projectId:String, fqn: String, methodName:String, descriptor : String)
+     * TACForMethod(projectId:String, fqn: String, methodName:Strinring)
      */
     getTACForMethodMessage() {
         return {};
@@ -73,7 +73,7 @@ export class CommandService {
      * Get fqn path for file
      * @param targetFilePath Path to target file
      */
-    getFQN(targetFilePath : string, targetsDir : string, fileName : string) : string {
+    getFQN(targetFilePath : string, targetsDir : string) : string {
         let targetFileParts = this.getPathParts(targetFilePath);
         let targetsDirParts = this.getPathParts(targetsDir);
 
@@ -81,13 +81,15 @@ export class CommandService {
         console.log(targetsDirParts);
 
         let path = "";
+        /*
         if (targetFileParts !== null && targetsDirParts !== null) {
             targetFileParts = targetFileParts.filter(function(filePart) {
                 return targetsDirParts.indexOf(filePart) < 0 && targetsDirParts.indexOf(filePart.toLocaleUpperCase()) < 0;
             });
             path = targetFileParts.join("/");
-        }
-
+        }*/
+        targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
+        path = targetFileParts.join("/");
         return path.replace("/class", "");
     }
 

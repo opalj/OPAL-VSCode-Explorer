@@ -88,6 +88,10 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 * @param root root path
 	 */
 	public setOpalNodeTree(root : string)  : OpalNode | undefined {
+		if (root === null || root === undefined) {
+			vscode.window.showErrorMessage("Workspace root is Empty!");
+			return undefined;
+		}
 		//iterate over directory content
 		const tree = dirTree(root, {normalizePath:true});
 		var subOpalNodes = [];
