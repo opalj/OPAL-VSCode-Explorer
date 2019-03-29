@@ -20,13 +20,19 @@ build:
         - java -jar './target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' & 
         - cd ..
         - cd extension
-        - npm install typescript -g
         - npm install
         - npm run postinstall
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
         - cd ..
-integrations:                               
+    on_success:
+        - git config --global --unset-all core.askpass
+        - npm install -g vsce
+        - cp 'server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' extension/
+        - cd extension
+        - vsce package
+        - vsce publish -p $VSCE_TOKEN
+integrations:
   notifications:
     - integrationName: email
       type: email
@@ -34,7 +40,7 @@ integrations:
         - laserconone@tu.katrin.rabow.eu
       sendFailingSnippet: true
       on_success: change
-      on_failure: always
+      on_failure: change
       on_cancel: never
       on_start: never
       on_pull_request: always

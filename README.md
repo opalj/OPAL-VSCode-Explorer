@@ -6,14 +6,14 @@ Features include Java bytecode processing, engineering, manipulation and analysi
 ##Before you start
 1.0 Please configure the necessary settings as follows:
 
-1.1 (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
+1.1. (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
 (Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
 
-1.2 Add "OPAL.opal.targetDir": "Path to your project / target folder" 
+1.2. Add "OPAL.opal.targetDir": "Path to your project / target folder" 
 
-1.3 Add "OPAL.opal.librariesDir": "Path to your libraries folder"
+1.3. Add "OPAL.opal.librariesDir": "Path to your libraries folder"
 
-1.4 Add "OPAL.server.jar": "Path to your Opal Command Server jar"
+1.4. Add "OPAL.server.jar": "Path to your Opal Command Server jar"
 
 For Windows users this jar can be found at "%userprofile%\\.vscode\\extensions\\stg.java-bytecode-workbench-X.X.X\\OPAL Command 
 Server-assembly-X.X.X-SNAPSHOT.jar"
@@ -41,7 +41,6 @@ Do not forget to seperate the settings with commas. A valid setting.json (on Win
 
 1.2 "Three-Address-Code ..." to open its three-address-code
 
-1.3 "Bytecode ..." to open its bytecode
 
 2.0 Opal Explorer - Tree-View (lens symbol inside the activitybar)
 

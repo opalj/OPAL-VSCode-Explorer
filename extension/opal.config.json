@@ -1,0 +1,17 @@
+{
+    "server" : {
+        "url" : "http://localhost:8080",
+        "jar": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar",
+        "jaroptions" : ""
+    },
+    "opal": {
+        "targetsDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy",
+        "librariesDir": "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy",
+        "config": {"key":"value"}
+    },
+    "extension": {
+        "serverJarPath": ".vscode\\extensions\\stg.java-bytecode-workbench-0.0.12\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar",
+        "jarOptions" : "",
+        "jarExtractionFolder":"C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\.vscode"
+    }
+}
