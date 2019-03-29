@@ -3,11 +3,32 @@
 This extension aims to bring the advantages of [Opal-Project](http://www.opal-project.de/) into VSCode.
 Features include Java bytecode processing, engineering, manipulation and analysis functionality like three-address-code oder bytecode view.
 
-##Before you start
-1. Please configure the necessary settings as follows:
+##Usage
+1.0 VSCode file explorer context menu
 
-1.1. (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
-(Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer: Set the following paths as in our example
+1.1 Right click a class file in your file explorer and choose
+
+1.2 "Three-Address-Code ..." to open its three-address-code
+
+
+2.0 Opal Explorer - Tree-View (lens symbol inside the activitybar)
+
+
+2.1. Find and select the class you wish to analyze
+
+2.1.1. By choosing the Three-Address-Code node you can open the desired representation
+
+##Configuration
+
+1.0 There are several settings, you can change to your desires:
+
+### Find the settings
+
+1.1. (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer
+
+(Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer
+
+### Examples, how to change settings
 
 1.2. Add "OPAL.opal.targetDir": "Path to your project / target folder" 
 
@@ -33,19 +54,3 @@ Do not forget to seperate the settings with commas. A valid setting.json (on Win
     "OPAL.server.jar": "C:\\Users\\AUser\\.vscode\\extensions\\stg.java-bytecode-workbench-0.1.3\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
 }
 ```
-
-##Usage
-1. VSCode file explorer context menu
-
-1.1 Right click a class file in your file explorer and choose
-
-1.2 "Three-Address-Code ..." to open its three-address-code
-
-
-2 . Opal Explorer - Tree-View (lens symbol inside the activitybar)
-
-
-2.1. Find and select the class you wish to analyze
-
-2.1.1. By choosing the Three-Address-Code node you can open the desired representation
-
