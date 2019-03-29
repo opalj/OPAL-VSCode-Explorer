@@ -8,14 +8,14 @@ var fs = require('file-system');
  */
 export default class SettingService {
 
-    public static setDefaults(activationContext: vscode.ExtensionContext){
+    public static async setDefaults(activationContext: vscode.ExtensionContext){
       const conf = vscode.workspace.getConfiguration();
 
       if (conf.get("OPAL.opal.targetDir") === "") {
-          conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
+          await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
       }
       if (conf.get("OPAL.opal.librariesDir") === "") {
-          conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
+        await conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
       }
       if (conf.get("OPAL.server.jar") === "") {
           console.log(activationContext.extensionPath);
@@ -33,8 +33,9 @@ export default class SettingService {
             }
           }
           console.log("OPAL Command Server jar at "+ jarPath);
-          conf.update("OPAL.server.jar", jarPath, true);
+          await conf.update("OPAL.server.jar", jarPath, true);
       }
+      return vscode.workspace.getConfiguration();
     }
 
     public static getCurrentVersion(activationContext: vscode.ExtensionContext) : string {
