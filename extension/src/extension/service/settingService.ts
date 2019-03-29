@@ -8,9 +8,15 @@ var fs = require('file-system');
  */
 export default class SettingService {
 
+    /**
+     * Method to set default settings which depend on workspace, OS
+     * and other local dependecies
+     * @param activationContext extensions actviation context
+     */
     public static async setDefaults(activationContext: vscode.ExtensionContext){
       const conf = vscode.workspace.getConfiguration();
 
+      //check for settings, if not already set, set them
       if (conf.get("OPAL.opal.targetDir") === "") {
           await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
       }
@@ -19,16 +25,16 @@ export default class SettingService {
       }
       if (conf.get("OPAL.server.jar") === "") {
           console.log(activationContext.extensionPath);
+
+          //get extension folder path
           let jarPath = ""+activationContext.extensionPath;
-          var files = fs.readdirSync(jarPath);
-          for(let i = 0; i < files.length; i++){
-            if(files[i].includes("stg.java-bytecode-workbench")){
-              jarPath = jarPath+"/"+files[i]+"/"; 
-            }
-          }
-          files = fs.readdirSync(jarPath);
+          
+          //read content of extension folder path
+          let files = fs.readdirSync(jarPath);
+          //search for Opal Command Server jar
           for(let i = 0; i < files.length; i++){
             if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
+              //if found, add it to jar path
               jarPath = jarPath+"/"+files[i]; 
             }
           }
@@ -38,23 +44,34 @@ export default class SettingService {
       return vscode.workspace.getConfiguration();
     }
 
+    /**
+     * Method to get current version of extension
+     * @param activationContext 
+     */
     public static getCurrentVersion(activationContext: vscode.ExtensionContext) : string {
       let version : string;
       version = "";
+
+      //Try to get packageJson from extension folder
       var packageJsonFile = JSON.parse(fs.readFileSync(npmPath.join
               (activationContext.extensionPath, "package.json"), 'utf8'));
 
       if (packageJsonFile) {
+        //set version, if successfull
         version = packageJsonFile.version;
         console.log("Active Extension Version: " + packageJsonFile.version);
       } else {
+        //set version statically if above failed
         console.log("Something went wrong with fetching the active version, setting it statically...");
         console.log("This could cause setting errors which require manually changing settings.");
+        //Try to get extension by its id
         let extension : vscode.Extension<any>;
         extension = <any>vscode.extensions.getExtension("java-bytecode-workbench");
         if(extension){
+          //set version, if successfull
           version = extension.packageJSON.version;
         } else {
+          //show error message, if not
           vscode.window.showErrorMessage(
             "Error at configuring settings. Please do so manually. Check ReadMe for more information."
           );
@@ -63,17 +80,16 @@ export default class SettingService {
       return version;
     }
 
+    /**
+     * Method to check, whether the locally dependent settings are set
+     */
     public static checkContent(){
         const conf = vscode.workspace.getConfiguration();
-      	if (conf.get("OPAL.opal.targetDir") === "" && conf.get("OPAL.opal.librariesDir") === "" && conf.get("OPAL.server.jar") === "") {
-          console.log("First startup detected, refreshing settings!");
-          vscode.commands.executeCommand('workbench.action.reloadWindow');
-        } else if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
+      	//check for empty fields in settings and report them
+        if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
+            
             vscode.window.showErrorMessage(
-              "If this is your first startup: Please restart VSCode."
-            );
-            vscode.window.showErrorMessage(
-              "If your already restarted, please setup manually. Check the extensions readme for more information."
+              "Invalid settings, please reconfigure them manually. Check the extension's readme for more information."
             );
         }
     }
