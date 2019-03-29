@@ -32,7 +32,7 @@ export default class SettingService {
               jarPath = jarPath+"/"+files[i]; 
             }
           }
-          console.log("OPAL Command Server jar at "+jarPath);
+          console.log("OPAL Command Server jar at "+ jarPath);
           conf.update("OPAL.server.jar", jarPath, true);
       }
     }
@@ -64,8 +64,10 @@ export default class SettingService {
 
     public static checkContent(){
         const conf = vscode.workspace.getConfiguration();
-
-        if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
+      	if (conf.get("OPAL.opal.targetDir") === "" && conf.get("OPAL.opal.librariesDir") === "" && conf.get("OPAL.server.jar") === "") {
+          console.log("First startup detected, refreshing settings!");
+          vscode.commands.executeCommand('workbench.action.reloadWindow');
+        } else if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
             vscode.window.showErrorMessage(
               "If this is your first startup: Please restart VSCode."
             );
