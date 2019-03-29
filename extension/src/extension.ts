@@ -95,7 +95,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // get opal init message
   var opalLoadMessage = await projectService.getOPALLoadMessage(
     conf.get("OPAL.opal.targetDir"),
-    conf.get("OPAL.opal.librariesDir"),
+    conf.get("OPAL.opal.librariesDirs"),
     {}
   );
 
