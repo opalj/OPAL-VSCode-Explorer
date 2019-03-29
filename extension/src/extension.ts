@@ -24,12 +24,9 @@ export async function activate(context: vscode.ExtensionContext) {
   var projectId = await getProjectId();
   console.log(projectId);
   /**
-   * Setup the Config
+   * Setup and get the Config
    */
   const conf = await SettingService.setDefaults(context);
-  //checking and getting setup
-  // SettingService.checkContent();
-  // const conf = vscode.workspace.getConfiguration();
 
   /**
    * Get the Providers and register them to there sheme
@@ -213,13 +210,18 @@ export async function activate(context: vscode.ExtensionContext) {
     "extension.menuJar",
     async (uri: vscode.Uri) => {
       vscode.window.showInformationMessage("Extracting Jar ...");
+
+      //get folder und filename
       var jarFolder = npmPath.parse(uri.fsPath).dir;
       var fileName = npmPath.parse(uri.fsPath).base;
       console.log(fileName);
       vscode.window.showInformationMessage(fileName);
 
+      //open new terminal
       var jarTerminal = vscode.window.createTerminal("Jar Extractor");
       jarTerminal.show(false);
+
+      //issue commands to extract jar into the desired folder
       jarTerminal.sendText(
         "mkdir " +
           jarFolder.replace(/\\/g, "/") +
@@ -243,9 +245,11 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.Uri.parse(<string>vscode.workspace.rootPath)
   );
   vscode.window.showInformationMessage("Package Explorer is loading...");
+  //register Opal Tree View
   vscode.window.registerTreeDataProvider("package-explorer", pVP);
   vscode.window.showInformationMessage("Package Explorer is ready.");
 
+  //add commands to this extension's context
   context.subscriptions.push(
     menuTacCommand,
     menuBCCommand,
@@ -258,10 +262,17 @@ export async function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
+/**
+ * Method for issueing delay
+ * @param ms delay in ms
+ */
 async function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Method for getting current Project ID
+ */
 async function getProjectId() {
   var wsFolders = vscode.workspace.workspaceFolders;
   if (wsFolders !== undefined) {
