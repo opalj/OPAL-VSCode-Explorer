@@ -19,8 +19,20 @@ export default class SettingService {
       }
       if (conf.get("OPAL.server.jar") === "") {
           console.log(activationContext.extensionPath);
-          let jarPath = ""+activationContext.extensionPath+"/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar";
-          
+          let jarPath = ""+activationContext.extensionPath;
+          var files = fs.readdirSync(jarPath);
+          for(let i = 0; i < files.length; i++){
+            if(files[i].includes("stg.java-bytecode-workbench")){
+              jarPath = jarPath+"/"+files[i]+"/"; 
+            }
+          }
+          files = fs.readdirSync(jarPath);
+          for(let i = 0; i < files.length; i++){
+            if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
+              jarPath = jarPath+"/"+files[i]; 
+            }
+          }
+          console.log("OPAL Command Server jar at "+jarPath);
           conf.update("OPAL.server.jar", jarPath, true);
       }
     }
