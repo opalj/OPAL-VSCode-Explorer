@@ -55,20 +55,13 @@ export default class SettingService {
     public static checkContent(){
         const conf = vscode.workspace.getConfiguration();
 
-        if (conf.get("OPAL.opal.targetDir") === "") {
+        if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
             vscode.window.showErrorMessage(
-              "You have to configure your project folder first. Check ReadMe for more information."
+              "If this is your first startup: Please restart VSCode."
             );
-          }
-          if (conf.get("OPAL.opal.librariesDir") === "") {
             vscode.window.showErrorMessage(
-              "You have to configure your library folder first. Check ReadMe for more information."
+              "If your already restarted, please setup manually. Check the extensions readme for more information."
             );
-          }
-          if (conf.get("OPAL.server.jar") === "") {
-            vscode.window.showErrorMessage(
-              "You have to configure your OPAL Command Server jar. Check ReadMe for more information."
-            );
-          }
+        }
     }
 }
