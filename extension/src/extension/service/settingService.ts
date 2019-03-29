@@ -16,10 +16,8 @@ export default class SettingService {
     public static async setDefaults(activationContext: vscode.ExtensionContext){
       const conf = vscode.workspace.getConfiguration();
 
-      //check for settings, if not already set, set them
-      if (conf.get("OPAL.opal.targetDir") === "") {
-          await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
-      }
+      //in every case: adjust current rootPath
+      await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
       if (conf.get("OPAL.opal.librariesDirs") === "") {
         await conf.update("OPAL.opal.librariesDirs", vscode.workspace.rootPath, true);
       }

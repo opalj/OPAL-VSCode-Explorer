@@ -30,7 +30,7 @@ Features include Java bytecode processing, engineering, manipulation and analysi
 
 ### Examples, how to change settings
 
-1.2. Add "OPAL.opal.targetDir": "Paths to your project / target folder" 
+1.2. Add "OPAL.opal.targetDir": "Path to your project / target folder" 
 
 1.3. Add "OPAL.opal.librariesDirs": "Paths to your libraries folders sperated by ';'" 
 
