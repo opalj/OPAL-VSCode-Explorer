@@ -10,6 +10,7 @@ import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
 import SVGDocument from "./extension/provider/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
+import SettingService from "./extension/service/settingService";
 
 const isReachable = require("is-reachable");
 
@@ -23,25 +24,12 @@ export async function activate(context: vscode.ExtensionContext) {
   var projectId = await getProjectId();
   console.log(projectId);
   /**
-   * Get the config
+   * Setup the Config
    */
+  SettingService.setDefaults(context);
+  //checking and getting setup
+  SettingService.checkContent();
   const conf = vscode.workspace.getConfiguration();
-
-  if (conf.get("OPAL.opal.targetDir") === "") {
-    vscode.window.showErrorMessage(
-      "You have to configure your project folder first. Check ReadMe for more information."
-    );
-  }
-  if (conf.get("OPAL.opal.librariesDir") === "") {
-    vscode.window.showErrorMessage(
-      "You have to configure your library folder first. Check ReadMe for more information."
-    );
-  }
-  if (conf.get("OPAL.server.jar") === "") {
-    vscode.window.showErrorMessage(
-      "You have to configure your OPAL Command Server jar. Check ReadMe for more information."
-    );
-  }
 
   /**
    * Get the Providers and register them to there sheme
