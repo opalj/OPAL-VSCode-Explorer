@@ -28,8 +28,9 @@ export async function activate(context: vscode.ExtensionContext) {
    */
 
   //checking setup
+  
   SettingService.checkContent();
-
+  const conf = vscode.workspace.getConfiguration();
   /**
    * Get the Providers and register them to there sheme
    */
