@@ -17,11 +17,11 @@ export default class SettingService {
       const conf = vscode.workspace.getConfiguration();
 
       //check for settings, if not already set, set them
-      if (conf.get("OPAL.opal.targetDir") === "") {
-          await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
+      if (conf.get("OPAL.opal.targetDirs") === "") {
+          await conf.update("OPAL.opal.targetDirs", vscode.workspace.rootPath, true);
       }
-      if (conf.get("OPAL.opal.librariesDir") === "") {
-        await conf.update("OPAL.opal.librariesDir", vscode.workspace.rootPath, true);
+      if (conf.get("OPAL.opal.librariesDirs") === "") {
+        await conf.update("OPAL.opal.librariesDirs", vscode.workspace.rootPath, true);
       }
       if (conf.get("OPAL.server.jar") === "") {
           console.log(activationContext.extensionPath);
@@ -86,7 +86,7 @@ export default class SettingService {
     public static checkContent(){
         const conf = vscode.workspace.getConfiguration();
       	//check for empty fields in settings and report them
-        if (conf.get("OPAL.opal.targetDir") === "" || conf.get("OPAL.opal.librariesDir") === "" || conf.get("OPAL.server.jar") === "") {
+        if (conf.get("OPAL.opal.targetDirs") === "" || conf.get("OPAL.opal.librariesDirs") === "" || conf.get("OPAL.server.jar") === "") {
             
             vscode.window.showErrorMessage(
               "Invalid settings, please reconfigure them manually. Check the extension's readme for more information."
