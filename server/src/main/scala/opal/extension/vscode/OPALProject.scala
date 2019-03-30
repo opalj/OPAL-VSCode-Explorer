@@ -63,7 +63,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
 
         if (cf.isEmpty) {
-            res = "Class File for "+tacForClass.fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+            res = "Class File for fqn = "+tacForClass.fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
         } else {
             cf.get.methods.foreach({
                 m => 
