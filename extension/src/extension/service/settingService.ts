@@ -15,13 +15,33 @@ export default class SettingService {
      */
     public static async setDefaults(activationContext: vscode.ExtensionContext){
       const conf = vscode.workspace.getConfiguration();
-
+      let oldWorkspace = <string>conf.get("OPAL.opal.targetDir");
       //in every case: adjust current rootPath
       await conf.update("OPAL.opal.targetDir", vscode.workspace.rootPath, true);
       if (conf.get("OPAL.opal.librariesDirs") === "") {
+        //if empty, set it to current workspace root
         await conf.update("OPAL.opal.librariesDirs", vscode.workspace.rootPath, true);
+      } else if ((<string>conf.get("OPAL.opal.librariesDirs")).includes(oldWorkspace)) {
+        //if containing workspace root (and maybe persistend external library directories)
+        let newFolders : string;
+        newFolders = "";
+        let oldFolders = (<string>conf.get("OPAL.opal.librariesDirs")).split(";");
+        for(let i = 0; i < oldFolders.length; i++){
+          if(oldFolders[i] === oldWorkspace){
+            //replace old workspace root in librariesDirs with new one
+            oldFolders[i] = <string> vscode.workspace.rootPath;
+          }
+          if(newFolders === ""){
+            //set start of librariesDirs
+            newFolders = oldFolders[i];
+          } else {
+            //add the rest of librariesDirs
+            newFolders = newFolders+";"+oldFolders[i];
+          }
+        }
+        console.log("New LibDirs set to: " + newFolders);
       }
-      if (conf.get("OPAL.server.jar") === "") {
+      if (conf.get("OPAL.server.jar") === "" || !(<string>conf.get("OPAL.server.jar")).includes(".jar")) {
           //get extension folder path
           let jarPath = ""+activationContext.extensionPath;
           
