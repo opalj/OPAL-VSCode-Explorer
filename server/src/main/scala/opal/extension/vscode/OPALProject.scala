@@ -63,7 +63,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
 
         if (cf.isEmpty) {
-            res = "Class File for "+tacForClass.fqn+" not found!";
+            res = "Class File for "+tacForClass.fqn+" not found!\nPlease make sure your Workspace root is the root of the targets direcotry e.g. classes/";
         } else {
             cf.get.methods.foreach({
                 m => 
@@ -73,9 +73,6 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 res += ToTxt(m)
                 res += "\n}\n"
             })
-            //val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
-            //var res = "";
-            //tacArray.foreach(res += ToTxt(_).mkString("\n"));
             res + "\n"
         }
         res

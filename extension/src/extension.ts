@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * The Project ID is the fs Path to the Project
    */
   var projectId = await getProjectId();
-  console.log(projectId);
+  
   /**
    * Setup and get the Config
    */
