@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import OpalNodeProvider from "./opalNodeProvider";
+//import OpalNodeProvider from "./opalNodeProvider";
 
 /**
  * Class representing OpalNode
