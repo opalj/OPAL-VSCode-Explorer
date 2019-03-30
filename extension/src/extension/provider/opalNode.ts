@@ -39,15 +39,15 @@ export class OpalNode extends vscode.TreeItem {
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-			),
+			)/**,
 			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
 											{
 												command: 'extension.menuBC',
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-			)]);
-		} else if(label.includes(".jar")){
+										)*/]);
+		} /** else if(label.includes(".jar")){
 			this.contextValue = "opalNodeJar";
 			let classes: string[];
 			classes = OpalNodeProvider.getClassesFromJar(path);
@@ -83,7 +83,7 @@ export class OpalNode extends vscode.TreeItem {
 												arguments: [] //add Arguments for getBCForMethod call
 											}
 			)]);
-		} else if(label=== "Three-Address-Code"){
+		} */else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
 			this.contextValue = "opalNodeBC";

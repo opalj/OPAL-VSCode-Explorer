@@ -108,10 +108,10 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 					if(tree.children[i].extension === ".class"){
 						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
 						subOpalNodes.push(resTmp);
-					} else if(tree.children[i].extension === ".jar"){
+					}/**  else if(tree.children[i].extension === ".jar"){
 						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
 						subOpalNodes.push(resTmp);
-					}
+					}*/
 				}
 			}
 			//create OpalNode for root
