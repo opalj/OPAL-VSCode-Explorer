@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "publisher": "stg",
   "repository": {
     "type": "git",
@@ -178,16 +178,6 @@
         {
           "command": "extension.menuJar",
           "when": "!explorerResourceIsFolder && resourceLangId == jar",
-          "group": "2_workspace"
-        },
-        {
-          "command": "extension.menuSvg",
-          "when": "!explorerResourceIsFolder && resourceLangId == class",
-          "group": "2_workspace"
-        },
-        {
-          "command": "extension.menuBC",
-          "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
         }
       ]
