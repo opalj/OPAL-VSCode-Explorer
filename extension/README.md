@@ -1,24 +1,18 @@
 # opal-vscode-explorer README
-##Description
+## Description
 This extension aims to bring the advantages of [Opal-Project](http://www.opal-project.de/) into VSCode.
 Features include Java bytecode processing, engineering, manipulation and analysis functionality like three-address-code oder bytecode view.
 
-##Usage
-1.0 VSCode file explorer context menu
+## Usage
+Open the classes Folder in your projects target directory. 
+The server should start and load the project.
+After the project ist loaded you have two options:
 
-1.1 Right click a class file in your file explorer and choose
+1. At the VSCode file explorer context menu right click a class file in your file explorer and choose "Three-Address-Code ..." to open its three-address-code
 
-1.2 "Three-Address-Code ..." to open its three-address-code
+2. At the Opal Explorer Tree-View (lens symbol inside the activitybar) find and select the class you wish to analyze by choosing the Three-Address-Code node you can open the desired representation
 
-
-2.0 Opal Explorer - Tree-View (lens symbol inside the activitybar)
-
-
-2.1. Find and select the class you wish to analyze
-
-2.1.1. By choosing the Three-Address-Code node you can open the desired representation
-
-##Configuration
+## Configuration
 
 1.0 There are several settings, you can change to your desires:
 
