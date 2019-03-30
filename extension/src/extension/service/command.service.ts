@@ -77,7 +77,13 @@ export class CommandService {
         let targetsDirParts = this.getPathParts(targetsDir);
 
         let path = "";
-        targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
+        if (targetsDir[0] === "/") {
+            // number of directories to the target dir is equal to targetsDirParts.length
+            targetFileParts = targetFileParts.slice(targetsDirParts.length);
+        } else {
+            // c: is counted as directory
+            targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
+        }
 
         if (targetFileParts[0] === "classes") {
             targetFileParts = targetFileParts.slice(1);
