@@ -30,7 +30,6 @@ export class CommandService {
         console.log(tacForClassMessage);
         this.options.body = tacForClassMessage;
         this.options.uri = this.serverUrl + "/opal/project/tac/class";
-        console.log(this.options);
         //Promise for sending classpath
         return request.post(this.options);
     }
@@ -41,7 +40,6 @@ export class CommandService {
      * @param params 
      */
     loadAnyCommand(command: String, projectId : string, params: any) {
-        console.log(command);
         this.options.body = {"params": params,"command": command, "projectId":projectId};
         this.options.uri = this.serverUrl + "/opal/project/loadAny";
         return request.post(this.options);
@@ -70,24 +68,15 @@ export class CommandService {
     }
 
     /**
-     * Get fqn path for file
+     * Get fqn path for file from its path
      * @param targetFilePath Path to target file
+     * @param targetsDir Directory for the targets
      */
     getFQN(targetFilePath : string, targetsDir : string) : string {
         let targetFileParts = this.getPathParts(targetFilePath);
         let targetsDirParts = this.getPathParts(targetsDir);
 
-        console.log(targetFileParts);
-        console.log(targetsDirParts);
-
         let path = "";
-        /*
-        if (targetFileParts !== null && targetsDirParts !== null) {
-            targetFileParts = targetFileParts.filter(function(filePart) {
-                return targetsDirParts.indexOf(filePart) < 0 && targetsDirParts.indexOf(filePart.toLocaleUpperCase()) < 0;
-            });
-            path = targetFileParts.join("/");
-        }*/
         targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
         path = targetFileParts.join("/");
         return path.replace("/class", "");

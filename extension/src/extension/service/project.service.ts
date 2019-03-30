@@ -41,7 +41,6 @@ export class ProjectService {
     async load(loadProjectMessage : any) {
         this.options.body = loadProjectMessage;
         this.options.uri = this.serverUrl + "/opal/project/load";
-        console.log(this.options);
         //Promise for sending classpath
         return request.post(this.options);
     }
