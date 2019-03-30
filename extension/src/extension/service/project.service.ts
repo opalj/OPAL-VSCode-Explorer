@@ -1,5 +1,6 @@
 var request = require('request-promise-native');
 import { workspace, RelativePattern } from 'vscode';
+var fs = require('file-system');
 
 /**
  * This Service is communicating with OPAL.
@@ -110,11 +111,23 @@ export class ProjectService {
         libFolders = librariesDirPaths.split(";");
         var librariePaths = [];
 
+        //for every folder containing libraries
         for(let i = 0; i < libFolders.length; i++){
+            //read its files
+            let files = fs.readdirSync(libFolders[i]);
+            for(let j = 0; j < files.length; j++){
+                //and check for .jars to add them
+                if(files[j].includes(".jar")){
+                    librariePaths.push(libFolders[i]+"/"+files[j]);
+                    console.log("Added Library "+files[j]+" from folder "+libFolders[i]);
+                }
+            }
+
+            /** 
             var libraries = await workspace.findFiles(new RelativePattern(libFolders[i], "*.jar"));
             for (let librarie of libraries) {
                 librariePaths.push(librarie.fsPath);
-            }
+            }*/
         }
         return librariePaths;
     }
