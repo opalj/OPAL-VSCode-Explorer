@@ -78,6 +78,11 @@ export class CommandService {
 
         let path = "";
         targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
+
+        if (targetFileParts[0] === "classes") {
+            targetFileParts = targetFileParts.slice(1);
+        }
+
         path = targetFileParts.join("/");
         return path.replace("/class", "");
     }
