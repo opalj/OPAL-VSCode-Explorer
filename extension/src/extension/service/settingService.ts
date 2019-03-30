@@ -21,7 +21,7 @@ export default class SettingService {
       if (conf.get("OPAL.opal.librariesDirs") === "") {
         await conf.update("OPAL.opal.librariesDirs", vscode.workspace.rootPath, true);
       }
-      if (conf.get("OPAL.server.jar") === "") {
+      if (conf.get("OPAL.server.jar") === "" || !(<string>conf.get("OPAL.server.jar")).includes(".jar")) {
           //get extension folder path
           let jarPath = ""+activationContext.extensionPath;
           
