@@ -243,6 +243,7 @@ export async function activate(context: vscode.ExtensionContext) {
     "extension.menuLibDir", 
     async (uri: vscode.Uri) => {
     //command content
+      console.log(uri.fsPath);
     }
   );
 
