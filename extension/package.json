@@ -90,6 +90,10 @@
         "title": "Callgraph ..."
       },
       {
+        "command": "extension.menuLibDir",
+        "title": "Add to Library Directories"
+      },
+      {
         "command": "editor.printReferences",
         "title": "Show All References"
       }
