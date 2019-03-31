@@ -238,6 +238,12 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  //menu-command to add a directory to the library directory paths (settings)
+  let menuLibDirCommand = vscode.commands.registerCommand("extension.menuLibDir", async (uri: vscode.Uri) => {
+    //command content
+  });
+  
+
   /**
    * Setting up and displaying Opal Tree View
    */
