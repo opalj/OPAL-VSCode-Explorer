@@ -193,6 +193,11 @@
           "command": "extension.menuBC",
           "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuLibDir",
+          "when": "explorerResourceIsFolder",
+          "group": "2_workspace"
         }
       ]
     },
