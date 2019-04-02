@@ -81,6 +81,6 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     }
 
     test("method descriptor string void") {
-        MethodDescriptor(RefArray(), BooleanType)
+        MethodDescriptor(RefArray(LongType,ByteType,ObjectType.String), BooleanType)
     }
 }

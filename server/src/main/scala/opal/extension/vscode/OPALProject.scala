@@ -1,7 +1,7 @@
 package opal.extension.vscode
 
 import opal.extension.vscode.model._;
-import org.opalj.br.analyses.Project
+import org.opalj.br.analyses._
 import org.opalj.br.analyses.Project.JavaClassFileReader
 import org.opalj.br.reader.Java9LibraryFramework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
@@ -12,6 +12,32 @@ import java.io.File
 import org.opalj.br.MethodDescriptor;
 import org.json4s.jackson.Serialization.write
 import org.json4s.{DefaultFormats, Formats}
+import org.opalj.br.fpcf._ 
+import org.opalj.br.fpcf.PropertyStoreKey
+import org.opalj.collection.immutable.Chain
+import org.opalj.fpcf.ComputationSpecification
+import org.opalj.fpcf.FinalEP
+import org.opalj.fpcf.FinalP
+import org.opalj.fpcf.PropertyStore
+import org.opalj.br.DeclaredMethod
+import org.opalj.br.analyses.DeclaredMethods
+import org.opalj.br.analyses.DeclaredMethodsKey
+import org.opalj.br.instructions.MethodInvocationInstruction
+import org.opalj.br.analyses.SomeProject
+import org.opalj.br.fpcf.cg.properties.Callees
+import org.opalj.br.fpcf.cg.properties.CallersProperty
+import org.opalj.br.fpcf.cg.properties.ReflectionRelatedCallees
+import org.opalj.br.fpcf.cg.properties.SerializationRelatedCallees
+import org.opalj.br.fpcf.cg.properties.StandardInvokeCallees
+import org.opalj.br.fpcf.cg.properties.ThreadRelatedIncompleteCallSites
+import org.opalj.br.fpcf.FPCFAnalysesManager
+import org.opalj.br.fpcf.FPCFAnalysesManagerKey
+import org.opalj.br.fpcf.FPCFAnalysis
+import org.opalj.br.fpcf.PropertyStoreKey
+import org.opalj.tac.fpcf.analyses.cg.reflection.TriggeredReflectionRelatedCallsAnalysis
+import org.opalj.tac.fpcf.analyses.cg._
+import org.opalj.tac.fpcf.analyses._
+import org.opalj.ai.fpcf.analyses._
 
 /**
  * Link to OPAL
@@ -85,6 +111,14 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
+    /**
+     * Implementation of the get byte code command
+     * Get byte code command can be triggered using the any command through the loadAny route at the OPALServlet.
+     * The params Map must contain:
+     * -> The fully qualified name of the class that contains the method
+     * -> The name of the Method for which you want the byte code
+     * -> The descriptor of the method to id the correct method (two methods can have the same name)
+     **/
     def getBCForMethod(opalCommand : OpalCommand) : String = {
         var res = "";
         if (!opalCommand.params.contains("fqn")) {
@@ -104,12 +138,68 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
                 cf.get.methods.foreach({
                     method => 
-                        
                         if (method.name == methodName) {
                             //res = write(method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep);
                             res = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
                         }
                 })
+            }
+        }
+        res
+    }
+
+    def getCallGraph(opalCommand : OpalCommand) : String = {
+        var res = "";
+        if (!opalCommand.params.contains("fqn")) {
+            res = "Missing fqn (fully qualified name)"
+        } else if (!opalCommand.params.contains("methodName")) {
+            res = "Missing method name"
+        } else if (!opalCommand.params.contains("descriptor")) {
+            res = "Missing Method descriptor"
+        } else {
+            val ps = project.get(PropertyStoreKey)
+            val manager = project.get(FPCFAnalysesManagerKey)
+            implicit val declaredMethods = project.get(DeclaredMethodsKey)
+            manager.runAll(
+                            RTACallGraphAnalysisScheduler,
+                            TriggeredStaticInitializerAnalysis,
+                            TriggeredLoadedClassesAnalysis,
+                            TriggeredFinalizerAnalysisScheduler,
+                            TriggeredThreadRelatedCallsAnalysis,
+                            TriggeredSerializationRelatedCallsAnalysis,
+                            TriggeredReflectionRelatedCallsAnalysis,
+                            TriggeredInstantiatedTypesAnalysis,
+                            TriggeredConfiguredNativeMethodsAnalysis,
+                            TriggeredSystemPropertiesAnalysis,
+                            LazyCalleesAnalysis(
+                                Set(
+                                    StandardInvokeCallees,
+                                    SerializationRelatedCallees,
+                                    ReflectionRelatedCallees,
+                                    ThreadRelatedIncompleteCallSites
+                                )
+                            ),
+                            LazyL0BaseAIAnalysis,
+                            TACAITransformer
+            )
+            var fqn = opalCommand.params.get("fqn").get;
+            var methodName = opalCommand.params.get("methodName").get;
+            var descriptor = opalCommand.params.get("descriptor").get;
+            var cf = project.allClassFiles.find(_.fqn  == fqn);
+            if (cf.isEmpty) {
+                res = "Class File for fqn = "+fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+            } else {
+                //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
+                
+                cf.get.methods.foreach({
+                    method => 
+                        if (method.name == methodName) {
+                            //res = write(method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep);
+                            val dm = declaredMethods(method)
+                            ps(dm, CallersProperty.key /*Callees.key*/) // create svg from callees
+                        }
+                })
+                
             }
         }
         res
