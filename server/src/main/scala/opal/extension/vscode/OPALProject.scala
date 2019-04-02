@@ -6,9 +6,12 @@ import org.opalj.br.analyses.Project.JavaClassFileReader
 import org.opalj.br.reader.Java9LibraryFramework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
 import org.opalj.tac.{DefaultTACAIKey, ToTxt}
+import org.opalj.br.ObjectType
 
 import java.io.File
 import org.opalj.br.MethodDescriptor;
+import org.json4s.jackson.Serialization.write
+import org.json4s.{DefaultFormats, Formats}
 
 /**
  * Link to OPAL
@@ -20,13 +23,14 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
 
     protected val logger = new StringLogger();
     protected var  project : Project[java.net.URL] = null;
+    implicit val formats = DefaultFormats
     
     /**
      * Let OPAL load / analyze the Project with the opalInit Message
      **/
     def load() : String = {
         val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
-        val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
+        val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar ) // 
         project = Project(
             targetClassFiles, 
             libraryClassFiles, 
@@ -66,7 +70,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             res = "Class File for fqn = "+tacForClass.fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
         } else {
             cf.get.methods.foreach({
-                m => 
+                m =>
                 var tac = tacAI(m);
                 res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
                 res += "\n{\n";
@@ -82,21 +86,33 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
     }
 
     def getBCForMethod(opalCommand : OpalCommand) : String = {
-        var result = "";
-        if (opalCommand.params.contains("fqn")) {
-            result = "Missing fqn (fully qualified name)"
-        } else if (opalCommand.params.contains("methodName")) {
-            result = "Missing method name"
-        } else if (opalCommand.params.contains("descriptor")) {
-            result = "Missing Method descriptor"
+        var res = "";
+        if (!opalCommand.params.contains("fqn")) {
+            res = "Missing fqn (fully qualified name)"
+        } else if (!opalCommand.params.contains("methodName")) {
+            res = "Missing method name"
+        } else if (!opalCommand.params.contains("descriptor")) {
+            res = "Missing Method descriptor"
         } else {
             var fqn = opalCommand.params.get("fqn").get;
             var methodName = opalCommand.params.get("methodName").get;
             var descriptor = opalCommand.params.get("descriptor").get;
-            var method = project.allClassFiles.find(_.fqn  == fqn).get.findMethod(methodName,MethodDescriptor(descriptor)).get;
-            result = method.body.toString();
+            var cf = project.allClassFiles.find(_.fqn  == fqn);
+            if (cf.isEmpty) {
+                res = "Class File for fqn = "+fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+            } else {
+                //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
+                cf.get.methods.foreach({
+                    method => 
+                        
+                        if (method.name == methodName) {
+                            //res = write(method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep);
+                            res = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
+                        }
+                })
+            }
         }
-        result
+        res
     }
 
      /**
@@ -112,7 +128,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
             "<text x=\"50\" y=\"68\" font-size=\"48\" fill=\"#FFF\" text-anchor=\"middle\"><![CDATA[410]]></text>"+
           "</svg>";
-          case "getBC" => res = "svg";
+          case "getBC" => res = getBCForMethod(opalCommand);
         }
         
         res.mkString("");
