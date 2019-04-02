@@ -138,7 +138,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
                 cf.get.methods.foreach({
                     method => 
-                        if (method.name == methodName) {
+                        if (method.name == methodName) { //@TODO: check method descriptor to id method
                             //res = write(method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep);
                             res = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
                         }
