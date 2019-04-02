@@ -37,7 +37,7 @@ integrations:
     - integrationName: email
       type: email
       recipients:
-        - laserconone@tu.katrin.rabow.eu
+        - alexandergoessl@web.de
       sendFailingSnippet: true
       on_success: change
       on_failure: change
