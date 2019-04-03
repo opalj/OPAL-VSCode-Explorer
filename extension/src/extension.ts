@@ -48,14 +48,35 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  var projectService: any = new ProjectService(
+    "http://localhost:" + conf.get("OPAL.server.port"),
+    projectId
+  );
+
+  var targetDir = conf.get("OPAL.opal.targetDir");
+  var targets = await projectService.getTargets(targetDir);
+
+  var librariesDirs = conf.get("OPAL.opal.librariesDirs");
+  var libraries = await projectService.getLibraries(librariesDirs);
+
+  if (targets.length === 0 && libraries.length === 0) {
+    vscode.window.showErrorMessage("[OPAL] No .class or .jar Files found in current Workspace. Please open a Java like Project");
+    return;
+  }
+
   /**
-   * If jetty not already started, start jetty
+   * ######################################################
+   * ################# Connect to Jetty ###################
+   * ######################################################
    */
   // Ping Jetty
   var jettyIsUp = await isReachable(
     "localhost:" + conf.get("OPAL.server.port")
   );
   if (!jettyIsUp) {
+    // Jetty is not Up
+    // start Jetty
+    vscode.window.showInformationMessage("Starting Jetty ...");
     var jettyTerminal = vscode.window.createTerminal("jetty");
     jettyTerminal.show(false);
     jettyTerminal.sendText(
@@ -74,60 +95,77 @@ export async function activate(context: vscode.ExtensionContext) {
     await delay(100);
     jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
   }
+  vscode.window.showInformationMessage("Connected to Jetty");
 
   /**
-   * Load Project in OPAL
+   * ######################################################
+   * ################# Load Project #######################
+   * ######################################################
    */
-  // Get status bar
-  let myStatusBarItem: vscode.StatusBarItem;
-  myStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    100
-  );
-  context.subscriptions.push(myStatusBarItem);
+  let loadProjectCommand = vscode.commands.registerCommand(
+    "extension.loadProject",
+    async () => {
+      // Project can not be loaded if jetty is not op
+      var jettyIsUp = await isReachable(
+        "localhost:" + conf.get("OPAL.server.port")
+      );
+      if (!jettyIsUp) {
+        vscode.window.showErrorMessage("Jetty is not up!");
+        return;
+      }
 
-  // get project Service
-  var projectloaded = false;
-  var projectService: any = new ProjectService(
-    "http://localhost:" + conf.get("OPAL.server.port"),
-    projectId
-  );
-  // get opal init message
-  var opalLoadMessage = await projectService.getOPALLoadMessage(
-    conf.get("OPAL.opal.targetDir"),
-    conf.get("OPAL.opal.librariesDirs"),
-    {}
-  );
+      /**
+       * Load Project in OPAL
+       */
+      // Get status bar
+      let myStatusBarItem: vscode.StatusBarItem;
+      myStatusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left,
+        100
+      );
+      context.subscriptions.push(myStatusBarItem);
 
-  // let opal load the project (this may take a while)
-  projectService.load(opalLoadMessage).then(function() {
-    console.log("Project loaded!");
-    myStatusBarItem.text = "Project loaded!";
-    myStatusBarItem.show();
-    vscode.window.showInformationMessage("Project loaded!");
-    projectloaded = true;
-  });
+      // get project Service
+      var projectloaded = false;
+      // get opal init message
+      var opalLoadMessage = await projectService.getOPALLoadMessage(
+        conf.get("OPAL.opal.targetDir"),
+        conf.get("OPAL.opal.librariesDirs"),
+        {}
+      );
+      // let opal load the project (this may take a while)
+      projectService.load(opalLoadMessage).then(function() {
+        console.log("Project loaded!");
+        myStatusBarItem.text = "Project loaded!";
+        myStatusBarItem.show();
+        vscode.window.showInformationMessage("Project loaded!");
+        projectloaded = true;
+      });
 
-  // get log message
-  var logMessage = await projectService.getLogMessage("init", {});
-  // get output channel where we can show the opal logs
-  const outputChannel = vscode.window.createOutputChannel("OPAL");
-  // get logging while opal is loading the project
-  var oldLog = "";
-  while (!projectloaded) {
-    // wait for new logs
-    await delay(1000);
-    // show the logs in the status bar
-    var log = await projectService.requestLOG(logMessage);
-    if (log !== undefined && oldLog !== log) {
-      myStatusBarItem.text = "OPAL: Loading Project: " + log + " ... ";
-      myStatusBarItem.show();
-      outputChannel.appendLine("[OPAL]: " + log);
-      outputChannel.show();
-      oldLog = log;
-      console.log(log);
+      // get log message
+      var logMessage = await projectService.getLogMessage("init", {});
+      // get output channel where we can show the opal logs
+      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      // get logging while opal is loading the project
+      var oldLog = "";
+      while (!projectloaded) {
+        // wait for new logs
+        await delay(1000);
+        // show the logs in the status bar
+        var log = await projectService.requestLOG(logMessage);
+        if (log !== undefined && oldLog !== log) {
+          myStatusBarItem.text = "OPAL: Loading Project: " + log + " ... ";
+          myStatusBarItem.show();
+          outputChannel.appendLine("[OPAL]: " + log);
+          outputChannel.show();
+          oldLog = log;
+          console.log(log);
+        }
+      }
     }
-  }
+  );
+
+
 
   //menu-command to get svg for .class
   let menuSvgCommand = vscode.commands.registerCommand(
@@ -255,7 +293,8 @@ export async function activate(context: vscode.ExtensionContext) {
     menuBCCommand,
     menuSvgCommand,
     menuJarCommand,
-    providerRegistrations
+    providerRegistrations,
+    loadProjectCommand
   );
 }
 
