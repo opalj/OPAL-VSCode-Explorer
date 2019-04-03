@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "publisher": "stg",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
-    "*"
+    "onView:package-explorer"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -92,6 +92,10 @@
       {
         "command": "editor.printReferences",
         "title": "Show All References"
+      },
+      {
+        "command": "extension.loadProject",
+        "title": "Load Project"
       }
     ],
     "themes": [
@@ -180,6 +184,12 @@
           "when": "!explorerResourceIsFolder && resourceLangId == jar",
           "group": "2_workspace"
         }
+      ],
+      "view/title": [
+        {
+          "command": "extension.loadProject",
+          "group": "navigation"
+        }
       ]
     },
     "grammars": [
@@ -215,15 +225,12 @@
   },
   "dependencies": {
     "@types/is-reachable": "^3.0.0",
-    "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
     "@types/request": "^2.48.1",
     "@types/request-promise-native": "^1.0.15",
-    "chai": "^4.2.0",
     "directory-tree": "^2.2.1",
     "file-system": "^2.2.2",
     "is-reachable": "^3.0.0",
-    "mocha": "*",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "tslint": "^5.8.0",
