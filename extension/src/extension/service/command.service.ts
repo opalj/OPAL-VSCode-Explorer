@@ -1,5 +1,5 @@
 var request = require('request-promise-native');
-
+import * as vscode from "vscode";
 
 /**
  * Service for OPAL Commands
@@ -25,8 +25,12 @@ export class CommandService {
 
     /**
      * Requesting TAC from Server
+     * The load Project Command is called every time method is called
+     * The Server will not load the Project twice
+     * @param tacForClassMessage The message for requesting the TAC for a Class
      */
-    loadTAC(tacForClassMessage: any) {
+    async loadTAC(tacForClassMessage: any) {
+        await vscode.commands.executeCommand("extension.loadProject");
         console.log(tacForClassMessage);
         this.options.body = tacForClassMessage;
         this.options.uri = this.serverUrl + "/opal/project/tac/class";
@@ -36,10 +40,14 @@ export class CommandService {
 
     /**
      * Request any command from server
-     * @param command 
-     * @param params 
+     * The load Project Command is called every time method is called
+     * The Server will not load the Project twice
+     * @param command the command for opal
+     * @param params the params required for the comamnd
+     * @param projectId the ID of the Project
      */
     loadAnyCommand(command: String, projectId : string, params: any) {
+        vscode.commands.executeCommand("extension.loadProject");
         this.options.body = {"params": params,"command": command, "projectId":projectId};
         this.options.uri = this.serverUrl + "/opal/project/loadAny";
         return request.post(this.options);
