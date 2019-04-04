@@ -140,6 +140,10 @@ export class OpalNode extends vscode.TreeItem {
 		this._children = children;
 	}
 
+	public addChildren(child : OpalNode) {
+		this._children.push(child);
+	}
+
 	/**
 	 * method to get parent node
 	 */
