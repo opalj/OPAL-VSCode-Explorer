@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
-import { CommandService } from '../extension/service/command.service';
-
+import { ParamsConverterService } from '../extension/service/params.converter.service';
 /**
  * Tests for Command Service Features
  */
@@ -9,8 +8,8 @@ suite("Command Test Suit", function() {
     var filePath = "\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\classes\\opal\\extension\\vscode\\OPALProject.class";
     var targetsDir = "c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\classes";
 
-    var cmdService = new CommandService("");
-    var fqn = cmdService.getFQN(filePath, targetsDir);
+    
+    var fqn = ParamsConverterService.getFQN(filePath, targetsDir);
     expect(fqn).to.equal("opal/extension/vscode/OPALProject");
   });
 
@@ -18,8 +17,8 @@ suite("Command Test Suit", function() {
     var filePath = "/home/alex/opal-vscode-explorer/dummy/Test.class";
     var targetsDir = "/home/alex/opal-vscode-explorer/dummy/";
 
-    var cmdService = new CommandService("");
-    var fqn = cmdService.getFQN(filePath, targetsDir);
+    
+    var fqn = ParamsConverterService.getFQN(filePath, targetsDir);
     expect(fqn).to.equal("Test");
   });
 });
