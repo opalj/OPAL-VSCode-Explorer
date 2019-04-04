@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { CommandService } from "../service/command.service";
+import { ParamsConverterService } from "../service/params.converter.service";
 import * as npmPath from "path";
 
 export default class TACDocument {
@@ -61,7 +62,7 @@ export default class TACDocument {
 
     if (fileName.includes(".class")) {
       fileName = fileName.replace(".class", "");
-      var fqn = this._tacService.getFQN(
+      var fqn = ParamsConverterService.getFQN(
         this._target.fsPath,
         this._opalConfig.get("OPAL.opal.targetDir")
       );
