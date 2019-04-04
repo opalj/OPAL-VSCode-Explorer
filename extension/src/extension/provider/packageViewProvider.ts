@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { OpalNode } from "./opalNode";
+import { ParamsConverterService } from './../service/params.converter.service';
 
 //dirTree for recursively reading directories and its contents
-const dirTree = require("directory-tree");
+//const dirTree = require("directory-tree");
 
 /**
  * Class for providing Opal Tree View
@@ -11,22 +12,23 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<OpalNode | undefined> = new vscode.EventEmitter<OpalNode | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<OpalNode | undefined> = this._onDidChangeTreeData.event;
-	private _projectFolder : vscode.Uri;
+	
 	private _treeRoot: OpalNode;
+	private _targets : any =  [];
+	private _targetsRoot : string;
 
 	/**
 	 * Constructor for PackageViewProvider
 	 * @param projectFolder root folder uri
 	 */
-	constructor(projectFolder: vscode.Uri) {
-		this._projectFolder = projectFolder;
-		let rootRes = this.setOpalNodeTree(this._projectFolder.fsPath);
+	constructor(targets : string[], targetsRoot : string) {
+		let rootRes = this.setOpalNodeTree(targets, targetsRoot);
+		this._targets = targets;
+		this._targetsRoot = targetsRoot;
 		if(rootRes){
 			this._treeRoot = rootRes;
 		} else {
-			this._treeRoot = new OpalNode(<any>projectFolder.fsPath.split("/").reverse().pop(), 
-											vscode.TreeItemCollapsibleState.Collapsed, 
-											projectFolder.fsPath);
+			this._treeRoot = new OpalNode("No classes found!", vscode.TreeItemCollapsibleState.None, "");
 		}
 	}
 
@@ -35,7 +37,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 */
 	public refresh(): void {
 		this._onDidChangeTreeData.fire();
-		this._treeRoot = <any> this.setOpalNodeTree(this._projectFolder.fsPath);
+		this._treeRoot = <any> this.setOpalNodeTree(this._targets, this._targetsRoot);
 	}
 
 	/**
@@ -66,7 +68,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 				vscode.window.showInformationMessage('Kein SubOpalNode enthalten!');
 			}
 		} else {
-			let p = this.setOpalNodeTree(this._projectFolder.fsPath);
+			let p = this.setOpalNodeTree(this._targets, this._targetsRoot);
 			if(p){
 				return Promise.resolve(p.getChildren());
 			} else {
@@ -87,46 +89,51 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 * Set OpalNodes for Subtree of root path
 	 * @param root root path
 	 */
-	public setOpalNodeTree(root : string)  : OpalNode | undefined {
-		if (root === null || root === undefined) {
+	public setOpalNodeTree(targets : string[], targetsRoot : string)  : OpalNode | undefined {
+		if (targets.length === 0) {
 			vscode.window.showErrorMessage("Workspace root is Empty!");
 			return undefined;
 		}
-		//iterate over directory content
-		const tree = dirTree(root, {normalizePath:true});
-		var subOpalNodes = [];
-		subOpalNodes = [];
-		if(tree.type === "directory"){
-			for(let i = 0; i < tree.children.length; i++){
-				//Push children onto subOpalNodes array
-				if(tree.children[i].type === "directory"){
-					let resTmp = this.setOpalNodeTree(tree.children[i].path);
-					if(resTmp){
-						subOpalNodes.push(resTmp);
-					}
-				}else if(tree.children[i].type === "file"){
-					if(tree.children[i].extension === ".class"){
-						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
-						subOpalNodes.push(resTmp);
-					}/**  else if(tree.children[i].extension === ".jar"){
-						let resTmp = new OpalNode(tree.children[i].name, vscode.TreeItemCollapsibleState.Collapsed, tree.children[i].path);
-						subOpalNodes.push(resTmp);
-					}*/
+		
+		this._treeRoot = new OpalNode("Root Node", vscode.TreeItemCollapsibleState.None, "");
+		targets.forEach(target => {
+			let fqn = ParamsConverterService.getFQN(target, targetsRoot);
+			let fqnParts = fqn.split("/");
+			
+			fqnParts.forEach(fqnPart => {
+				this.addNode(this._treeRoot, fqnParts, target, 0);
+			});			
+		});
+		return this._treeRoot;
+	}
+
+	private searchNode(root : OpalNode, label : string) : OpalNode | null {
+		if (root.getName() === label) {
+			return root;
+		} else {
+			let foundNode = null;
+			root.getChildren().forEach(child => {
+				if (child.getName() === label) {
+					foundNode = child;
 				}
+			});
+			return foundNode;
+		}
+	}
+
+	private addNode(opalNode : OpalNode, fqnParts : string[], target : string, i : number) {
+		var parent = this.searchNode(opalNode, fqnParts[i]);
+		if (parent !== null) {
+			// this is a grantparent of the node we try to add
+			i = i+1;
+			this.addNode(parent, fqnParts, target, i);
+		} else {
+			// this is the parent of the node we try to add
+			// we can add the node to the childs
+			if (fqnParts[i] !== undefined) {
+				let newNode = new OpalNode(fqnParts[i], vscode.TreeItemCollapsibleState.Collapsed, target);
+				opalNode.addChildren(newNode);
 			}
-			//create OpalNode for root
-			let res : OpalNode;
-				res = new OpalNode(tree.name, vscode.TreeItemCollapsibleState.Collapsed, tree.path);
-				res.setChildren(subOpalNodes);
-				for(let i = 0; i < res.getChildren().length; i++){
-					res.getChildren()[i].setParent(res);
-				}
-				/** 
-				if(tree.children.length === 1 && tree.children[0].type === "directory"){
-					res.setName(res.getName() + "." + res.getChildren()[0].getName());
-					res.setChildren(res.getChildren()[0].getChildren());
-				}*/
-				return res;
-		} 		
+		}
 	}
 }
