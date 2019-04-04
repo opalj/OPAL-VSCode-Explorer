@@ -10,7 +10,7 @@ import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
 import SVGDocument from "./extension/provider/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
-import SettingService from "./extension/service/settingService";
+let fs = require('file-system');
 
 const isReachable = require("is-reachable");
 
@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setup and get the Config
    */
-  const conf = await SettingService.setDefaults(context);
+  const conf = vscode.workspace.getConfiguration();
 
   /**
    * Get the Providers and register them to there sheme
@@ -53,6 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
     projectId
   );
 
+
   var targetDir = conf.get("OPAL.opal.targetDir");
   var targets = await projectService.getTargets(targetDir);
 
@@ -74,6 +75,18 @@ export async function activate(context: vscode.ExtensionContext) {
     "localhost:" + conf.get("OPAL.server.port")
   );
   if (!jettyIsUp) {
+    // search server jar file
+    let jarPath = ""+context.extensionPath;
+          
+    //read content of extension folder path
+    let files = fs.readdirSync(jarPath);
+    //search for Opal Command Server jar
+    for(let i = 0; i < files.length; i++){
+      if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
+        //if found, add it to jar path
+        jarPath = jarPath+"/"+files[i]; 
+      }
+    }
     // Jetty is not Up
     // start Jetty
     vscode.window.showInformationMessage("Starting Jetty ...");
@@ -81,7 +94,7 @@ export async function activate(context: vscode.ExtensionContext) {
     jettyTerminal.show(false);
     jettyTerminal.sendText(
       "java -jar '" +
-        conf.get("OPAL.server.jar") +
+      jarPath +
         "' " +
         conf.get("OPAL.server.options"),
       true
@@ -97,6 +110,22 @@ export async function activate(context: vscode.ExtensionContext) {
   }
   vscode.window.showInformationMessage("Connected to Jetty");
 
+  let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
+    async () => {
+      /*
+      * Get target dirs
+      */
+      var options = {
+        "canPickMany": true,
+        "ignoreFocusOut" : true
+      };
+      let folders = await vscode.workspace.workspaceFolders;
+      let items = tansformFoldersToQuickPickItems(folders);
+      var res = await vscode.window.showQuickPick(items, options);
+      console.log(res);
+    }
+  );
+
   /**
    * ######################################################
    * ################# Load Project #######################
@@ -105,6 +134,12 @@ export async function activate(context: vscode.ExtensionContext) {
   let loadProjectCommand = vscode.commands.registerCommand(
     "extension.loadProject",
     async () => {
+
+      /**
+       * Ask for target roots
+       */
+      await vscode.commands.executeCommand("extension.pickTargetRoot");
+
       // Project can not be loaded if jetty is not op
       var jettyIsUp = await isReachable(
         "localhost:" + conf.get("OPAL.server.port")
@@ -164,8 +199,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }
   );
-
-
 
   //menu-command to get svg for .class
   let menuSvgCommand = vscode.commands.registerCommand(
@@ -279,9 +312,7 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setting up and displaying Opal Tree View
    */
-  const pVP = new PackageViewProvider(
-    vscode.Uri.parse(<string>vscode.workspace.rootPath)
-  );
+  const pVP = new PackageViewProvider(targets, ""+targetDir);
   vscode.window.showInformationMessage("Package Explorer is loading...");
   //register Opal Tree View
   vscode.window.registerTreeDataProvider("package-explorer", pVP);
@@ -294,7 +325,8 @@ export async function activate(context: vscode.ExtensionContext) {
     menuSvgCommand,
     menuJarCommand,
     providerRegistrations,
-    loadProjectCommand
+    loadProjectCommand,
+    pickTargetRoot
   );
 }
 
@@ -322,4 +354,15 @@ async function getProjectId() {
   } else {
     return "";
   }
+}
+
+
+function tansformFoldersToQuickPickItems(folders : vscode.WorkspaceFolder[] | undefined) {
+  var quickPickItem : string[] = [];
+  if (folders !== undefined) {
+    folders.forEach(folder => {
+      quickPickItem.push(folder.name);
+    });
+  }
+  return quickPickItem;
 }
