@@ -16,7 +16,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	
 	private _treeRoot: OpalNode;
 	// private _targets : any =  [];
-	private _targetsRoot : string = "";
+	public targetsRoot : string = "";
 
 	private _projectService : ProjectService;
 
@@ -27,7 +27,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	constructor(projectService : ProjectService, targetsRoot : string) {
 		// let rootRes = this.setOpalNodeTree(targets, targetsRoot);
 		// this._targets = targets;
-		this._targetsRoot = targetsRoot;
+		this.targetsRoot = targetsRoot;
 		/*
 		if(rootRes){
 			this._treeRoot = rootRes;
@@ -44,7 +44,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 */
 	public refresh(): void {
 		this._onDidChangeTreeData.fire();
-		this._treeRoot = <any> this.setOpalNodeTree(this._projectService.targetAsStrings(), this._targetsRoot);
+		this._treeRoot = <any> this.setOpalNodeTree(this._projectService.targetAsStrings(), this.targetsRoot);
 	}
 
 	/**
@@ -75,7 +75,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 				vscode.window.showInformationMessage('Kein SubOpalNode enthalten!');
 			}
 		} else {
-			let p = this.setOpalNodeTree(this._projectService.targetAsStrings(), this._targetsRoot);
+			let p = this.setOpalNodeTree(this._projectService.targetAsStrings(), this.targetsRoot);
 			if(p){
 				return Promise.resolve(p.getChildren());
 			} else {
@@ -104,7 +104,8 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 		
 		this._treeRoot = new OpalNode("Root Node", vscode.TreeItemCollapsibleState.None, "", "");
 		targets.forEach(target => {
-			let fqn = ParamsConverterService.getFQN(target, targetsRoot);
+			ParamsConverterService.targetsRoot = targetsRoot;
+			let fqn = ParamsConverterService.getFQN(target);
 			let fqnParts = fqn.split("/");
 			
 			fqnParts.forEach(fqnPart => {

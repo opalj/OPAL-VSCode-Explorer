@@ -19,12 +19,15 @@ export default class TACDocument {
   private _target: vscode.Uri;
   private _opalConfig: any;
 
+  private targetsRoot : string;
+
   constructor(
     uri: vscode.Uri,
     emitter: vscode.EventEmitter<vscode.Uri>,
     projectId: string,
     target: vscode.Uri,
-    config: any
+    config: any,
+    targetsRoot : string
   ) {
     this._links = [];
 
@@ -38,6 +41,7 @@ export default class TACDocument {
 
     this._projectId = projectId;
     this._target = target;
+    this.targetsRoot = targetsRoot;
 
     this._content = <string>(<unknown>this._populate());
   }
@@ -62,9 +66,9 @@ export default class TACDocument {
 
     if (fileName.includes(".class")) {
       fileName = fileName.replace(".class", "");
+      ParamsConverterService.targetsRoot = this.targetsRoot;
       var fqn = ParamsConverterService.getFQN(
-        this._target.fsPath,
-        this._opalConfig.get("OPAL.opal.targetDir")
+        this._target.fsPath
       );
       //Request TAC for Class
       vscode.window.showInformationMessage(

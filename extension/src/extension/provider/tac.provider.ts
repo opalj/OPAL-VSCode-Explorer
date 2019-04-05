@@ -10,12 +10,14 @@ export default class TACProvider implements vscode.TextDocumentContentProvider, 
 	private _documents = new Map<string, TACDocument>();
     private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
     private _config : any;
+    public targetsRoot : string;
 
     protected projectId = "";
 
-	constructor(_projectId : string, _config : any) {
+	constructor(_projectId : string, _config : any, _targets : string) {
         this.projectId = _projectId;
         this._config = _config;
+        this.targetsRoot = _targets;
     }   
  
     provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
@@ -25,7 +27,7 @@ export default class TACProvider implements vscode.TextDocumentContentProvider, 
         }
 
         let params = decodeTACLocation(uri);
-        document = new TACDocument(uri, this._onDidChange, this.projectId, params[0], this._config);
+        document = new TACDocument(uri, this._onDidChange, this.projectId, params[0], this._config, this.targetsRoot);
         
         this._documents.set(uri.toString(), document);
         return document.value;
@@ -53,6 +55,6 @@ export function encodeTACLocation(uri: vscode.Uri, projectId: string): vscode.Ur
 }
 
 export function decodeTACLocation(uri: vscode.Uri): [vscode.Uri, string] {
-	let [target, projectId] = <[string, string]>JSON.parse(uri.query);
+	let [target, projectId] = <[string, string]>JSON.parse(uri.query.replace(/\\/g, '/'));
 	return [vscode.Uri.parse(target), projectId];
 }
