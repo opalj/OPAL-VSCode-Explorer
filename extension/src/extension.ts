@@ -32,7 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Get the Providers and register them to there sheme
    */
-  const tacProvider = new TACProvider(projectId, conf);
+  const tacProvider = new TACProvider(projectId, conf, "");
   const bcProvider = new BCProvider(projectId, conf);
   const providerRegistrations = vscode.Disposable.from(
     vscode.workspace.registerTextDocumentContentProvider(
@@ -73,7 +73,10 @@ export async function activate(context: vscode.ExtensionContext) {
         var targets = await vscode.workspace.findFiles(new vscode.RelativePattern(targetDir[0].fsPath, "**/*.class"));
         projectService.addTargetUris(targets);
         ParamsConverterService.targetsRoot = targetDir[0].fsPath;
+        tacProvider.targetsRoot = targetDir[0].fsPath;
+        packageViewProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.refresh();
+        
       }
     }
   );
@@ -173,8 +176,6 @@ export async function activate(context: vscode.ExtensionContext) {
       var projectloaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
-        conf.get("OPAL.opal.targetDir"),
-        conf.get("OPAL.opal.librariesDirs"),
         {}
       );
       // let opal load the project (this may take a while)
@@ -206,6 +207,19 @@ export async function activate(context: vscode.ExtensionContext) {
           console.log(log);
         }
       }
+    }
+  );
+
+  /**
+   * ######################################################
+   * ################# Reload Project #####################
+   * ######################################################
+   */
+  let reloadProjectCommand = vscode.commands.registerCommand(
+    "extension.reloadProjectCommand",
+    async () => {
+      await projectService.unLoad();
+      await vscode.commands.executeCommand("extension.loadProject");
     }
   );
 
@@ -335,6 +349,7 @@ export async function activate(context: vscode.ExtensionContext) {
     menuJarCommand,
     providerRegistrations,
     loadProjectCommand,
+    reloadProjectCommand,
     pickTargetRoot
   );
 }
