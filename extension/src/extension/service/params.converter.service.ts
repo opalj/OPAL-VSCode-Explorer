@@ -1,3 +1,5 @@
+import * as vscode from "vscode";
+
 export class ParamsConverterService {
 
     public static targetsRoot = "";
@@ -7,17 +9,34 @@ export class ParamsConverterService {
      * @param targetFilePath Path to target file
      * @param targetsDir Directory for the targets
      */
-    static getFQN(targetFilePath : string, targetsDir : string) : string {
-        let targetFileParts = this.getPathParts(targetFilePath);
-        let targetsDirParts = this.getPathParts(ParamsConverterService.targetsRoot);
+    static getFQN(targetFilePath : string) : string {
+        let targetFileParts = this.getPathParts(vscode.workspace.asRelativePath(targetFilePath));
+        let targetRootParts = this.getPathParts(vscode.workspace.asRelativePath(ParamsConverterService.targetsRoot));
 
         let path = "";
-        if (ParamsConverterService.targetsRoot[0] === "/") {
-            // number of directories to the target dir is equal to targetsDirParts.length
-            targetFileParts = targetFileParts.slice(targetsDirParts.length);
-        } else {
-            // c: is counted as directory
-            targetFileParts = targetFileParts.slice(targetsDirParts.length);
+        if (targetRootParts.length > 0) {
+            let targetRootIndex = 0;
+            let targetFileIndex = 0;
+
+            /**
+             * find first item from target that is also in file path
+             */
+            for (targetRootIndex = 0; targetRootIndex < targetRootParts.length; targetRootIndex++) {
+                let startIndex = targetFileParts.indexOf(targetRootParts[targetRootIndex]);
+                if (startIndex > 0) {
+                    targetFileIndex = startIndex;
+                    break;
+                }
+            }
+            
+            /**
+             * count equal items in target file path and target root path
+             */
+            while(targetFileParts[targetFileIndex] === targetRootParts[targetRootIndex]) {
+                targetFileIndex++;
+                targetRootIndex++;
+            }
+            targetFileParts = targetFileParts.slice(targetFileIndex);
         }
 
         if (targetFileParts[0] === "classes") {
