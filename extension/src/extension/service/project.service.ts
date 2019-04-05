@@ -70,6 +70,10 @@ export class ProjectService {
         return request.post(this.options);
     }
 
+    async unLoad() {
+        return request(this.serverUrl+"/opal/project/delete/"+encodeURIComponent(this._projectId));
+    }
+
     /**
      * Requesting Logs from OPAL
      * While OPAL is doing stuff it will create Logs that can be retrived with this method
@@ -87,7 +91,7 @@ export class ProjectService {
      * @param librariesDirPath Path to the libraries. Libraries are jar Files that may necessary for analyzing
      * @param config additional config params for opal 
      */
-    async getOPALLoadMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
+    async getOPALLoadMessage(config : Object)   {
         var projectId = this._projectId;
         var targets = this.targetAsStrings();
         var libraries = this._libraries;
