@@ -21,7 +21,8 @@
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
-    "onView:package-explorer"
+    "onView:package-explorer",
+    "workspaceContains:**/*.class"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -96,6 +97,10 @@
       {
         "command": "extension.loadProject",
         "title": "Load Project"
+      },
+      {
+        "command": "extension.pickTargetRoot",
+        "title": "Open Target"
       }
     ],
     "themes": [
@@ -188,6 +193,10 @@
       "view/title": [
         {
           "command": "extension.loadProject",
+          "group": "navigation"
+        },
+        {
+          "command": "extension.pickTargetRoot",
           "group": "navigation"
         }
       ]

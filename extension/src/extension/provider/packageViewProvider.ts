@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { OpalNode } from "./opalNode";
 import { ParamsConverterService } from './../service/params.converter.service';
+import { ProjectService } from '../service/project.service';
 
 //dirTree for recursively reading directories and its contents
 //const dirTree = require("directory-tree");
@@ -14,22 +15,28 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	readonly onDidChangeTreeData: vscode.Event<OpalNode | undefined> = this._onDidChangeTreeData.event;
 	
 	private _treeRoot: OpalNode;
-	private _targets : any =  [];
-	private _targetsRoot : string;
+	// private _targets : any =  [];
+	private _targetsRoot : string = "";
+
+	private _projectService : ProjectService;
 
 	/**
 	 * Constructor for PackageViewProvider
 	 * @param projectFolder root folder uri
 	 */
-	constructor(targets : string[], targetsRoot : string) {
-		let rootRes = this.setOpalNodeTree(targets, targetsRoot);
-		this._targets = targets;
+	constructor(projectService : ProjectService, targetsRoot : string) {
+		// let rootRes = this.setOpalNodeTree(targets, targetsRoot);
+		// this._targets = targets;
 		this._targetsRoot = targetsRoot;
+		/*
 		if(rootRes){
 			this._treeRoot = rootRes;
 		} else {
 			this._treeRoot = new OpalNode("No classes found!", vscode.TreeItemCollapsibleState.None, "");
 		}
+		*/
+		this._projectService = projectService;
+		this._treeRoot = new OpalNode("No classes found!", vscode.TreeItemCollapsibleState.None, "", "");
 	}
 
 	/**
@@ -37,7 +44,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 */
 	public refresh(): void {
 		this._onDidChangeTreeData.fire();
-		this._treeRoot = <any> this.setOpalNodeTree(this._targets, this._targetsRoot);
+		this._treeRoot = <any> this.setOpalNodeTree(this._projectService.targetAsStrings(), this._targetsRoot);
 	}
 
 	/**
@@ -68,7 +75,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 				vscode.window.showInformationMessage('Kein SubOpalNode enthalten!');
 			}
 		} else {
-			let p = this.setOpalNodeTree(this._targets, this._targetsRoot);
+			let p = this.setOpalNodeTree(this._projectService.targetAsStrings(), this._targetsRoot);
 			if(p){
 				return Promise.resolve(p.getChildren());
 			} else {
@@ -95,7 +102,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 			return undefined;
 		}
 		
-		this._treeRoot = new OpalNode("Root Node", vscode.TreeItemCollapsibleState.None, "");
+		this._treeRoot = new OpalNode("Root Node", vscode.TreeItemCollapsibleState.None, "", "");
 		targets.forEach(target => {
 			let fqn = ParamsConverterService.getFQN(target, targetsRoot);
 			let fqnParts = fqn.split("/");
@@ -131,7 +138,8 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 			// this is the parent of the node we try to add
 			// we can add the node to the childs
 			if (fqnParts[i] !== undefined) {
-				let newNode = new OpalNode(fqnParts[i], vscode.TreeItemCollapsibleState.Collapsed, target);
+				let type = i === fqnParts.length-1 ? "leaf" : "node";
+				let newNode = new OpalNode(fqnParts[i], vscode.TreeItemCollapsibleState.Collapsed, target, type);
 				opalNode.addChildren(newNode);
 			}
 		}

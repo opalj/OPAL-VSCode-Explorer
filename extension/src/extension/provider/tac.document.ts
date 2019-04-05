@@ -8,7 +8,7 @@ export default class TACDocument {
    * Links for the jumps to references
    */
   private _links: vscode.DocumentLink[];
-  private _tacService: CommandService;
+  private _commandService: CommandService;
 
   //private _emitter: vscode.EventEmitter<vscode.Uri>;
   private _uri: vscode.Uri;
@@ -29,7 +29,7 @@ export default class TACDocument {
     this._links = [];
 
     this._opalConfig = config;
-    this._tacService = new CommandService(
+    this._commandService = new CommandService(
       "http://localhost:" + this._opalConfig.get("OPAL.server.port")
     );
 
@@ -71,8 +71,8 @@ export default class TACDocument {
         "TAC for Class " + fileName + " requested from Server ..... "
       );
       try {
-        var tac = await this._tacService.loadTAC(
-          this._tacService.getTACForClassMessage(this._projectId, fqn, fileName)
+        var tac = await this._commandService.loadTAC(
+          this._commandService.getTACForClassMessage(this._projectId, fqn, fileName)
         );
       } catch (e) {
         console.log(e);

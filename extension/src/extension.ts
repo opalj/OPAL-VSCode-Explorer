@@ -10,6 +10,7 @@ import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
 import SVGDocument from "./extension/provider/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
+import { ParamsConverterService } from "./extension/service/params.converter.service";
 let fs = require('file-system');
 
 const isReachable = require("is-reachable");
@@ -53,8 +54,35 @@ export async function activate(context: vscode.ExtensionContext) {
     projectId
   );
 
+  
+  /**
+   * ######################################################
+   * ############### Open Target Dialog ###################
+   * ######################################################
+   */
+  let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
+    async () => {
+      var openDialogOptions : vscode.OpenDialogOptions = {
+        "canSelectFiles" : false,
+        "canSelectFolders" : true,
+        "canSelectMany" : false
+      };
 
+      let targetDir = await vscode.window.showOpenDialog(openDialogOptions);
+      if (targetDir !== undefined) {
+        var targets = await vscode.workspace.findFiles(new vscode.RelativePattern(targetDir[0].fsPath, "**/*.class"));
+        projectService.addTargetUris(targets);
+        ParamsConverterService.targetsRoot = targetDir[0].fsPath;
+        packageViewProvider.refresh();
+      }
+    }
+  );
+  
+
+  /*
   var targetDir = conf.get("OPAL.opal.targetDir");
+  projectService.addTargets(targetDir);
+
   var targets = await projectService.getTargets(targetDir);
 
   var librariesDirs = conf.get("OPAL.opal.librariesDirs");
@@ -64,6 +92,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.showErrorMessage("[OPAL] No .class or .jar Files found in current Workspace. Please open a Java like Project");
     return;
   }
+  */
 
   /**
    * ######################################################
@@ -110,21 +139,7 @@ export async function activate(context: vscode.ExtensionContext) {
   }
   vscode.window.showInformationMessage("Connected to Jetty");
 
-  let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
-    async () => {
-      /*
-      * Get target dirs
-      */
-      var options = {
-        "canPickMany": true,
-        "ignoreFocusOut" : true
-      };
-      let folders = await vscode.workspace.workspaceFolders;
-      let items = tansformFoldersToQuickPickItems(folders);
-      var res = await vscode.window.showQuickPick(items, options);
-      console.log(res);
-    }
-  );
+
 
   /**
    * ######################################################
@@ -134,12 +149,6 @@ export async function activate(context: vscode.ExtensionContext) {
   let loadProjectCommand = vscode.commands.registerCommand(
     "extension.loadProject",
     async () => {
-
-      /**
-       * Ask for target roots
-       */
-      await vscode.commands.executeCommand("extension.pickTargetRoot");
-
       // Project can not be loaded if jetty is not op
       var jettyIsUp = await isReachable(
         "localhost:" + conf.get("OPAL.server.port")
@@ -312,10 +321,10 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setting up and displaying Opal Tree View
    */
-  const pVP = new PackageViewProvider(targets, ""+targetDir);
+  const packageViewProvider = new PackageViewProvider(projectService, ""+projectService.targetDir);
   vscode.window.showInformationMessage("Package Explorer is loading...");
   //register Opal Tree View
-  vscode.window.registerTreeDataProvider("package-explorer", pVP);
+  vscode.window.registerTreeDataProvider("package-explorer", packageViewProvider);
   vscode.window.showInformationMessage("Package Explorer is ready.");
 
   //add commands to this extension's context
@@ -356,7 +365,7 @@ async function getProjectId() {
   }
 }
 
-
+/*
 function tansformFoldersToQuickPickItems(folders : vscode.WorkspaceFolder[] | undefined) {
   var quickPickItem : string[] = [];
   if (folders !== undefined) {
@@ -366,3 +375,4 @@ function tansformFoldersToQuickPickItems(folders : vscode.WorkspaceFolder[] | un
   }
   return quickPickItem;
 }
+*/

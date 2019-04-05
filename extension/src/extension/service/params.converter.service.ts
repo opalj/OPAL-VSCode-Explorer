@@ -1,4 +1,7 @@
 export class ParamsConverterService {
+
+    public static targetsRoot = "";
+
     /**
      * Get fqn path for file from its path
      * @param targetFilePath Path to target file
@@ -6,15 +9,15 @@ export class ParamsConverterService {
      */
     static getFQN(targetFilePath : string, targetsDir : string) : string {
         let targetFileParts = this.getPathParts(targetFilePath);
-        let targetsDirParts = this.getPathParts(targetsDir);
+        let targetsDirParts = this.getPathParts(ParamsConverterService.targetsRoot);
 
         let path = "";
-        if (targetsDir[0] === "/") {
+        if (ParamsConverterService.targetsRoot[0] === "/") {
             // number of directories to the target dir is equal to targetsDirParts.length
             targetFileParts = targetFileParts.slice(targetsDirParts.length);
         } else {
             // c: is counted as directory
-            targetFileParts = targetFileParts.slice(targetsDirParts.length-1);
+            targetFileParts = targetFileParts.slice(targetsDirParts.length);
         }
 
         if (targetFileParts[0] === "classes") {

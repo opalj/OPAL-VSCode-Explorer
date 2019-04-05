@@ -9,31 +9,35 @@ export class OpalNode extends vscode.TreeItem {
 	private _path: string;
 	private _children: OpalNode[];
 	private _parent: OpalNode | undefined;
+	
 
 	/**
 	 * Constructor for OpalNode
 	 * @param label name label
 	 * @param collapsibleState	collapsibleState, Collapsed, Not or None 
 	 * @param path data path
+	 * @param type
 	 * @param command on-click command
 	 */
 	constructor(
 		public readonly label: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		path: string,
+		public path: string,
+		public type: string,
 		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
 		this._children = [];
 		this._path = path;
 		this._parent = undefined;
+		
 		/**
 		 * Setting contextValues and static Subnodes in
 		 * Depencency of data type
 		 */
-		if(label.includes(".class")){
+		if(this.type === "leaf"){
 			this.contextValue = "opalNodeClass";
-			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
+			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"), "action",
 											{
 												command: 'extension.menuTac',
 												title: '',
