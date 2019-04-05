@@ -7,7 +7,8 @@ import org.opalj.br.reader.Java9LibraryFramework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
 import org.opalj.tac.{DefaultTACAIKey, ToTxt}
 import org.opalj.br.ObjectType
-
+import org.json4s.{DefaultFormats, Formats}
+import org.json4s.jackson.JsonMethods._
 import java.io.File
 import org.opalj.br.MethodDescriptor;
 import org.json4s.jackson.Serialization.write
@@ -87,7 +88,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
 
         if (cf.isEmpty) {
-            res = "Class File for fqn = "+tacForClass.fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+            res = "Class File for fqn = "+tacForClass.fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
         } else {
             cf.get.methods.foreach({
                 m =>
@@ -127,7 +128,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var descriptor = opalCommand.params.get("descriptor").get;
             var cf = project.allClassFiles.find(_.fqn  == fqn);
             if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
             } else {
                 //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
                 cf.get.methods.foreach({
@@ -137,6 +138,36 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                             res = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
                         }
                 })
+            }
+        }
+        res
+    }
+
+    /**
+     * Implementation of the get byte code command
+     * Get byte code command can be triggered using the any command through the loadAny route at the OPALServlet.
+     * The params Map must contain:
+     * -> The fully qualified name of the class that contains the method
+     **/
+    def getBCForClass(opalCommand : OpalCommand) : String = {
+        var res = "";
+        if (!opalCommand.params.contains("fqn")) {
+            res = "Missing fqn (fully qualified name)"
+        } else {
+            var fqn = opalCommand.params.get("fqn").get;
+            var cf = project.allClassFiles.find(_.fqn  == fqn);
+            if (cf.isEmpty) {
+                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+            } else {                
+                var bytecode = Map("fqn" -> fqn)
+                cf.get.methods.foreach({
+                    method => 
+                        var instructions = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
+                        bytecode += (method.name+"[instructions]" -> instructions);
+                        bytecode += (method.name+"[exceptions]" -> method.body.get.exceptionHandlers.toString);
+                        bytecode += (method.name+"[attributes]" -> method.body.get.attributes.toString);
+                });
+                res = write(bytecode);
             }
         }
         res
@@ -181,19 +212,17 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var descriptor = opalCommand.params.get("descriptor").get;
             var cf = project.allClassFiles.find(_.fqn  == fqn);
             if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease make sure your workspace root is set to the targets root of your build system e.g. classes/";
+                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
             } else {
                 //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
                 
                 cf.get.methods.foreach({
                     method => 
                         if (method.name == methodName) {
-                            //res = write(method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep);
                             val dm = declaredMethods(method)
-                            ps(dm, CallersProperty.key /*Callees.key*/) // create svg from callees
+                            var epk = ps(dm, CallersProperty.key /*Callees.key*/)
                         }
                 })
-                
             }
         }
         res
@@ -212,7 +241,9 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
             "<text x=\"50\" y=\"68\" font-size=\"48\" fill=\"#FFF\" text-anchor=\"middle\"><![CDATA[410]]></text>"+
           "</svg>";
-          case "getBC" => res = getBCForMethod(opalCommand);
+          case "getBCForClass" => res = getBCForClass(opalCommand);
+          case "getBCForMethod" => res = getBCForMethod(opalCommand);
+          case "callGraph" => res = getCallGraph(opalCommand);
         }
         
         res.mkString("");
