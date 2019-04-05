@@ -99,6 +99,10 @@
         "title": "Load Project"
       },
       {
+        "command": "extension.reloadProjectCommand",
+        "title": "Reload Project"
+      },
+      {
         "command": "extension.pickTargetRoot",
         "title": "Open Target"
       }
@@ -192,7 +196,7 @@
       ],
       "view/title": [
         {
-          "command": "extension.loadProject",
+          "command": "extension.reloadProjectCommand",
           "group": "navigation"
         },
         {
