@@ -43,14 +43,14 @@ export class OpalNode extends vscode.TreeItem {
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-			)/**,
-			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
+			),
+			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"), "action",
 											{
 												command: 'extension.menuBC',
 												title: '',
 												arguments: [vscode.Uri.parse(path)]
 											}
-										)*/]);
+										)]);
 		} /** else if(label.includes(".jar")){
 			this.contextValue = "opalNodeJar";
 			let classes: string[];

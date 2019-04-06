@@ -2,18 +2,20 @@
 // Import the module and reference it with the alias vscode in your code below
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from "vscode";
-import TACProvider, {
-  encodeTACLocation
-} from "./extension/provider/tac.provider";
-import BCProvider, { encodeBCLocation } from "./extension/provider/bc.provider";
+import TACProvider from "./extension/provider/tac.provider";
+import BCProvider from "./extension/provider/bc.provider";
 import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
-import SVGDocument from "./extension/provider/svg.document";
+import SVGDocument from "./extension/document/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
 import { ParamsConverterService } from "./extension/service/params.converter.service";
+import { encodeLocation } from './extension/provider/abstract.provider';
 let fs = require('file-system');
 
 const isReachable = require("is-reachable");
+
+const TACScheme = "tac";
+const BCScheme = "bc";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -32,8 +34,8 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Get the Providers and register them to there sheme
    */
-  const tacProvider = new TACProvider(projectId, conf, "");
-  const bcProvider = new BCProvider(projectId, conf);
+  const tacProvider = new TACProvider(projectId, conf, "", TACScheme);
+  const bcProvider = new BCProvider(projectId, conf, "", BCScheme);
   const providerRegistrations = vscode.Disposable.from(
     vscode.workspace.registerTextDocumentContentProvider(
       TACProvider.scheme,
@@ -265,7 +267,7 @@ export async function activate(context: vscode.ExtensionContext) {
       /**
        * Get URI for a virtual TAC Document
        */
-      var tacURI = encodeTACLocation(uri, projectId);
+      var tacURI = encodeLocation(uri, projectId, TACScheme);
 
       /**
        * Get a virtual TAC Document from TAC Provider (see provider/tac.provider.ts);
@@ -286,7 +288,7 @@ export async function activate(context: vscode.ExtensionContext) {
       /**
        * Get URI for a virtual BC Document
        */
-      uri = encodeBCLocation(uri, projectId);
+      uri = encodeLocation(uri, projectId, BCScheme);
       /**
        * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
        */
