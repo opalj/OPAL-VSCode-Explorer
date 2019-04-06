@@ -159,13 +159,14 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             if (cf.isEmpty) {
                 res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
             } else {                
-                var bytecode = Map("fqn" -> fqn)
+                var bytecode = Map[String, String]();
                 cf.get.methods.foreach({
-                    method => 
+                    method =>
                         var instructions = method.body.get.instructions.zipWithIndex.filter(_._1 ne null).map(_.swap).deep.toString
-                        bytecode += (method.name+"[instructions]" -> instructions);
-                        bytecode += (method.name+"[exceptions]" -> method.body.get.exceptionHandlers.toString);
-                        bytecode += (method.name+"[attributes]" -> method.body.get.attributes.toString);
+                        var exceptions = method.body.get.exceptionHandlers.toString;
+                        var attributes = method.body.get.attributes.toString;
+                        var methodBC = Map("instructions" -> instructions, "exceptions" -> exceptions, "attributes" -> attributes);
+                        bytecode += (method.name -> write(methodBC));
                 });
                 res = write(bytecode);
             }
