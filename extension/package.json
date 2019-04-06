@@ -189,6 +189,11 @@
           "group": "2_workspace"
         },
         {
+          "command": "extension.menuBC",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
+        {
           "command": "extension.menuJar",
           "when": "!explorerResourceIsFolder && resourceLangId == jar",
           "group": "2_workspace"
