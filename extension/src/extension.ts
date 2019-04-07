@@ -73,7 +73,7 @@ export async function activate(context: vscode.ExtensionContext) {
       let targetDir = await vscode.window.showOpenDialog(openDialogOptions);
       if (targetDir !== undefined) {
         var targets = await vscode.workspace.findFiles(new vscode.RelativePattern(targetDir[0].fsPath, "**/*.class"));
-        projectService.addTargetUris(targets);
+        projectService.setTargetUris(targets);
         ParamsConverterService.targetsRoot = targetDir[0].fsPath;
         tacProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.targetsRoot = targetDir[0].fsPath;

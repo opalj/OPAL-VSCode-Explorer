@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "publisher": "stg",
   "repository": {
     "type": "git",

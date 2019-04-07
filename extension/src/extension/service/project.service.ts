@@ -129,10 +129,21 @@ export class ProjectService {
         });
     }
 
+    
     addTargetUris(targets : Uri[]) {
+        /**
+         * Be awarer of a possible BUG
+         * ParamsConverterService.getFQN wil not be able to calculate the fqn based on the targets root
+         * To get this fixed the fqn of alle targets must be calculated with the correct targets root 
+         * of with a diffrent approach.
+         */
         targets.forEach(target => {
             this._targets.push(target);
         });
+    }
+
+    setTargetUris(targets : Uri[]) {
+        this._targets = targets;
     }
 
     /**
