@@ -50,7 +50,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         }
     }
 
-    test("get tac and bc for class") {
+    test("get tac and bc for class and call graph") {
         var json = "";
         //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
         var opalInit = OpalInit("123", Array(testProject), Array(""), Map("key" -> "value")); // File.separator+"AirlineProblem.class"
@@ -72,6 +72,13 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         json = write(bcForClass);
         post("/project/loadAny", json) {
             body should ( include("(117,INVOKEVIRTUAL(java.util.Scanner{ java.lang.String nextLine() })),"))
+            status should equal (200)
+        }
+
+        var cgForClass = OpalCommand("123", "getCallGraph", Map("fqn" -> "AirlineProblem", "methodName" -> "main", "descriptor" -> "(): void"));
+        json = write(cgForClass);
+        post("/project/loadAny", json) {
+            body should ( include("xxx"))
             status should equal (200)
         }
 

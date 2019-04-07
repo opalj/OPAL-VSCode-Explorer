@@ -174,6 +174,30 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
+    def getCallGraphtest(opalCommand : OpalCommand) : String = {
+        var res = "";
+        if (!opalCommand.params.contains("fqn")) {
+            res = "Missing fqn (fully qualified name)"
+        } else if (!opalCommand.params.contains("methodName")) {
+            res = "Missing method name"
+        } else if (!opalCommand.params.contains("descriptor")) {
+            res = "Missing Method descriptor"
+        } else {
+            var fqn = opalCommand.params.get("fqn").get;
+            var methodName = opalCommand.params.get("methodName").get;
+            var descriptor = opalCommand.params.get("descriptor").get;
+            var cf = project.allClassFiles.find(_.fqn  == fqn);
+            if (cf.isEmpty) {
+                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+            } else {
+                val cfg = org.opalj.br.cfg.CFGFactory(cf.get.methods.tail.head.body.get)
+                val svg = org.opalj.graphs.dotToSVG(cfg.toDot);
+                res = svg;
+            }
+        }
+        res
+    }
+
     def getCallGraph(opalCommand : OpalCommand) : String = {
         var res = "";
         if (!opalCommand.params.contains("fqn")) {
@@ -221,7 +245,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                     method => 
                         if (method.name == methodName) {
                             val dm = declaredMethods(method)
-                            var epk = ps(dm, CallersProperty.key /*Callees.key*/)
+                            ps(dm, CallersProperty.key /*Callees.key*/)
                         }
                 })
             }
@@ -237,6 +261,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var command = opalCommand.command;
         var res = "";
         command match{
+            case "getCallGraph" => res = getCallGraphtest(opalCommand);
             case "getSVG" => res= "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">"+
             "<path d=\"M30,1h40l29,29v40l-29,29h-40l-29-29v-40z\" stroke=\"#000\" fill=\"none\"/>" +
             "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
@@ -244,7 +269,8 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
           "</svg>";
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
-          case "callGraph" => res = getCallGraph(opalCommand);
+          
+          case _ => res = "unknown command";
         }
         
         res.mkString("");
