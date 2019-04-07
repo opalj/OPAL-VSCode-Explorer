@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
         tacProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.refresh();
-        
+        await vscode.commands.executeCommand("extension.loadProject");
       }
     }
   );
