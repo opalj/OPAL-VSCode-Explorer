@@ -60,7 +60,7 @@ export default abstract class AbstractDocument {
     return this.loadContent(this._projectId, this._target, this.targetsRoot);
   }
 
-  public abstract parseDocumentLinks() :  vscode.DocumentLink[];
+  public abstract parseDocumentLinks(content : string) :  vscode.DocumentLink[];
 
   public abstract async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<string>;
 }

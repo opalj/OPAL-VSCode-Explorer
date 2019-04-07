@@ -31,8 +31,9 @@ export default class TACProvider extends AbstractProvider {
     provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
         let doc : TACDocument;
         doc = <any> this._documents.get(document.uri.toString());
-        return doc.parseDocumentLinks();
-        //return Promise.resolve(doc.links);
+        let tac = doc.value;
+        let links = doc.parseDocumentLinks(tac);
+        return Promise.resolve(links);
     }
 }
 /*

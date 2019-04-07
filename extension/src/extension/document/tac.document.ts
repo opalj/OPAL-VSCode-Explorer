@@ -5,8 +5,8 @@ import * as npmPath from "path";
 
 export default class TACDocument extends AbstractDocument {
  
-  public parseDocumentLinks() : vscode.DocumentLink[] {
-    const parser = new LinkParser(this._uri, this._content);
+  public parseDocumentLinks(tac : string) : vscode.DocumentLink[] {
+    const parser = new LinkParser(this._uri, tac);
     parser.parseJumps();
     return parser.getLinks();
   }
@@ -25,7 +25,9 @@ export default class TACDocument extends AbstractDocument {
           );
     
           try {
-            return await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, fqn, fileName));            
+            let tac = await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, fqn, fileName));
+            this._content = tac;
+            return tac;
           } catch (e) {
             console.log(e);
           }
