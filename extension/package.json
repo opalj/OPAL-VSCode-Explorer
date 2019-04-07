@@ -2,8 +2,12 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "publisher": "stg",
+  "author": {
+    "name": "Alexander Gössl",
+    "mail": "alexandergoessl@web.de"
+  },
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/delors/opal-vscode-explorer.git"
@@ -38,13 +42,6 @@
             "default": 8080,
             "description": "Port of the OPAL Server you want to connect."
           },
-          "OPAL.server.jar": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "Describes the path to the server jar. Example: C:\\USER\\Document\\Projects\\OPALCommandServer.jar"
-          },
           "OPAL.server.options": {
             "type": [
               "string"
@@ -52,20 +49,6 @@
             "default": "",
             "description": "Java parameter for the OPAL Server."
           },
-          "OPAL.opal.targetDir": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "This option sets the project directory. E.g. 'C:\\USER\\Document\\Projects\\myProject'."
-          },
-          "OPAL.opal.librariesDirs": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "This option sets the project library directories, seperated by ';'. E.g. 'C:\\USER\\Document\\Libs\\Libfolder1';'C:\\USER\\Document\\\\Libs\\Libfolder'"
-          }
         }
       }
     ],
