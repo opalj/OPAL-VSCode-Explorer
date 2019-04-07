@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
         tacProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.targetsRoot = targetDir[0].fsPath;
         packageViewProvider.refresh();
-        await vscode.commands.executeCommand("extension.loadProject");
+        await vscode.commands.executeCommand("extension.reloadProjectCommand");
       }
     }
   );
@@ -125,7 +125,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // start Jetty
     vscode.window.showInformationMessage("Starting Jetty ...");
     var jettyTerminal = vscode.window.createTerminal("jetty");
-    jettyTerminal.show(false);
+    jettyTerminal.hide();
     jettyTerminal.sendText(
       "java -jar '" +
       jarPath +
