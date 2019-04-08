@@ -92,7 +92,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         } else {
             cf.get.methods.foreach({
                 m =>
-                var tac = tacAI(m);
+                // var tac = tacAI(m);
                 res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
                 res += "\n{\n";
                 res += ToTxt(m)
@@ -174,7 +174,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
-    def getCallGraphtest(opalCommand : OpalCommand) : String = {
+    def getCFG(opalCommand : OpalCommand) : String = {
         var res = "";
         if (!opalCommand.params.contains("fqn")) {
             res = "Missing fqn (fully qualified name)"
@@ -261,7 +261,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var command = opalCommand.command;
         var res = "";
         command match{
-            case "getCallGraph" => res = getCallGraphtest(opalCommand);
+            case "getCFG" => res = getCFG(opalCommand);
             case "getSVG" => res= "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">"+
             "<path d=\"M30,1h40l29,29v40l-29,29h-40l-29-29v-40z\" stroke=\"#000\" fill=\"none\"/>" +
             "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
@@ -269,7 +269,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
           "</svg>";
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
-          
+          case "getCallGraph" => res = getCallGraph(opalCommand);
           case _ => res = "unknown command";
         }
         
