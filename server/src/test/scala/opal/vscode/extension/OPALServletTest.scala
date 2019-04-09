@@ -46,7 +46,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         var requestLogs = Log("abc", "", Map("key" -> "value"));
         json = write(requestLogs);
         post("/project/load/log", json) {
-            body should include ("initialization of DefaultTACAI took")
+            body should include ("initialization of LazyDetachedTACAI took")
             status should equal (200)
         }
     }
