@@ -11,8 +11,6 @@ import org.opalj.br.MethodDescriptor;
 import org.opalj.collection.immutable.RefArray
 import org.opalj.br._
 
-
-
 class OPALServletTests extends ScalatraSuite with FunSuiteLike {
 
     implicit val formats = DefaultFormats
@@ -22,7 +20,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     var classesPath = new File(".").getCanonicalPath()+File.separator+"target"+File.separator+"scala-2.12"+File.separator+"classes";
     var testProject = new File(".").getCanonicalPath()+File.separator+".."+File.separator+"dummy";
 
-    test("Load Project and get TAC for Class") {
+    test("Load Project") {
         var json = "";
         //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
         var opalInit = OpalInit("abc", Array(testProject+File.separator), Array(""), Map("key" -> "value")); // +"cmdsnake"+File.separator+"Direction.class"
@@ -33,19 +31,10 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var tacForClass = TACForClass("abc", "cmdsnake/Direction");
-        json = write(tacForClass);
-        post("/project/tac/class", json) {
-            body should ( include("4:/*pc=7:*/ op_0/*(non-virtual) cmdsnake.Direction*/.<init>(op_2, op_3)") and include("13:/*pc=29:*") and include("5:/*pc=9:*/ return op_0"))
-            status should equal (200)
-        }
-
-
-
         var requestLogs = Log("abc", "", Map("key" -> "value"));
         json = write(requestLogs);
         post("/project/load/log", json) {
-            body should include ("initialization of DefaultTACAI took")
+            body should ( include ("creating the project took") and include ("the JDK is part of the analysis") )
             status should equal (200)
         }
     }
@@ -61,17 +50,24 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var tacForClass = TACForClass("123", "AirlineProblem");
+        var tacForClass = TACForClass("123", "AirlineProblem", "tacAI");
         json = write(tacForClass);
         post("/project/tac/class", json) {
-            body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
+            body should ( include("{lv36}/*java.io.PrintStream*/.println({lv41})") and include("{lv40}/*java.lang.StringBuilder*/.toString()") and include("java.lang.StringBuilder*/.<init>()"))
             status should equal (200)
         }
 
-        var tacForClassString = TACForClass("123", "java/lang/String");
+        var tacForClassString = TACForClass("123", "java/lang/String", "tacAI");
         json = write(tacForClassString);
         post("/project/tac/class", json) {
-            body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
+            //body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
+            //status should equal (200)
+        }
+
+        tacForClass = TACForClass("123", "AirlineProblem", "");
+        json = write(tacForClass);
+        post("/project/tac/class", json) {
+            body should ( include("op_2 = java.lang.System.in") and include("r_9 = op_0") and include("29:/*pc=58:*/ r_4 = op_0"))
             status should equal (200)
         }
 
@@ -103,5 +99,15 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
 
     test("method descriptor string void") {
         MethodDescriptor(RefArray(LongType,ByteType,ObjectType.String), BooleanType)
+    }
+
+    test ("get fqn from class file") {
+        var filename = "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\target\\scala-2.12\\classes\\opal\\extension\\vscode\\OPALProject.class";
+        var getContextInfos = write(OpalCommand("123", "getContextInfos", Map("filename" -> filename)));
+    
+        post("/context/fqn", filename) {
+            status should equal (200)
+            body should equal ("opal/extension/vscode/OPALProject")
+        }
     }
 }

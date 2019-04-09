@@ -24,7 +24,7 @@ case class TACForMethod(projectId: String, fqn: String, methodName:String, descr
  * fqn: fully qualified name of the class
  * className: Name of the class
  **/
-case class TACForClass(projectId: String, fqn:String)
+case class TACForClass(projectId: String, fqn:String, version : String)
 
 /**
  * Message for requesting the Logs

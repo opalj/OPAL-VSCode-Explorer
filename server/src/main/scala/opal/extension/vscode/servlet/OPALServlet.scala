@@ -9,6 +9,9 @@ import scala.io.Source
 import java.io.File
 import opal.extension.vscode._
 import scala.collection.mutable.HashMap;
+import org.json4s.jackson.Serialization.write
+import java.io.File
+import org.opalj.br.analyses.Project.JavaClassFileReader
 
 /**
  * Servlet for /opal/ routes
@@ -27,6 +30,21 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     
     before() {
         contentType = formats("json")
+    }
+
+    /**
+     * Get Context Information for a class File
+     **/
+    post("/context/fqn") {
+        var res = ""
+        var filename = request.body
+        org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(filename)).foreach({
+            cf => 
+                if (!cf._1.isVirtualType) {
+                    res = cf._1.fqn
+                }
+        })
+        res
     }
 
     /**
@@ -61,23 +79,6 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         } else {
             project = workspace.get(opalCom.projectId).get;
             res = project.getAny(opalCom);
-        }
-        res;
-    }
-
-    /**
-     * TAC for one Method
-     * TACForMethod Message
-     */
-    post("/project/tac/method") {
-        var tacForMethod = parsedBody.extract[TACForMethod]
-        var project : OPALProject = null;
-        var res = "";
-        if (workspace.get(tacForMethod.projectId).isEmpty) {
-            res = "Error: Project not found!";
-        } else {
-            project = workspace.get(tacForMethod.projectId).get;
-            res = project.getTacForMethod(tacForMethod);
         }
         res;
     }

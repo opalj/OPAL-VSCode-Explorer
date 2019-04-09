@@ -15,6 +15,11 @@ import org.json4s.jackson.Serialization.write
 import org.json4s.{DefaultFormats, Formats}
 import org.opalj.br.fpcf.PropertyStoreKey
 import org.opalj.br.fpcf.FPCFAnalysesManagerKey
+import org.opalj.br.fpcf.cg.properties.StandardInvokeCallees
+import org.opalj.br.fpcf.cg.properties.SerializationRelatedCallees
+import org.opalj.br.fpcf.cg.properties.ReflectionRelatedCallees
+import org.opalj.br.fpcf.cg.properties.ThreadRelatedIncompleteCallSites
+import org.opalj.br.ClassFile
 import org.opalj.tac.fpcf.analyses.cg.RTACallGraphAnalysisScheduler
 import org.opalj.tac.fpcf.analyses.cg.TriggeredStaticInitializerAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredLoadedClassesAnalysis
@@ -26,10 +31,8 @@ import org.opalj.tac.fpcf.analyses.cg.TriggeredInstantiatedTypesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredConfiguredNativeMethodsAnalysis
 import org.opalj.tac.fpcf.analyses.TriggeredSystemPropertiesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.LazyCalleesAnalysis
-import org.opalj.br.fpcf.cg.properties.StandardInvokeCallees
-import org.opalj.br.fpcf.cg.properties.SerializationRelatedCallees
-import org.opalj.br.fpcf.cg.properties.ReflectionRelatedCallees
-import org.opalj.br.fpcf.cg.properties.ThreadRelatedIncompleteCallSites
+
+
 import org.opalj.ai.fpcf.analyses.LazyL0BaseAIAnalysis
 import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
@@ -92,10 +95,16 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         } else {
             cf.get.methods.foreach({
                 m =>
-                // var tac = tacAI(m);
                 res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
                 res += "\n{\n";
-                res += ToTxt(m)
+                tacForClass.version match {
+                    case "tacAI" => 
+                        var tac = tacAI(m);
+                        res += ToTxt(tac).mkString("\n");
+                    case _ => 
+                        res += ToTxt(m)
+                    
+                }
                 res += "\n}\n"
             })
             //val tacArray = project.allClassFiles.find(_.fqn == tacForClass.fqn).get.methods.map(tacAI)
@@ -168,6 +177,30 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                         var methodBC = Map("instructions" -> instructions, "exceptions" -> exceptions, "attributes" -> attributes);
                         bytecode += (method.name -> write(methodBC));
                 });
+                res = write(bytecode);
+            }
+        }
+        res
+    }
+
+        /**
+     * Implementation of the get byte code command
+     * Get byte code command can be triggered using the any command through the loadAny route at the OPALServlet.
+     * The params Map must contain:
+     * -> The fully qualified name of the class that contains the method
+     **/
+    def getBCForClassHTML(opalCommand : OpalCommand) : String = {
+        var res = "";
+        if (!opalCommand.params.contains("fqn")) {
+            res = "Missing fqn (fully qualified name)"
+        } else {
+            var fqn = opalCommand.params.get("fqn").get;
+            var cf = project.allClassFiles.find(_.fqn  == fqn);
+            if (cf.isEmpty) {
+                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+            } else {                
+                var bytecode = Map[String, String]();
+                // res = cf.get.toXHTML();
                 res = write(bytecode);
             }
         }
@@ -253,6 +286,20 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
+/*
+    def getClassFileContext(opalCommand : OpalCommand) : String = {
+        var res = ""
+        if (opalCommand.params.contains("filename")) {
+            org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(opalCommand.params.get("filename").get)).foreach({
+                cf => 
+                    if (!cf._1.isVirtualType) {
+                        res = cf._1.fqn
+                    }
+            })
+        }
+        res
+    }
+*/
      /**
      * Get the Any
      **/
@@ -270,6 +317,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
           case "getCallGraph" => res = getCallGraph(opalCommand);
+          // case "getContextInfos" => res = getClassFileContext(opalCommand); 
           case _ => res = "unknown command";
         }
         
