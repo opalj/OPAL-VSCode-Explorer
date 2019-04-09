@@ -238,6 +238,20 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  //menu-command to add a directory to the library directory paths (settings)
+  let menuLibDirCommand = vscode.commands.registerCommand(
+    "extension.menuLibDir", 
+    async (uri: vscode.Uri) => {
+
+      vscode.window.showInformationMessage("Adding Directory to Library Directory Paths...");
+      console.log("Adding "+uri.fsPath.replace(/\\/g, "\\\\")+" to LibDirs.");
+
+      let oldDirs = <string>conf.get("OPAL.opal.librariesDirs");
+      let newDirs = oldDirs + ";" + uri.fsPath;
+      await conf.update("OPAL.opal.librariesDirs", newDirs, true);
+    }
+  );
+
   /**
    * Setting up and displaying Opal Tree View
    */
@@ -255,6 +269,7 @@ export async function activate(context: vscode.ExtensionContext) {
     menuBCCommand,
     menuSvgCommand,
     menuJarCommand,
+    menuLibDirCommand,
     providerRegistrations
   );
 }

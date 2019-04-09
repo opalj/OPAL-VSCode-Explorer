@@ -40,6 +40,7 @@ export default class SettingService {
           }
         }
         console.log("New LibDirs set to: " + newFolders);
+        await conf.update("OPAL.opal.librariesDirs", newFolders, true);
       }
       if (conf.get("OPAL.server.jar") === "" || !(<string>conf.get("OPAL.server.jar")).includes(".jar")) {
           //get extension folder path

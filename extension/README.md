@@ -58,3 +58,5 @@ Do not forget to seperate the settings with commas. A valid setting.json (on Win
     "OPAL.server.jar": "C:\\Users\\AUser\\.vscode\\extensions\\stg.java-bytecode-workbench-0.1.3\\OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar"
 }
 ```
+
+Please note, that the current workspace root is automatically added to the library directories. If the workspace root changes, the old entry in the library directorie's settings field gets automatically replaced by the new one. Other library folders which were added manually are persistent.

@@ -5,7 +5,7 @@ import org.opalj.br.analyses.Project
 import org.opalj.br.analyses.Project.JavaClassFileReader
 import org.opalj.br.reader.Java9LibraryFramework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
-import org.opalj.tac.{DefaultTACAIKey, ToTxt}
+import org.opalj.tac.{LazyDetachedTACAIKey, ToTxt}
 
 import java.io.File
 import org.opalj.br.MethodDescriptor;
@@ -48,7 +48,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      * Get the TAC of a Method
      **/
     def getTacForMethod(tacForMethod : TACForMethod) : String = {
-        val tacAI = project.get(DefaultTACAIKey)
+        val tacAI = project.get(LazyDetachedTACAIKey)
         project.allClassFiles.find(_.fqn  == tacForMethod.fqn).get.findMethod(tacForMethod.methodName,MethodDescriptor(tacForMethod.descriptor)).map(tacAI(_)).get
         val tac = project.allClassFiles.find(_.fqn == tacForMethod.fqn).get.findMethod(tacForMethod.methodName,MethodDescriptor(tacForMethod.descriptor)).map(tacAI(_)).get
         ToTxt(tac).mkString("\n")
@@ -58,7 +58,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      * Get the TAC of a Class
      **/
     def getTacForClass(tacForClass : TACForClass) : String = {
-        val tacAI = project.get(DefaultTACAIKey)
+        val tacAI = project.get(LazyDetachedTACAIKey)
         var res = tacForClass.fqn +".class\n"
         var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
 
