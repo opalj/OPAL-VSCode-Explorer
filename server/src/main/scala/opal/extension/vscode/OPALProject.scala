@@ -21,7 +21,6 @@ import org.opalj.br.fpcf.cg.properties.ReflectionRelatedCallees
 import org.opalj.br.fpcf.cg.properties.ThreadRelatedIncompleteCallSites
 import org.opalj.br.ClassFile
 import org.opalj.tac.fpcf.analyses.cg.RTACallGraphAnalysisScheduler
-import org.opalj.tac.fpcf.analyses.cg.TriggeredStaticInitializerAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredLoadedClassesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredFinalizerAnalysisScheduler
 import org.opalj.tac.fpcf.analyses.cg.TriggeredThreadRelatedCallsAnalysis
@@ -31,8 +30,7 @@ import org.opalj.tac.fpcf.analyses.cg.TriggeredInstantiatedTypesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredConfiguredNativeMethodsAnalysis
 import org.opalj.tac.fpcf.analyses.TriggeredSystemPropertiesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.LazyCalleesAnalysis
-
-
+import org.opalj.da.ClassFileReader
 import org.opalj.ai.fpcf.analyses.LazyL0BaseAIAnalysis
 import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
@@ -199,9 +197,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             if (cf.isEmpty) {
                 res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
             } else {                
-                var bytecode = Map[String, String]();
-                // res = cf.get.toXHTML();
-                res = write(bytecode);
+                
             }
         }
         res
