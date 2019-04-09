@@ -30,7 +30,7 @@ import org.opalj.tac.fpcf.analyses.cg.TriggeredInstantiatedTypesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredConfiguredNativeMethodsAnalysis
 import org.opalj.tac.fpcf.analyses.TriggeredSystemPropertiesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.LazyCalleesAnalysis
-import org.opalj.da.ClassFileReader
+// import org.opalj.da.ClassFileReader
 import org.opalj.ai.fpcf.analyses.LazyL0BaseAIAnalysis
 import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
@@ -227,6 +227,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
+/*
     def getCallGraph(opalCommand : OpalCommand) : String = {
         var res = "";
         if (!opalCommand.params.contains("fqn")) {
@@ -282,7 +283,6 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
-/*
     def getClassFileContext(opalCommand : OpalCommand) : String = {
         var res = ""
         if (opalCommand.params.contains("filename")) {
@@ -312,7 +312,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
           "</svg>";
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
-          case "getCallGraph" => res = getCallGraph(opalCommand);
+          // case "getCallGraph" => res = getCallGraph(opalCommand);
           // case "getContextInfos" => res = getClassFileContext(opalCommand); 
           case _ => res = "unknown command";
         }
