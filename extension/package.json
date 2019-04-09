@@ -2,8 +2,12 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.5",
+  "version": "0.1.14",
   "publisher": "stg",
+  "author": {
+    "name": "Alexander Gössl",
+    "mail": "alexandergoessl@web.de"
+  },
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/delors/opal-vscode-explorer.git"
@@ -21,7 +25,8 @@
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
-    "*"
+    "onView:package-explorer",
+    "workspaceContains:**/*.class"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -37,33 +42,12 @@
             "default": 8080,
             "description": "Port of the OPAL Server you want to connect."
           },
-          "OPAL.server.jar": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "Describes the path to the server jar. Example: C:\\USER\\Document\\Projects\\OPALCommandServer.jar"
-          },
           "OPAL.server.options": {
             "type": [
               "string"
             ],
             "default": "",
             "description": "Java parameter for the OPAL Server."
-          },
-          "OPAL.opal.targetDir": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "This option sets the project directory. E.g. 'C:\\USER\\Document\\Projects\\myProject'."
-          },
-          "OPAL.opal.librariesDirs": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "This option sets the project library directories, seperated by ';'. E.g. 'C:\\USER\\Document\\Libs\\Libfolder1';'C:\\USER\\Document\\\\Libs\\Libfolder'"
           }
         }
       }
@@ -96,6 +80,18 @@
       {
         "command": "editor.printReferences",
         "title": "Show All References"
+      },
+      {
+        "command": "extension.loadProject",
+        "title": "Load Project"
+      },
+      {
+        "command": "extension.reloadProjectCommand",
+        "title": "Reload Project"
+      },
+      {
+        "command": "extension.pickTargetRoot",
+        "title": "Open Target"
       }
     ],
     "themes": [
@@ -180,14 +176,20 @@
           "group": "2_workspace"
         },
         {
-          "command": "extension.menuJar",
-          "when": "!explorerResourceIsFolder && resourceLangId == jar",
+          "command": "extension.menuBC",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
         },
         {
-          "command": "extension.menuSvg",
-          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "command": "extension.menuJar",
+          "when": "!explorerResourceIsFolder && resourceLangId == jar",
           "group": "2_workspace"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "extension.reloadProjectCommand",
+          "group": "navigation"
         },
         {
           "command": "extension.menuBC",
@@ -198,6 +200,10 @@
           "command": "extension.menuLibDir",
           "when": "explorerResourceIsFolder",
           "group": "2_workspace"
+        },
+        {
+          "command": "extension.pickTargetRoot",
+          "group": "navigation"
         }
       ]
     },
@@ -234,15 +240,12 @@
   },
   "dependencies": {
     "@types/is-reachable": "^3.0.0",
-    "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
     "@types/request": "^2.48.1",
     "@types/request-promise-native": "^1.0.15",
-    "chai": "^4.2.0",
     "directory-tree": "^2.2.1",
     "file-system": "^2.2.2",
     "is-reachable": "^3.0.0",
-    "mocha": "*",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "tslint": "^5.8.0",

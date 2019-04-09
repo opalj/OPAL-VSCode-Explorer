@@ -1,5 +1,5 @@
 var request = require('request-promise-native');
-import { workspace, RelativePattern } from 'vscode';
+import { workspace, Uri, RelativePattern } from 'vscode';
 var fs = require('file-system');
 
 /**
@@ -22,15 +22,39 @@ export class ProjectService {
     };
 
     protected serverUrl = "";
-    protected projectId = "";
+    protected _projectId = "";
+    protected _targetDir = "";
+
+    protected _targets : Uri[] = [];
+    protected _libraries : Uri[] = [];
 
     /**
      * HTTP URL
      * @param _url URL of the OPAL Server
      */
-    constructor(public _url: string, _projectId : string){
+    constructor(public _url: string, projectId : string){
         this.serverUrl = _url;
-        this.projectId = _projectId;
+        this._projectId = projectId;
+    }
+
+    get targetDir() : string {
+        return this._targetDir;
+    }
+
+    get targets() : Uri[] {
+        return this._targets;
+    }
+
+    targetAsStrings() : string[] {
+        let res : string[] = [];
+        this._targets.forEach(target => {
+            res.push(target.fsPath);
+        });
+        return res;
+    }
+
+    get libraries() : Uri[] {
+        return this.libraries;
     }
 
     /**
@@ -42,8 +66,13 @@ export class ProjectService {
     async load(loadProjectMessage : any) {
         this.options.body = loadProjectMessage;
         this.options.uri = this.serverUrl + "/opal/project/load";
+        console.log(loadProjectMessage);
         //Promise for sending classpath
         return request.post(this.options);
+    }
+
+    async unLoad() {
+        return request(this.serverUrl+"/opal/project/delete/"+encodeURIComponent(this._projectId));
     }
 
     /**
@@ -63,10 +92,10 @@ export class ProjectService {
      * @param librariesDirPath Path to the libraries. Libraries are jar Files that may necessary for analyzing
      * @param config additional config params for opal 
      */
-    async getOPALLoadMessage(targetsDirPath : string, librariesDirPath : string, config : Object)   {
-        var projectId = this.projectId;
-        var targets = await this.getTargets(targetsDirPath);
-        var libraries = await this.getLibraries(librariesDirPath);
+    async getOPALLoadMessage(config : Object)   {
+        var projectId = this._projectId;
+        var targets = this.targetAsStrings();
+        var libraries = this._libraries;
         return {
             "projectId" : projectId,
             "targets" : targets,
@@ -81,7 +110,7 @@ export class ProjectService {
      * @param config 
      */
     async getLogMessage(target : string, config : Object) {
-        var projectId = this.projectId;
+        var projectId = this._projectId;
         return {
             "projectId" : projectId,
             "target" : target,
@@ -93,20 +122,36 @@ export class ProjectService {
      * Get all class Files in the targets dir path
      * @param targetsDirPath Path to folder which contains targets
      */
-    async getTargets(targetsDirPath : string) {
-        var targets = await workspace.findFiles(new RelativePattern(targetsDirPath, "**/*.class"));
-        var targetPaths = [];
-        for (let target of targets) {
-            targetPaths.push(target.fsPath);
-        }
-        return targetPaths;
+    async addTargets(targetsDirPath : string) {
+        this._targetDir = targetsDirPath[0];
+        var targets = await workspace.findFiles(new RelativePattern(targetsDirPath[0], "**/*.class"));
+        targets.forEach((target: Uri) => {
+            this._targets.push(target);
+        });
+    }
+
+    
+    addTargetUris(targets : Uri[]) {
+        /**
+         * Be awarer of a possible BUG
+         * ParamsConverterService.getFQN wil not be able to calculate the fqn based on the targets root
+         * To get this fixed the fqn of alle targets must be calculated with the correct targets root 
+         * of with a diffrent approach.
+         */
+        targets.forEach(target => {
+            this._targets.push(target);
+        });
+    }
+
+    setTargetUris(targets : Uri[]) {
+        this._targets = targets;
     }
 
     /**
      * Get all jar files in the libraries dir paths
      * @param librariesDirPaths Paths to the folder which contains libraries
      */
-    async getLibraries(librariesDirPaths : string) {
+    async addLibraries(librariesDirPaths : string) {
         let libFolders = [];
         libFolders = librariesDirPaths.split(";");
         var librariePaths = [];
@@ -129,7 +174,6 @@ export class ProjectService {
                 librariePaths.push(librarie.fsPath);
             }*/
         }
-        return librariePaths;
     }
 
     /**

@@ -31,9 +31,9 @@ suite("OPAL Initialization Test Suit", function () {
 
     test("opal project load libs", (done) => {
         var projectService = new ProjectService(config.server.url, "/bla/projects/projectX");
-        projectService.getLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar").then(function (libs) {
+        projectService.addLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar").then(function () {
             done();
-            expect(libs[0]).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar");
+            expect(projectService.libraries).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar");
         });
     });
 });

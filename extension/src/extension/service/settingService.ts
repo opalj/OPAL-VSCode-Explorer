@@ -42,7 +42,7 @@ export default class SettingService {
         console.log("New LibDirs set to: " + newFolders);
         await conf.update("OPAL.opal.librariesDirs", newFolders, true);
       }
-      if (conf.get("OPAL.server.jar") === "" || !(<string>conf.get("OPAL.server.jar")).includes(".jar")) {
+      //if (conf.get("OPAL.server.jar") === "") {
           //get extension folder path
           let jarPath = ""+activationContext.extensionPath;
           
@@ -57,7 +57,7 @@ export default class SettingService {
           }
           console.log("OPAL Command Server jar at "+ jarPath);
           await conf.update("OPAL.server.jar", jarPath, true);
-      }
+      //}
       return vscode.workspace.getConfiguration();
     }
 

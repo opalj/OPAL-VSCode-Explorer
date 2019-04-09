@@ -2,17 +2,20 @@
 // Import the module and reference it with the alias vscode in your code below
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from "vscode";
-import TACProvider, {
-  encodeTACLocation
-} from "./extension/provider/tac.provider";
-import BCProvider, { encodeBCLocation } from "./extension/provider/bc.provider";
+import TACProvider from "./extension/provider/tac.provider";
+import BCProvider from "./extension/provider/bc.provider";
 import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
-import SVGDocument from "./extension/provider/svg.document";
+import SVGDocument from "./extension/document/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
-import SettingService from "./extension/service/settingService";
+import { ParamsConverterService } from "./extension/service/params.converter.service";
+import { encodeLocation } from './extension/provider/abstract.provider';
+let fs = require('file-system');
 
 const isReachable = require("is-reachable");
+
+const TACScheme = "tac";
+const BCScheme = "bc";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -26,13 +29,13 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setup and get the Config
    */
-  const conf = await SettingService.setDefaults(context);
+  const conf = vscode.workspace.getConfiguration();
 
   /**
    * Get the Providers and register them to there sheme
    */
-  const tacProvider = new TACProvider(projectId, conf);
-  const bcProvider = new BCProvider(projectId, conf);
+  const tacProvider = new TACProvider(projectId, conf, "", TACScheme);
+  const bcProvider = new BCProvider(projectId, conf, "", BCScheme);
   const providerRegistrations = vscode.Disposable.from(
     vscode.workspace.registerTextDocumentContentProvider(
       TACProvider.scheme,
@@ -48,19 +51,84 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  var projectService: any = new ProjectService(
+    "http://localhost:" + conf.get("OPAL.server.port"),
+    projectId
+  );
+
+  
   /**
-   * If jetty not already started, start jetty
+   * ######################################################
+   * ############### Open Target Dialog ###################
+   * ######################################################
+   */
+  let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
+    async () => {
+      var openDialogOptions : vscode.OpenDialogOptions = {
+        "canSelectFiles" : false,
+        "canSelectFolders" : true,
+        "canSelectMany" : false
+      };
+
+      let targetDir = await vscode.window.showOpenDialog(openDialogOptions);
+      if (targetDir !== undefined) {
+        var targets = await vscode.workspace.findFiles(new vscode.RelativePattern(targetDir[0].fsPath, "**/*.class"));
+        projectService.setTargetUris(targets);
+        ParamsConverterService.targetsRoot = targetDir[0].fsPath;
+        tacProvider.targetsRoot = targetDir[0].fsPath;
+        packageViewProvider.targetsRoot = targetDir[0].fsPath;
+        packageViewProvider.refresh();
+        await vscode.commands.executeCommand("extension.reloadProjectCommand");
+      }
+    }
+  );
+  
+
+  /*
+  var targetDir = conf.get("OPAL.opal.targetDir");
+  projectService.addTargets(targetDir);
+
+  var targets = await projectService.getTargets(targetDir);
+
+  var librariesDirs = conf.get("OPAL.opal.librariesDirs");
+  var libraries = await projectService.getLibraries(librariesDirs);
+
+  if (targets.length === 0 && libraries.length === 0) {
+    vscode.window.showErrorMessage("[OPAL] No .class or .jar Files found in current Workspace. Please open a Java like Project");
+    return;
+  }
+  */
+
+  /**
+   * ######################################################
+   * ################# Connect to Jetty ###################
+   * ######################################################
    */
   // Ping Jetty
   var jettyIsUp = await isReachable(
     "localhost:" + conf.get("OPAL.server.port")
   );
   if (!jettyIsUp) {
+    // search server jar file
+    let jarPath = ""+context.extensionPath;
+          
+    //read content of extension folder path
+    let files = fs.readdirSync(jarPath);
+    //search for Opal Command Server jar
+    for(let i = 0; i < files.length; i++){
+      if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
+        //if found, add it to jar path
+        jarPath = jarPath+"/"+files[i]; 
+      }
+    }
+    // Jetty is not Up
+    // start Jetty
+    vscode.window.showInformationMessage("Starting Jetty ...");
     var jettyTerminal = vscode.window.createTerminal("jetty");
-    jettyTerminal.show(false);
+    jettyTerminal.hide();
     jettyTerminal.sendText(
       "java -jar '" +
-        conf.get("OPAL.server.jar") +
+      jarPath +
         "' " +
         conf.get("OPAL.server.options"),
       true
@@ -74,60 +142,88 @@ export async function activate(context: vscode.ExtensionContext) {
     await delay(100);
     jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
   }
+  vscode.window.showInformationMessage("Connected to Jetty");
+
+
 
   /**
-   * Load Project in OPAL
+   * ######################################################
+   * ################# Load Project #######################
+   * ######################################################
    */
-  // Get status bar
-  let myStatusBarItem: vscode.StatusBarItem;
-  myStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    100
-  );
-  context.subscriptions.push(myStatusBarItem);
+  let loadProjectCommand = vscode.commands.registerCommand(
+    "extension.loadProject",
+    async () => {
+      // Project can not be loaded if jetty is not op
+      var jettyIsUp = await isReachable(
+        "localhost:" + conf.get("OPAL.server.port")
+      );
+      if (!jettyIsUp) {
+        vscode.window.showErrorMessage("Jetty is not up!");
+        return;
+      }
 
-  // get project Service
-  var projectloaded = false;
-  var projectService: any = new ProjectService(
-    "http://localhost:" + conf.get("OPAL.server.port"),
-    projectId
-  );
-  // get opal init message
-  var opalLoadMessage = await projectService.getOPALLoadMessage(
-    conf.get("OPAL.opal.targetDir"),
-    conf.get("OPAL.opal.librariesDirs"),
-    {}
-  );
+      /**
+       * Load Project in OPAL
+       */
+      // Get status bar
+      let myStatusBarItem: vscode.StatusBarItem;
+      myStatusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left,
+        100
+      );
+      context.subscriptions.push(myStatusBarItem);
 
-  // let opal load the project (this may take a while)
-  projectService.load(opalLoadMessage).then(function() {
-    console.log("Project loaded!");
-    myStatusBarItem.text = "Project loaded!";
-    myStatusBarItem.show();
-    vscode.window.showInformationMessage("Project loaded!");
-    projectloaded = true;
-  });
+      // get project Service
+      var projectloaded = false;
+      // get opal init message
+      var opalLoadMessage = await projectService.getOPALLoadMessage(
+        {}
+      );
+      // let opal load the project (this may take a while)
+      projectService.load(opalLoadMessage).then(function() {
+        console.log("Project loaded!");
+        myStatusBarItem.text = "Project loaded!";
+        myStatusBarItem.show();
+        vscode.window.showInformationMessage("Project loaded!");
+        projectloaded = true;
+      });
 
-  // get log message
-  var logMessage = await projectService.getLogMessage("init", {});
-  // get output channel where we can show the opal logs
-  const outputChannel = vscode.window.createOutputChannel("OPAL");
-  // get logging while opal is loading the project
-  var oldLog = "";
-  while (!projectloaded) {
-    // wait for new logs
-    await delay(1000);
-    // show the logs in the status bar
-    var log = await projectService.requestLOG(logMessage);
-    if (log !== undefined && oldLog !== log) {
-      myStatusBarItem.text = "OPAL: Loading Project: " + log + " ... ";
-      myStatusBarItem.show();
-      outputChannel.appendLine("[OPAL]: " + log);
-      outputChannel.show();
-      oldLog = log;
-      console.log(log);
+      // get log message
+      var logMessage = await projectService.getLogMessage("init", {});
+      // get output channel where we can show the opal logs
+      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      // get logging while opal is loading the project
+      var oldLog = "";
+      while (!projectloaded) {
+        // wait for new logs
+        await delay(1000);
+        // show the logs in the status bar
+        var log = await projectService.requestLOG(logMessage);
+        if (log !== undefined && oldLog !== log) {
+          myStatusBarItem.text = "OPAL: Loading Project: " + log + " ... ";
+          myStatusBarItem.show();
+          outputChannel.appendLine("[OPAL]: " + log);
+          outputChannel.show();
+          oldLog = log;
+          console.log(log);
+        }
+      }
     }
-  }
+  );
+
+  /**
+   * ######################################################
+   * ################# Reload Project #####################
+   * ######################################################
+   */
+  let reloadProjectCommand = vscode.commands.registerCommand(
+    "extension.reloadProjectCommand",
+    async () => {
+      await projectService.unLoad();
+      await vscode.commands.executeCommand("extension.loadProject");
+    }
+  );
 
   //menu-command to get svg for .class
   let menuSvgCommand = vscode.commands.registerCommand(
@@ -171,7 +267,7 @@ export async function activate(context: vscode.ExtensionContext) {
       /**
        * Get URI for a virtual TAC Document
        */
-      var tacURI = encodeTACLocation(uri, projectId);
+      var tacURI = encodeLocation(uri, projectId, TACScheme);
 
       /**
        * Get a virtual TAC Document from TAC Provider (see provider/tac.provider.ts);
@@ -192,7 +288,7 @@ export async function activate(context: vscode.ExtensionContext) {
       /**
        * Get URI for a virtual BC Document
        */
-      uri = encodeBCLocation(uri, projectId);
+      uri = encodeLocation(uri, projectId, BCScheme);
       /**
        * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
        */
@@ -255,12 +351,10 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setting up and displaying Opal Tree View
    */
-  const pVP = new PackageViewProvider(
-    vscode.Uri.parse(<string>vscode.workspace.rootPath)
-  );
+  const packageViewProvider = new PackageViewProvider(projectService, ""+projectService.targetDir);
   vscode.window.showInformationMessage("Package Explorer is loading...");
   //register Opal Tree View
-  vscode.window.registerTreeDataProvider("package-explorer", pVP);
+  vscode.window.registerTreeDataProvider("package-explorer", packageViewProvider);
   vscode.window.showInformationMessage("Package Explorer is ready.");
 
   //add commands to this extension's context
@@ -270,7 +364,10 @@ export async function activate(context: vscode.ExtensionContext) {
     menuSvgCommand,
     menuJarCommand,
     menuLibDirCommand,
-    providerRegistrations
+    providerRegistrations,
+    loadProjectCommand,
+    reloadProjectCommand,
+    pickTargetRoot
   );
 }
 
@@ -299,3 +396,15 @@ async function getProjectId() {
     return "";
   }
 }
+
+/*
+function tansformFoldersToQuickPickItems(folders : vscode.WorkspaceFolder[] | undefined) {
+  var quickPickItem : string[] = [];
+  if (folders !== undefined) {
+    folders.forEach(folder => {
+      quickPickItem.push(folder.name);
+    });
+  }
+  return quickPickItem;
+}
+*/

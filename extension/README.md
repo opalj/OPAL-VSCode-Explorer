@@ -1,52 +1,21 @@
 # opal-vscode-explorer README
-##Description
+
+## Description
+
 This extension aims to bring the advantages of [Opal-Project](http://www.opal-project.de/) into VSCode.
 Features include Java bytecode processing, engineering, manipulation and analysis functionality like three-address-code oder bytecode view.
 
-##Usage
-1.0 VSCode file explorer context menu
+## Usage
 
-1.1 Right click a class file in your file explorer and choose
+To use this Extension you will need JRE and a Java like Project.
+Please make sure java executable is in your Path.
 
-1.2 "Three-Address-Code ..." to open its three-address-code
+### Quick Start
 
-
-2.0 Opal Explorer - Tree-View (lens symbol inside the activitybar)
-
-
-2.1. Find and select the class you wish to analyze
-
-2.1.1. By choosing the Three-Address-Code node you can open the desired representation
-
-##Configuration
-
-1.0 There are several settings, you can change to your desires:
-
-### Find the settings
-
-1.1. (Windows and Linux) Open File > Preferences > Settings > Extensions > OPAL VSCode Explorer
-
-(Mac) Open Code > Preferences > Settings > Extensions > OPAL VSCode Explorer
-
-### Examples, how to change settings
-
-1.2. Add `"OPAL.opal.targetDir": "Path to your project / target folder"`
-
-1.3. Add `"OPAL.opal.librariesDirs": "Paths to your libraries folders sperated by ';'"`
-
-1.4. Add `"OPAL.server.jar": "Path to your Opal Command Server jar"`
-
-For Windows users this jar can be found at 
-```
-"%userprofile%\\.vscode\\extensions\\stg.java-bytecode-workbench-X.X.X\\OPAL Command Server-assembly-X.X.X-SNAPSHOT.jar"
-```
-
-For Linux and Mac users this jar can be found at
-```
-"$HOME/.vscode/extensions/stg.java-bytecode-workbench-X.X.X/OPAL Command Server-assembly-X.X.X-SNAPSHOT.jar"
-```
-
-Do not forget to seperate the settings with commas. A valid setting.json (on Windows) could look like this:
+1. To start using OPAL in VSCode just click the lense symbol in the sidebar.
+2. Open your classes root directory (e.g. classes/ or test-classes/) by click "Open Targets"
+3. The View should display the Classes of your Project.
+4. Navigate to the class you would like to analyze and click the representation you like to open.
 
 ```
 {
@@ -60,3 +29,4 @@ Do not forget to seperate the settings with commas. A valid setting.json (on Win
 ```
 
 Please note, that the current workspace root is automatically added to the library directories. If the workspace root changes, the old entry in the library directorie's settings field gets automatically replaced by the new one. Other library folders which were added manually are persistent.
+Please make sure you opened the ROOT of your targets.

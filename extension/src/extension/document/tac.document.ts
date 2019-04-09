@@ -1,92 +1,39 @@
+import AbstractDocument from './abstract.document';
 import * as vscode from "vscode";
-import { CommandService } from "../service/command.service";
+import { ParamsConverterService } from "../service/params.converter.service";
 import * as npmPath from "path";
 
-export default class TACDocument {
-  /**
-   * Links for the jumps to references
-   */
-  private _links: vscode.DocumentLink[];
-  private _tacService: CommandService;
-
-  //private _emitter: vscode.EventEmitter<vscode.Uri>;
-  private _uri: vscode.Uri;
-
-  private _content: string;
-
-  private _projectId: string;
-  private _target: vscode.Uri;
-  private _opalConfig: any;
-
-  constructor(
-    uri: vscode.Uri,
-    emitter: vscode.EventEmitter<vscode.Uri>,
-    projectId: string,
-    target: vscode.Uri,
-    config: any
-  ) {
-    this._links = [];
-
-    this._opalConfig = config;
-    this._tacService = new CommandService(
-      "http://localhost:" + this._opalConfig.get("OPAL.server.port")
-    );
-
-    //this._emitter = emitter;
-    this._uri = uri;
-
-    this._projectId = projectId;
-    this._target = target;
-
-    this._content = <string>(<unknown>this._populate());
-  }
-
-  /**
-   * Get the TAC Code of this TAC Document
-   */
-  get value() {
-    return this._content;
-  }
-
-  get links() {
-    return this._links;
-  }
-
-  /**
-   * Get the Data of this document
-   */
-  private async _populate() {
-    //Extract Filename from URI
-    var fileName = npmPath.parse(this._target.fsPath).base;
-
-    if (fileName.includes(".class")) {
-      fileName = fileName.replace(".class", "");
-      var fqn = this._tacService.getFQN(
-        this._target.fsPath,
-        this._opalConfig.get("OPAL.opal.targetDir")
-      );
-      //Request TAC for Class
-      vscode.window.showInformationMessage(
-        "TAC for Class " + fileName + " requested from Server ..... "
-      );
-      try {
-        var tac = await this._tacService.loadTAC(
-          this._tacService.getTACForClassMessage(this._projectId, fqn, fileName)
-        );
-      } catch (e) {
-        console.log(e);
-      }
-      this._content = tac;
-      return tac;
-    } else {
-      return "";
-    }
-  }
-
-  public _parseDoc(tac: string) {
+export default class TACDocument extends AbstractDocument {
+ 
+  public parseDocumentLinks(tac : string) : vscode.DocumentLink[] {
     const parser = new LinkParser(this._uri, tac);
     parser.parseJumps();
-    this._links = parser.getLinks();
+    return parser.getLinks();
+  }
+
+  public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {
+        //Extract Filename from URI
+        var fileName = npmPath.parse(target.fsPath).base;
+
+        if (fileName.includes(".class")) {
+          fileName = fileName.replace(".class", "");
+          if (targetsRoot) {
+            ParamsConverterService.targetsRoot = targetsRoot;
+          }          
+          var fqn = ParamsConverterService.getFQN(
+            target.fsPath
+          );
+    
+          try {
+            let tac = await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, fqn, fileName));
+            this._content = tac;
+            return tac;
+          } catch (e) {
+            console.log(e);
+          }
+        } else {
+          return "";
+        }
   }
 }
 
