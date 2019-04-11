@@ -11,6 +11,7 @@ import { PackageViewProvider } from "./extension/provider/packageViewProvider";
 import { encodeLocation } from './extension/provider/abstract.provider';
 import ClassDAO from "./extension/model/class.dao";
 import ContextService from "./extension/service/context.service";
+import { CommandService } from "./extension/service/command.service";
 let fs = require('file-system');
 
 const isReachable = require("is-reachable");
@@ -274,19 +275,19 @@ export async function activate(context: vscode.ExtensionContext) {
   let menuBCCommand = vscode.commands.registerCommand(
     "extension.menuBC",
     async (uri: vscode.Uri) => {
-      /**
-       * Get URI for a virtual BC Document
-       */
-      uri = encodeLocation(uri, projectId, BCScheme);
-      /**
-       * Get a virtual BC Document from BC Provider (see provider/bc.provider.ts);
-       */
-      var doc = await vscode.workspace.openTextDocument(uri);
-      /**
-       * Open virtual TAC Document.
-       * This will fire the value() Method in the tac.document.ts and issue a HTTP request to the OPAL Server
-       */
-      vscode.window.showTextDocument(doc);
+      let classItem = classDAO.getClassForURI(uri);
+      let commandService = new CommandService(serverURL);
+      let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.name, "fileName": classItem.fsPath});
+
+      const panel = vscode.window.createWebviewPanel(
+        "Byte-Code-HTML",
+        "Byte Code",
+        vscode.ViewColumn.One,
+        {}
+      );
+
+      // And set its HTML content
+      panel.webview.html = bcHTML;
     }
   );
 
