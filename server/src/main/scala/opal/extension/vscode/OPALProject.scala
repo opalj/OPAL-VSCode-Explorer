@@ -6,7 +6,7 @@ import org.opalj.br.analyses.Project.JavaClassFileReader
 import org.opalj.br.reader.Java9LibraryFramework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
 import org.opalj.tac.{LazyDetachedTACAIKey, ToTxt}
-
+import java.io.File
 import org.opalj.tac.{LazyDetachedTACAIKey, ToTxt}
 import org.opalj.br.ObjectType
 import org.json4s.{DefaultFormats, Formats}
@@ -32,10 +32,11 @@ import org.opalj.tac.fpcf.analyses.cg.TriggeredInstantiatedTypesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.TriggeredConfiguredNativeMethodsAnalysis
 import org.opalj.tac.fpcf.analyses.TriggeredSystemPropertiesAnalysis
 import org.opalj.tac.fpcf.analyses.cg.LazyCalleesAnalysis
-// import org.opalj.da.ClassFileReader
+import org.opalj.da.ClassFileReader
 import org.opalj.ai.fpcf.analyses.LazyL0BaseAIAnalysis
 import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
+
 
 /**
  * Link to OPAL
@@ -180,7 +181,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
-        /**
+    /**
      * Implementation of the get byte code command
      * Get byte code command can be triggered using the any command through the loadAny route at the OPALServlet.
      * The params Map must contain:
@@ -188,16 +189,32 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      **/
     def getBCForClassHTML(opalCommand : OpalCommand) : String = {
         var res = "";
-        if (!opalCommand.params.contains("fqn")) {
-            res = "Missing fqn (fully qualified name)"
+        if (!opalCommand.params.contains("fileName")) {
+            res = "Missing target File Name"
+        } else if (!opalCommand.params.contains("className")) {
+            res = "Missing class Name";
         } else {
-            var fqn = opalCommand.params.get("fqn").get;
-            var cf = project.allClassFiles.find(_.fqn  == fqn);
-            if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
-            } else {                
-                
+            var fileName = opalCommand.params.get("fileName").get
+            var className = opalCommand.params.get("className").get
+
+            val sourceFiles = new java.io.File(fileName)
+            val classFileFilter =
+                if (className == null)
+                    (cf: org.opalj.da.ClassFile) ⇒ true // just take the first one...
+                else
+                    (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava == className
+
+            val (classFile, source) =
+                org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
+            match {
+                case Left(cfSource) ⇒ cfSource
+                case Right(altClassNames) ⇒
+                    if (altClassNames.isEmpty) {
+                        res = "cannot find class "+className+" in "+fileName;
+                    }
             }
+            val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS)
+            //classFile.toXHTML(Some(source), htmlCSS, "", "", false).toString
         }
         res
     }
