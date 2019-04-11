@@ -1,7 +1,6 @@
 import AbstractDocument from './abstract.document';
 import * as vscode from "vscode";
-import { ParamsConverterService } from "../service/params.converter.service";
-import * as npmPath from "path";
+
 
 export default class TACDocument extends AbstractDocument {
  
@@ -11,29 +10,14 @@ export default class TACDocument extends AbstractDocument {
     return parser.getLinks();
   }
 
-  public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {
-        //Extract Filename from URI
-        var fileName = npmPath.parse(target.fsPath).base;
-
-        if (fileName.includes(".class")) {
-          fileName = fileName.replace(".class", "");
-          if (targetsRoot) {
-            ParamsConverterService.targetsRoot = targetsRoot;
-          }          
-          var fqn = ParamsConverterService.getFQN(
-            target.fsPath
-          );
-    
-          try {
-            let tac = await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, fqn, fileName));
-            this._content = tac;
-            return tac;
-          } catch (e) {
-            console.log(e);
-          }
-        } else {
-          return "";
-        }
+  public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {    
+    try {
+      let tac = await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, this._class.fqn, this._class.name));
+      this._content = tac;
+      return tac;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

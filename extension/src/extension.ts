@@ -3,13 +3,14 @@
 //import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from "vscode";
 import TACProvider from "./extension/provider/tac.provider";
-import BCProvider from "./extension/provider/bc.provider";
+//import BCProvider from "./extension/provider/bc.provider";
 import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
 import SVGDocument from "./extension/document/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
-import { ParamsConverterService } from "./extension/service/params.converter.service";
 import { encodeLocation } from './extension/provider/abstract.provider';
+import ClassDAO from "./extension/model/class.dao";
+import ContextService from "./extension/service/context.service";
 let fs = require('file-system');
 
 const isReachable = require("is-reachable");
@@ -30,12 +31,19 @@ export async function activate(context: vscode.ExtensionContext) {
    * Setup and get the Config
    */
   const conf = vscode.workspace.getConfiguration();
-
+  const serverURL = "http://localhost:" + conf.get("OPAL.server.port");
+  /**
+   * Get the Class Data Access Object
+   */
+  let contextService = new ContextService(serverURL);
+  let classDAO = new ClassDAO(contextService);
+  classDAO.addClassesFromWorkspace();
+  
   /**
    * Get the Providers and register them to there sheme
    */
-  const tacProvider = new TACProvider(projectId, conf, "", TACScheme);
-  const bcProvider = new BCProvider(projectId, conf, "", BCScheme);
+  const tacProvider = new TACProvider(projectId, conf, classDAO);
+  // const bcProvider = new BCProvider(projectId, conf, classDAO);
   const providerRegistrations = vscode.Disposable.from(
     vscode.workspace.registerTextDocumentContentProvider(
       TACProvider.scheme,
@@ -44,16 +52,19 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerDocumentLinkProvider(
       { scheme: TACProvider.scheme },
       tacProvider
-    ),
+    )
+    /*
     vscode.workspace.registerTextDocumentContentProvider(
       BCProvider.scheme,
       bcProvider
     )
+    */
   );
 
   var projectService: any = new ProjectService(
-    "http://localhost:" + conf.get("OPAL.server.port"),
-    projectId
+    serverURL,
+    projectId,
+    classDAO
   );
 
   
@@ -70,34 +81,15 @@ export async function activate(context: vscode.ExtensionContext) {
         "canSelectMany" : false
       };
 
-      let targetDir = await vscode.window.showOpenDialog(openDialogOptions);
-      if (targetDir !== undefined) {
-        var targets = await vscode.workspace.findFiles(new vscode.RelativePattern(targetDir[0].fsPath, "**/*.class"));
-        projectService.setTargetUris(targets);
-        ParamsConverterService.targetsRoot = targetDir[0].fsPath;
-        tacProvider.targetsRoot = targetDir[0].fsPath;
-        packageViewProvider.targetsRoot = targetDir[0].fsPath;
+      let classesFolder = await vscode.window.showOpenDialog(openDialogOptions);
+      if (classesFolder !== undefined) {
+        classDAO.updateClassesFolder(classesFolder[0]);
         packageViewProvider.refresh();
         await vscode.commands.executeCommand("extension.reloadProjectCommand");
       }
     }
   );
   
-
-  /*
-  var targetDir = conf.get("OPAL.opal.targetDir");
-  projectService.addTargets(targetDir);
-
-  var targets = await projectService.getTargets(targetDir);
-
-  var librariesDirs = conf.get("OPAL.opal.librariesDirs");
-  var libraries = await projectService.getLibraries(librariesDirs);
-
-  if (targets.length === 0 && libraries.length === 0) {
-    vscode.window.showErrorMessage("[OPAL] No .class or .jar Files found in current Workspace. Please open a Java like Project");
-    return;
-  }
-  */
 
   /**
    * ######################################################
@@ -123,7 +115,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
     // Jetty is not Up
     // start Jetty
-    vscode.window.showInformationMessage("Starting Jetty ...");
     var jettyTerminal = vscode.window.createTerminal("jetty");
     jettyTerminal.hide();
     jettyTerminal.sendText(
@@ -201,8 +192,6 @@ export async function activate(context: vscode.ExtensionContext) {
         // show the logs in the status bar
         var log = await projectService.requestLOG(logMessage);
         if (log !== undefined && oldLog !== log) {
-          myStatusBarItem.text = "OPAL: Loading Project: " + log + " ... ";
-          myStatusBarItem.show();
           outputChannel.appendLine("[OPAL]: " + log);
           outputChannel.show();
           oldLog = log;
@@ -351,12 +340,11 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setting up and displaying Opal Tree View
    */
-  const packageViewProvider = new PackageViewProvider(projectService, ""+projectService.targetDir);
-  vscode.window.showInformationMessage("Package Explorer is loading...");
+  const packageViewProvider = new PackageViewProvider(classDAO);
+  
   //register Opal Tree View
   vscode.window.registerTreeDataProvider("package-explorer", packageViewProvider);
-  vscode.window.showInformationMessage("Package Explorer is ready.");
-
+  
   //add commands to this extension's context
   context.subscriptions.push(
     menuTacCommand,
@@ -369,6 +357,8 @@ export async function activate(context: vscode.ExtensionContext) {
     reloadProjectCommand,
     pickTargetRoot
   );
+
+  vscode.window.showInformationMessage("Java Byte Code Workbench is ready for action");
 }
 
 // this method is called when your extension is deactivated
@@ -396,15 +386,3 @@ async function getProjectId() {
     return "";
   }
 }
-
-/*
-function tansformFoldersToQuickPickItems(folders : vscode.WorkspaceFolder[] | undefined) {
-  var quickPickItem : string[] = [];
-  if (folders !== undefined) {
-    folders.forEach(folder => {
-      quickPickItem.push(folder.name);
-    });
-  }
-  return quickPickItem;
-}
-*/

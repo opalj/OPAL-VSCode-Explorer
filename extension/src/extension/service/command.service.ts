@@ -53,14 +53,7 @@ export class CommandService {
         return request.post(this.options);
     }
 
-    /**
-     * Get the request body for requesting TAC for a function
-     * Check /server/src/main/scala/opal/vscode/model.scala for Details
-     * TACForMethod(projectId:String, fqn: String, methodName:Strinring)
-     */
-    getTACForMethodMessage() {
-        return {};
-    }
+
 
     /**
      * Get the request body for requesting TAC for a class
@@ -72,6 +65,7 @@ export class CommandService {
             "projectId" : projectId,
             "fqn" : fqn,
             "className" : className,
+            "version" : ""
         };
     }
 }

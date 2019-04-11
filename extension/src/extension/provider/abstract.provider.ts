@@ -1,21 +1,22 @@
 import * as vscode from 'vscode';
 import TACDocument from './../document/tac.document';
+import BCDocument from '../document/bc.document';
+import ClassDAO from '../model/class.dao';
 
 export abstract class AbstractProvider implements vscode.TextDocumentContentProvider, vscode.DocumentLinkProvider {
     onDidChange?: vscode.Event<vscode.Uri> | undefined;
 
 
-	protected _documents = new Map<string, TACDocument>();
+	protected _documents = new Map<string, TACDocument | BCDocument>();
     protected _onDidChange = new vscode.EventEmitter<vscode.Uri>();
     protected _config : any;
-    public targetsRoot : string;
-
+    protected _classDAO : ClassDAO;
     protected projectId = "";
 
-	constructor(_projectId : string, _config : any, _targets : string, scheme : string) {
+	constructor(_projectId : string, _config : any, classDAO : ClassDAO) {
         this.projectId = _projectId;
         this._config = _config;
-        this.targetsRoot = _targets;
+        this._classDAO = classDAO;
     }  
     
     abstract provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string>;

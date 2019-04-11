@@ -15,8 +15,12 @@ export default class TACProvider extends AbstractProvider {
             return document.value;
         }
 
-        let params = decodeLocation(uri);
-        document = new TACDocument(uri, this._onDidChange, this.projectId, params[0], this._config, this.targetsRoot);
+        /**
+         * params[0] => class File URI
+         */
+       let params = decodeLocation(uri);
+       let classItem = this._classDAO.getClassForURI(params[0]);
+        document = new TACDocument(uri, this.projectId, params[0], this._config, classItem);
         
         this._documents.set(uri.toString(), document);
         return document.value;
@@ -36,16 +40,3 @@ export default class TACProvider extends AbstractProvider {
         return Promise.resolve(links);
     }
 }
-/*
-let seq = 0;
-
-export function encodeTACLocation(uri: vscode.Uri, projectId: string): vscode.Uri {
-	const query = JSON.stringify([uri.toString(), projectId]);
-	return vscode.Uri.parse(`${TACProvider.scheme}:OPAL.tac?${query}#${seq++}`);
-}
-
-export function decodeTACLocation(uri: vscode.Uri): [vscode.Uri, string] {
-	let [target, projectId] = <[string, string]>JSON.parse(uri.query.replace(/\\/g, '/'));
-	return [vscode.Uri.parse(target), projectId];
-}
-*/

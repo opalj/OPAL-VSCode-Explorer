@@ -36,14 +36,17 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
      * Get Context Information for a class File
      **/
     post("/context/fqn") {
-        var res = ""
-        var filename = request.body
-        org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(filename)).foreach({
+        var path = request.body
+        var res = "";
+        org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).foreach({
             cf => 
                 if (!cf._1.isVirtualType) {
                     res = cf._1.fqn
                 }
         })
+        if (res == "") {
+            throw new Exception("Can't get FQN. File not found: "+path);
+        }
         res
     }
 

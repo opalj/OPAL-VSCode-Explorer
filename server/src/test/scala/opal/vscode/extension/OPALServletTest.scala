@@ -85,10 +85,10 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             //status should equal (200)
         }
 
-        var bcForMethod = OpalCommand("123", "getBCForClass", Map("fqn" -> "AirlineProblem"));
-        json = write(bcForMethod);
+        var getBCForClassHTML = OpalCommand("123", "getBCForClassHTML", Map("fileName" -> "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class", "className" -> "Test"));
+        json = write(getBCForClassHTML);
         post("/project/loadAny", json) {
-            body should ( include("(117,INVOKEVIRTUAL(java.util.Scanner{ java.lang.String nextLine() })),"))
+            body should ( include("<td> <span class=\"instruction return\">return</span></td>") and include("<span>{ <span class=\" object_type\">java.io.PrintStream</span> <span class=\"name\">out </span> }</span>"))
             status should equal (200)
         }
     } 

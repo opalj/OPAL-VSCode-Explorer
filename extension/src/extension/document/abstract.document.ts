@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { CommandService } from "../service/command.service";
-
+import { Class } from "../model/class.dao";
 
 export default abstract class AbstractDocument {
   /**
@@ -8,7 +8,7 @@ export default abstract class AbstractDocument {
    */
   private _links: vscode.DocumentLink[];
   protected _commandService: CommandService;
-
+  
   //private _emitter: vscode.EventEmitter<vscode.Uri>;
   protected _uri: vscode.Uri;
   protected _content: string;
@@ -16,14 +16,14 @@ export default abstract class AbstractDocument {
   private _target: vscode.Uri;
   private _opalConfig: any;
   private targetsRoot : string = "";
+  protected _class : Class;
 
   constructor(
     uri: vscode.Uri,
-    emitter: vscode.EventEmitter<vscode.Uri>,
     projectId: string,
     target: vscode.Uri,
     config: any,
-    targetsRoot : string
+    classItem : Class
   ) {
     this._links = [];
 
@@ -32,12 +32,13 @@ export default abstract class AbstractDocument {
       "http://localhost:" + this._opalConfig.get("OPAL.server.port")
     );
 
+
     //this._emitter = emitter;
     this._uri = uri;
 
     this._projectId = projectId;
     this._target = target;
-
+    this._class = classItem;
     this._content = <string>(<unknown>this._populate());
   }
 

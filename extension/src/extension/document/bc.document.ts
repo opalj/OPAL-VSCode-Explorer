@@ -1,7 +1,6 @@
 import AbstractDocument from './abstract.document';
 import * as vscode from "vscode";
-import { ParamsConverterService } from "../service/params.converter.service";
-import * as npmPath from "path";
+
 
 export default class BCDocument extends AbstractDocument {
  
@@ -15,28 +14,13 @@ export default class BCDocument extends AbstractDocument {
   }
  
   public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {
-        //Extract Filename from URI
-        var fileName = npmPath.parse(target.fsPath).base;
-
-        if (fileName.includes(".class")) {
-          fileName = fileName.replace(".class", "");
-          if (targetsRoot) {
-            ParamsConverterService.targetsRoot = targetsRoot;
-          } 
-          var fqn = ParamsConverterService.getFQN(
-            target.fsPath
-          );
-          
-          try {
-            let bcObject = await this._commandService.loadAnyCommand("getBCForClass", projectId, {"fqn" : fqn, "className" : fileName});
-            bcObject = this.parseBCJson(bcObject);
-            return Promise.resolve(this.readableByteCode(bcObject, fqn));
-          } catch (e) {
-            console.log(e);
-          }
-        } else {
-          return "";
-        }
+    try {
+      let bcObject = await this._commandService.loadAnyCommand("getBCForClass", projectId, {"fqn" : this._class.fqn, "className" : this._class.name});
+      bcObject = this.parseBCJson(bcObject);
+      return Promise.resolve(bcObject);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   parseBCJson(bcJSON : any) : any {

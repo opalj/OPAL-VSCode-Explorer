@@ -204,17 +204,15 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 else
                     (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava == className
 
-            val (classFile, source) =
-                org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
+            
+            org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
             match {
-                case Left(cfSource) ⇒ cfSource
+                case Left(cfSource) ⇒ 
+                    val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS)
+                    res = cfSource._1.toXHTML(Some(cfSource._2), htmlCSS, Some(""), Some(""), false).toString
                 case Right(altClassNames) ⇒
-                    if (altClassNames.isEmpty) {
-                        res = "cannot find class "+className+" in "+fileName;
-                    }
+                    res = "cannot find class "+className+" in "+fileName;
             }
-            val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS)
-            //classFile.toXHTML(Some(source), htmlCSS, "", "", false).toString
         }
         res
     }
@@ -328,6 +326,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
           "</svg>";
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
+          case "getBCForClassHTML" => res = getBCForClassHTML(opalCommand);
           // case "getCallGraph" => res = getCallGraph(opalCommand);
           // case "getContextInfos" => res = getClassFileContext(opalCommand); 
           case _ => res = "unknown command";

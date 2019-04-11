@@ -1,5 +1,6 @@
 var request = require('request-promise-native');
-import { workspace, Uri, RelativePattern } from 'vscode';
+import { workspace, Uri } from 'vscode';
+import ClassDAO from './../model/class.dao';
 var fs = require('file-system');
 
 /**
@@ -23,34 +24,19 @@ export class ProjectService {
 
     protected serverUrl = "";
     protected _projectId = "";
-    protected _targetDir = "";
 
-    protected _targets : Uri[] = [];
     protected _libraries : Uri[] = [];
+
+    protected _classDAO : ClassDAO;
 
     /**
      * HTTP URL
      * @param _url URL of the OPAL Server
      */
-    constructor(public _url: string, projectId : string){
+    constructor(public _url: string, projectId : string, classDAO : ClassDAO){
         this.serverUrl = _url;
         this._projectId = projectId;
-    }
-
-    get targetDir() : string {
-        return this._targetDir;
-    }
-
-    get targets() : Uri[] {
-        return this._targets;
-    }
-
-    targetAsStrings() : string[] {
-        let res : string[] = [];
-        this._targets.forEach(target => {
-            res.push(target.fsPath);
-        });
-        return res;
+        this._classDAO = classDAO;
     }
 
     get libraries() : Uri[] {
@@ -94,7 +80,7 @@ export class ProjectService {
      */
     async getOPALLoadMessage(config : Object)   {
         var projectId = this._projectId;
-        var targets = this.targetAsStrings();
+        var targets = this._classDAO.getFSpaths();
         var libraries = this._libraries;
         return {
             "projectId" : projectId,
@@ -119,35 +105,6 @@ export class ProjectService {
     }
 
     /**
-     * Get all class Files in the targets dir path
-     * @param targetsDirPath Path to folder which contains targets
-     */
-    async addTargets(targetsDirPath : string) {
-        this._targetDir = targetsDirPath[0];
-        var targets = await workspace.findFiles(new RelativePattern(targetsDirPath[0], "**/*.class"));
-        targets.forEach((target: Uri) => {
-            this._targets.push(target);
-        });
-    }
-
-    
-    addTargetUris(targets : Uri[]) {
-        /**
-         * Be awarer of a possible BUG
-         * ParamsConverterService.getFQN wil not be able to calculate the fqn based on the targets root
-         * To get this fixed the fqn of alle targets must be calculated with the correct targets root 
-         * of with a diffrent approach.
-         */
-        targets.forEach(target => {
-            this._targets.push(target);
-        });
-    }
-
-    setTargetUris(targets : Uri[]) {
-        this._targets = targets;
-    }
-
-    /**
      * Get all jar files in the libraries dir paths
      * @param librariesDirPaths Paths to the folder which contains libraries
      */
@@ -167,12 +124,6 @@ export class ProjectService {
                     console.log("Added Library "+files[j]+" from folder "+libFolders[i]);
                 }
             }
-
-            /** 
-            var libraries = await workspace.findFiles(new RelativePattern(libFolders[i], "*.jar"));
-            for (let librarie of libraries) {
-                librariePaths.push(librarie.fsPath);
-            }*/
         }
     }
 
