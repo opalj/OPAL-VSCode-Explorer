@@ -30,28 +30,31 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "configuration": [
-      {
-        "type": "object",
-        "title": "OPAL VSCode Explorer",
-        "properties": {
-          "OPAL.server.port": {
-            "type": [
-              "number"
-            ],
-            "default": 8080,
-            "description": "Port of the OPAL Server you want to connect."
-          },
-          "OPAL.server.options": {
-            "type": [
-              "string"
-            ],
-            "default": "",
-            "description": "Java parameter for the OPAL Server."
-          }
+    "configuration": {
+      "title": "Java Byte Code Workbench",
+      "properties": {
+        "OPAL.server.port": {
+          "type": "number",
+          "default": "8080",
+          "markdownDescription": "Port of the OPAL Server you want to connect."
+        },
+        "OPAL.server.options": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "Java parameter for the OPAL Server. (like xmx, xms)"
+        },
+        "OPAL.jdk.load" : {
+          "type" : "boolean",
+          "default": true,
+          "markdownDescription": "Should the JDK be part of the analysis?" 
+        },
+        "OPAL.jdk.asLib" : {
+          "type" : "boolean",
+          "default": false,
+          "markdownDescription": "Should the JDK be loaded as Librarie?"
         }
       }
-    ],
+},
     "commands": [
       {
         "command": "extension.tac",
@@ -60,6 +63,10 @@
       {
         "command": "extension.menuTac",
         "title": "Three-Address-Code ..."
+      },
+      {
+        "command": "extension.menuTacDetached",
+        "title": "Detached Three-Address-Code ..."
       },
       {
         "command": "extension.menuJar",
@@ -162,16 +169,14 @@
       ]
     },
     "menus": {
-      "editor/context": [
-        {
-          "command": "editor.printReferences",
-          "when": "editorHasReferenceProvider",
-          "group": "navigation@1.31"
-        }
-      ],
       "explorer/context": [
         {
           "command": "extension.menuTac",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
+        {
+          "command": "extension.menuTacDetached",
           "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
         },
