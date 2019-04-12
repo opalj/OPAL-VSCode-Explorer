@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { CommandService } from "../service/command.service";
-import { Class } from "../model/class.dao";
+import { ClassFile } from "../model/class.dao";
 
 export default abstract class AbstractDocument {
   /**
@@ -16,14 +16,14 @@ export default abstract class AbstractDocument {
   private _target: vscode.Uri;
   private _opalConfig: any;
   private targetsRoot : string = "";
-  protected _class : Class;
+  protected _class : ClassFile;
 
   constructor(
     uri: vscode.Uri,
     projectId: string,
     target: vscode.Uri,
     config: any,
-    classItem : Class
+    classItem : ClassFile
   ) {
     this._links = [];
 

@@ -99,7 +99,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
                 res += "\n{\n";
                 tacForClass.version match {
-                    case "tacAI" => 
+                    case "lazyDetachedTACai" => 
                         var tac = tacAI(m);
                         res += ToTxt(tac).mkString("\n");
                     case _ => 
@@ -202,16 +202,16 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                 if (className == null)
                     (cf: org.opalj.da.ClassFile) ⇒ true // just take the first one...
                 else
-                    (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava == className
-
-            
+                    (cf: org.opalj.da.ClassFile) ⇒ 
+                      cf.thisType.asJava == className.replace("/", ".")
+        
             org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
             match {
                 case Left(cfSource) ⇒ 
                     val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS)
                     res = cfSource._1.toXHTML(Some(cfSource._2), htmlCSS, Some(""), Some(""), false).toString
                 case Right(altClassNames) ⇒
-                    res = "cannot find class "+className+" in "+fileName;
+                    res = "cannot find class "+className+" in "+altClassNames;
             }
         }
         res

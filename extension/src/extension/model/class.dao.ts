@@ -2,9 +2,9 @@ import * as npmPath from "path";
 import ContextService from "../service/context.service";
 import { workspace, Uri, RelativePattern } from 'vscode';
 
-export interface Class {
+export interface ClassFile {
     name : string;
-    fsPath : string;
+    uri : Uri;
     methods? : Method[];
     fqn : string;
 }
@@ -16,15 +16,21 @@ interface Method {
 
 export default class ClassDAO {
 
-    private static _classes : Class[] = [];
+    private static _classes : ClassFile[] = [];
     private _contextService : ContextService;
 
     constructor(contextService : ContextService) {
         this._contextService = contextService;
     }
 
-    getClassForURI(classURI : Uri) : Class {
-        let res = ClassDAO._classes.find((item) => item.fsPath === classURI.fsPath);
+    getClassForURI(classURI : Uri) : ClassFile {
+        let tmp = workspace.asRelativePath(ClassDAO._classes[0].uri.fsPath);
+        let tmp2 = workspace.asRelativePath(classURI.path);
+        tmp = tmp.slice(tmp.indexOf("\\"));
+        
+        let res = ClassDAO._classes.find((item) =>
+            workspace.asRelativePath(item.uri.fsPath) === workspace.asRelativePath(classURI.fsPath)
+        );
         if (res !== undefined) {
             return res;
         } else {
@@ -35,7 +41,7 @@ export default class ClassDAO {
     public getFSpaths() : string[] {
         let res : string[] = [];
         ClassDAO._classes.forEach(classItem => {
-            res.push(classItem.fsPath);
+            res.push(classItem.uri.fsPath);
         });
         return res;
     }
@@ -56,7 +62,7 @@ export default class ClassDAO {
 
         let fqn = await this._contextService.loadFQNFromContext(classPath.fsPath);
 
-        let result : Class = {"name" : className, "fsPath" : classPath.fsPath, "fqn" : fqn};
+        let result : ClassFile = {"name" : className, "uri" : classPath, "fqn" : fqn};
         ClassDAO._classes.push(result);
     }
 

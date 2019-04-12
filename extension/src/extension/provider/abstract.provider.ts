@@ -25,12 +25,12 @@ export abstract class AbstractProvider implements vscode.TextDocumentContentProv
 
 let seq = 0;
 
-export function encodeLocation(uri: vscode.Uri, projectId: string, scheme : string): vscode.Uri {
-	const query = JSON.stringify([uri.toString(), projectId]);
-	return vscode.Uri.parse(`${scheme}:OPAL.${scheme}?${query}#${seq++}`);
+export function encodeLocation(uri: vscode.Uri, projectId: string, scheme : string, variant = ""): vscode.Uri {
+	const query = JSON.stringify([uri.toString(), projectId, variant]);
+	return vscode.Uri.parse(`${scheme}:OPAL.${scheme}?${query}#${variant}#${seq++}`);
 }
 
-export function decodeLocation(uri: vscode.Uri): [vscode.Uri, string] {
-	let [target, projectId] = <[string, string]>JSON.parse(uri.query.replace(/\\/g, '/'));
-	return [vscode.Uri.parse(target), projectId];
+export function decodeLocation(uri: vscode.Uri): [vscode.Uri, string, string] {
+	let [target, projectId, variant] = <[string, string, string]>JSON.parse(uri.query.replace(/\\/g, '/'));
+	return [vscode.Uri.parse(target), projectId, variant];
 }

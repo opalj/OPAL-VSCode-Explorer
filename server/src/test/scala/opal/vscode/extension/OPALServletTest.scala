@@ -50,14 +50,14 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var tacForClass = TACForClass("123", "AirlineProblem", "tacAI");
+        var tacForClass = TACForClass("123", "AirlineProblem", "lazyDetachedTACai");
         json = write(tacForClass);
         post("/project/tac/class", json) {
             body should ( include("{lv36}/*java.io.PrintStream*/.println({lv41})") and include("{lv40}/*java.lang.StringBuilder*/.toString()") and include("java.lang.StringBuilder*/.<init>()"))
             status should equal (200)
         }
 
-        var tacForClassString = TACForClass("123", "java/lang/String", "tacAI");
+        var tacForClassString = TACForClass("123", "java/lang/String", "lazyDetachedTACai");
         json = write(tacForClassString);
         post("/project/tac/class", json) {
             //body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
