@@ -1,12 +1,7 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-//import { workspace, languages, window, commands, ExtensionContext, Disposable, TextDocument } from 'vscode';
 import * as vscode from "vscode";
 import TACProvider from "./extension/provider/tac.provider";
-//import BCProvider from "./extension/provider/bc.provider";
 import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
-import SVGDocument from "./extension/document/svg.document";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
 import { encodeLocation } from './extension/provider/abstract.provider';
 import ClassDAO from "./extension/model/class.dao";
@@ -17,7 +12,7 @@ let fs = require('file-system');
 const isReachable = require("is-reachable");
 
 const TACScheme = "tac";
-const BCScheme = "bc";
+// const BCScheme = "bc";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -38,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   let contextService = new ContextService(serverURL);
   let classDAO = new ClassDAO(contextService);
-  classDAO.addClassesFromWorkspace();
+  
   
   /**
    * Get the Providers and register them to there sheme
@@ -101,19 +96,27 @@ export async function activate(context: vscode.ExtensionContext) {
   var jettyIsUp = await isReachable(
     "localhost:" + conf.get("OPAL.server.port")
   );
+  
   if (!jettyIsUp) {
     // search server jar file
     let jarPath = ""+context.extensionPath;
           
     //read content of extension folder path
     let files = fs.readdirSync(jarPath);
+    let found = false;
     //search for Opal Command Server jar
     for(let i = 0; i < files.length; i++){
       if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
         //if found, add it to jar path
         jarPath = jarPath+"/"+files[i]; 
+        found = true;
       }
     }
+
+    if (!found) {
+      vscode.window.showErrorMessage("Server jar not found!");
+    }
+
     // Jetty is not Up
     // start Jetty
     var jettyTerminal = vscode.window.createTerminal("jetty");
@@ -127,16 +130,45 @@ export async function activate(context: vscode.ExtensionContext) {
     );
   }
 
+  /**
+   * Show some progress to the User while Jetty is booting
+   */
+  vscode.window.withProgress({"cancellable" : false, "location" : 15, "title" : "Jetty is starting  ..."}, async (progress, token) => {
+    progress.report({ increment: 0 });
+    let i = 0;
+    while (!jettyIsUp) {
+      await delay(100);
+      jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
+      progress.report({ "increment": i * 10, "message": "Starting Server ...."+i });
+      i++;
+    }
+    return Promise.resolve();
+  });
+
   /*
    * Wait for Jetty being started
-   */
+  */ 
+  await delay(500);
   while (!jettyIsUp) {
-    await delay(100);
+    await delay(200);
     jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
   }
+  
   vscode.window.showInformationMessage("Connected to Jetty");
 
+  /**
+   * After Jetty is up we can load the class Files from the Workspace
+   * Jetty is necessary for this because we need OPAL to get the fqn
+   * from a class File
+   */
+  classDAO.addClassesFromWorkspace();
 
+  // Get status bar
+  let myStatusBarItem: vscode.StatusBarItem;
+  myStatusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100 
+  );
 
   /**
    * ######################################################
@@ -156,16 +188,8 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       /**
-       * Load Project in OPAL
-       */
-      // Get status bar
-      let myStatusBarItem: vscode.StatusBarItem;
-      myStatusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
-        100
-      );
-      context.subscriptions.push(myStatusBarItem);
-
+       *  Project in OPAL
+       */  
       // get project Service
       var projectloaded = false;
       // get opal init message
@@ -193,6 +217,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // show the logs in the status bar
         var log = await projectService.requestLOG(logMessage);
         if (log !== undefined && oldLog !== log) {
+          myStatusBarItem.text = log;
           outputChannel.appendLine("[OPAL]: " + log);
           outputChannel.show();
           oldLog = log;
@@ -201,6 +226,8 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }
   );
+
+
 
   /**
    * ######################################################
@@ -221,7 +248,7 @@ export async function activate(context: vscode.ExtensionContext) {
     async (uri: vscode.Uri) => {
       /**
        * Get URI for a virtual svg Document
-       */
+
 
       let document = new SVGDocument(
         uri,
@@ -230,10 +257,10 @@ export async function activate(context: vscode.ExtensionContext) {
         uri,
         conf
       );
-
+       */
       //var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";
       //var svgDoc = await vscode.workspace.openTextDocument(svgURI);
-
+/*
       var text = await document.getDocText();
       let htmlforSVG =
         '<!DOCTYPE html><html lang="de"><head></head><body><div id="__svg"> ' +
@@ -245,8 +272,9 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.ViewColumn.One,
         {}
       );
+      */
       // And set its HTML content
-      panel.webview.html = htmlforSVG;
+      // panel.webview.html = htmlforSVG;
     }
   );
 
@@ -270,14 +298,33 @@ export async function activate(context: vscode.ExtensionContext) {
       vscode.window.showTextDocument(tacDoc);
     }
   );
+  // an other variant of the TAC
+  let menuTacDetached = vscode.commands.registerCommand(
+    "extension.menuTacDetached",
+    async (uri: vscode.Uri) => {
+      /**
+       * Get URI for a virtual TAC Document
+       */
+      var tacURI = encodeLocation(uri, projectId, TACScheme, "lazyDetachedTACai");
+      /**
+       * Get a virtual TAC Document from TAC Provider (see provider/tac.provider.ts);
+       */
+      var tacDoc = await vscode.workspace.openTextDocument(tacURI);
+      /**
+       * Open virtual TAC Document.
+       * This will fire the value() Method in the tac.document.ts and issue a HTTP request to the OPAL Server
+       */
+      vscode.window.showTextDocument(tacDoc);
+    }
+  );
 
-  //menu-command to get bc from .class
+  //menu-command to get bc from .class  
   let menuBCCommand = vscode.commands.registerCommand(
     "extension.menuBC",
     async (uri: vscode.Uri) => {
       let classItem = classDAO.getClassForURI(uri);
       let commandService = new CommandService(serverURL);
-      let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.name, "fileName": classItem.fsPath});
+      let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
 
       const panel = vscode.window.createWebviewPanel(
         "Byte-Code-HTML",
@@ -332,9 +379,9 @@ export async function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage("Adding Directory to Library Directory Paths...");
       console.log("Adding "+uri.fsPath.replace(/\\/g, "\\\\")+" to LibDirs.");
 
-      let oldDirs = <string>conf.get("OPAL.opal.librariesDirs");
+      let oldDirs = <string>conf.get("OPAL.librariesDirs");
       let newDirs = oldDirs + ";" + uri.fsPath;
-      await conf.update("OPAL.opal.librariesDirs", newDirs, true);
+      await conf.update("OPAL.librariesDirs", newDirs, true);
     }
   );
 
@@ -356,7 +403,9 @@ export async function activate(context: vscode.ExtensionContext) {
     providerRegistrations,
     loadProjectCommand,
     reloadProjectCommand,
-    pickTargetRoot
+    pickTargetRoot,
+    myStatusBarItem,
+    menuTacDetached
   );
 
   vscode.window.showInformationMessage("Java Byte Code Workbench is ready for action");
