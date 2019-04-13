@@ -40,11 +40,10 @@ import org.opalj.br.fpcf.cg.properties.CallersProperty
 
 /**
  * Link to OPAL
- * Every instance of this class represents a Project that is analyzed by OPAL 
- * @param projectId: The ID of the Project.
+ * Every instance of this class represents a Project that is analyzed by OPAL
  * @param opalInit: OPAL initialization Message
  */
-class OPALProject(projectId : String, opalInit : OpalInit) {
+class OPALProject(opalInit : OpalInit) {
 
     protected val logger = new StringLogger();
     protected var  project : Project[java.net.URL] = null;
@@ -54,23 +53,33 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      * Let OPAL load / analyze the Project with the opalInit Message
      **/
     def load() : String = {
-        val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))        
+        var libraryClassFilesAreInterfacesOnly = false;
+        var res = "";
+        if (opalInit.config.contains("libraryClassFilesAreInterfacesOnly") && opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "1" &&  opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "true") {
+            libraryClassFilesAreInterfacesOnly = true;
+            res += "libraryClassFilesAreInterfacesOnly"
+        } else {
+            res += "libraryClassFilesAreInterfaces not Only"
+        }
+
+        val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
         if (opalInit.config.contains("jdk.load") && ( opalInit.config.get("jdk.load").get == "true" || opalInit.config.get("jdk.load").get == "1" )) {
             val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
             project = Project(
                 targetClassFiles, 
                 libraryClassFiles, 
-                libraryClassFilesAreInterfacesOnly = true,
+                libraryClassFilesAreInterfacesOnly,
                 virtualClassFiles = Traversable.empty)(projectLogger = logger);
         } else {
             val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)))
             project = Project(
                 targetClassFiles, 
                 libraryClassFiles, 
-                libraryClassFilesAreInterfacesOnly = true,
+                libraryClassFilesAreInterfacesOnly,
                 virtualClassFiles = Traversable.empty)(projectLogger = logger);
         }
-        "Project loaded"
+        res += "Project loaded"
+        res
     }
 
     /**
@@ -101,7 +110,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
 
         if (cf.isEmpty) {
-            res = "Class File for fqn = "+tacForClass.fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+            res = "Class File for fqn = "+tacForClass.fqn+" not found!";
         } else {
             cf.get.methods.foreach({
                 m =>
@@ -113,7 +122,6 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
                         res += ToTxt(tac).mkString("\n");
                     case _ => 
                         res += ToTxt(m)
-                    
                 }
                 res += "\n}\n"
             })
@@ -144,7 +152,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var descriptor = opalCommand.params.get("descriptor").get;
             var cf = project.allClassFiles.find(_.fqn  == fqn);
             if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+                res = "Class File for fqn = "+fqn+" not found!";
             } else {
                 //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
                 cf.get.methods.foreach({
@@ -173,7 +181,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var fqn = opalCommand.params.get("fqn").get;
             var cf = project.allClassFiles.find(_.fqn  == fqn);
             if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+                res = "Class File for fqn = "+fqn+" not found!";
             } else {                
                 var bytecode = Map[String, String]();
                 cf.get.methods.foreach({
@@ -240,7 +248,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             var descriptor = opalCommand.params.get("descriptor").get;
             var cf = project.allClassFiles.find(_.fqn  == fqn);
             if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
+                res = "Class File for fqn = "+fqn+" not found!";
             } else {
                 val cfg = org.opalj.br.cfg.CFGFactory(cf.get.methods.tail.head.body.get)
                 val svg = org.opalj.graphs.dotToSVG(cfg.toDot);
@@ -250,75 +258,6 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         res
     }
 
-/*
-    def getCallGraph(opalCommand : OpalCommand) : String = {
-        var res = "";
-        if (!opalCommand.params.contains("fqn")) {
-            res = "Missing fqn (fully qualified name)"
-        } else if (!opalCommand.params.contains("methodName")) {
-            res = "Missing method name"
-        } else if (!opalCommand.params.contains("descriptor")) {
-            res = "Missing Method descriptor"
-        } else {
-            val ps = project.get(PropertyStoreKey)
-            val manager = project.get(FPCFAnalysesManagerKey)
-            implicit val declaredMethods = project.get(DeclaredMethodsKey)
-            manager.runAll(
-                            RTACallGraphAnalysisScheduler,
-                            TriggeredStaticInitializerAnalysis,
-                            TriggeredLoadedClassesAnalysis,
-                            TriggeredFinalizerAnalysisScheduler,
-                            TriggeredThreadRelatedCallsAnalysis,
-                            TriggeredSerializationRelatedCallsAnalysis,
-                            TriggeredReflectionRelatedCallsAnalysis,
-                            TriggeredInstantiatedTypesAnalysis,
-                            TriggeredConfiguredNativeMethodsAnalysis,
-                            TriggeredSystemPropertiesAnalysis,
-                            LazyCalleesAnalysis(
-                                Set(
-                                    StandardInvokeCallees,
-                                    SerializationRelatedCallees,
-                                    ReflectionRelatedCallees,
-                                    ThreadRelatedIncompleteCallSites
-                                )
-                            ),
-                            LazyL0BaseAIAnalysis,
-                            TACAITransformer
-            )
-            var fqn = opalCommand.params.get("fqn").get;
-            var methodName = opalCommand.params.get("methodName").get;
-            var descriptor = opalCommand.params.get("descriptor").get;
-            var cf = project.allClassFiles.find(_.fqn  == fqn);
-            if (cf.isEmpty) {
-                res = "Class File for fqn = "+fqn+" not found!\nPlease Open root of your targets e.g. classes/ or test-classes/";
-            } else {
-                //var method = cf.get.findMethod(methodName,MethodDescriptor(descriptor));
-                
-                cf.get.methods.foreach({
-                    method => 
-                        if (method.name == methodName) {
-                            val dm = declaredMethods(method)
-                            ps(dm, CallersProperty.key /*Callees.key*/)
-                        }
-                })
-            }
-        }
-        res
-    }
-
-    def getClassFileContext(opalCommand : OpalCommand) : String = {
-        var res = ""
-        if (opalCommand.params.contains("filename")) {
-            org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(opalCommand.params.get("filename").get)).foreach({
-                cf => 
-                    if (!cf._1.isVirtualType) {
-                        res = cf._1.fqn
-                    }
-            })
-        }
-        res
-    }
-*/
      /**
      * Get the Any
      **/
@@ -328,11 +267,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
         var res = "";
         command match{
             case "getCFG" => res = getCFG(opalCommand);
-            case "getSVG" => res= "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">"+
-            "<path d=\"M30,1h40l29,29v40l-29,29h-40l-29-29v-40z\" stroke=\"#000\" fill=\"none\"/>" +
-            "<path d=\"M31,3h38l28,28v38l-28,28h-38l-28-28v-38z\" fill=\"#a23\"/>"+
-            "<text x=\"50\" y=\"68\" font-size=\"48\" fill=\"#FFF\" text-anchor=\"middle\"><![CDATA[410]]></text>"+
-          "</svg>";
+            case "getSVG" => res = "";
           case "getBCForClass" => res = getBCForClass(opalCommand);
           case "getBCForMethod" => res = getBCForMethod(opalCommand);
           case "getBCForClassHTML" => res = getBCForClassHTML(opalCommand);

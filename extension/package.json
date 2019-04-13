@@ -52,9 +52,14 @@
           "type" : "boolean",
           "default": false,
           "markdownDescription": "Should the JDK be loaded as Librarie?"
+        },
+        "OPAL.libraryClassFilesAreInterfacesOnly" : {
+          "type" : "boolean",
+          "default": false,
+          "markdownDescription": "Should the Librarie Class Files be loaded as interfaces only?"
         }
       }
-},
+    },
     "commands": [
       {
         "command": "extension.tac",

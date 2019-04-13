@@ -188,14 +188,15 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       /**
-       *  Project in OPAL
+       *  Load Project in to OPAL
        */  
       // get project Service
       var projectloaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
-          "jdk.load" : conf.get("OPAL.jdk.load")+""
+          "jdk.load" : conf.get("OPAL.jdk.load")+"",
+          "libraryClassFilesAreInterfacesOnly" : conf.get("OPAL.libraryClassFilesAreInterfacesOnly")+""
         }
       );
       // let opal load the project (this may take a while)
