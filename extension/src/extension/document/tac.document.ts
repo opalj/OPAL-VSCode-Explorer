@@ -76,7 +76,7 @@ export class LinkParser {
               new vscode.Position(i, end)
             );
             let targetUri: vscode.Uri;
-            let targetLine = <number>this.getTargetLineAbove(i, Number(tmp[j]));
+            let targetLine = <number>this.getTargetLineGlobal(i, Number(tmp[j]));
             targetUri = this.docPath.with({ fragment: String(targetLine) });
             this.documentLinkComposer(originRange, targetUri);
           }
@@ -214,7 +214,7 @@ export class LinkParser {
       return this.sameMethod(line2, line1);
     }
   }
-
+/*
   private getTargetLineAbove(originLine: number, targetID: number) {
     for (let i = originLine - 1; i >= 0; i--) {
       if (
@@ -226,7 +226,7 @@ export class LinkParser {
       }
     }
   }
-
+*/
   private getTargetLineGlobal(originLine: number, targetID: number) {
     for (let i = this.tacLines.length - 1; i >= 0; i--) {
       if (
