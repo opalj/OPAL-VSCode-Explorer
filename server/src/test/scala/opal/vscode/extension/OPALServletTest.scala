@@ -20,10 +20,10 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     var classesPath = new File(".").getCanonicalPath()+File.separator+"target"+File.separator+"scala-2.12"+File.separator+"classes";
     var testProject = new File(".").getCanonicalPath()+File.separator+".."+File.separator+"dummy";
 
-    test("Load Project") {
+    test("Load Project with jdk") {
         var json = "";
         //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
-        var opalInit = OpalInit("abc", Array(testProject+File.separator), Array(""), Map("key" -> "value")); // +"cmdsnake"+File.separator+"Direction.class"
+        var opalInit = OpalInit("abc", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "1")); // +"cmdsnake"+File.separator+"Direction.class"
         json = write(opalInit);
 
         post("/project/load", json) {
@@ -34,7 +34,27 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         var requestLogs = Log("abc", "", Map("key" -> "value"));
         json = write(requestLogs);
         post("/project/load/log", json) {
-            body should ( include ("creating the project took") and include ("the JDK is part of the analysis") )
+            body should ( include ("creating the project took") and include ("the JDK is part of the analysis") and include ("validating the project took") )
+            status should equal (200)
+        }
+    }
+
+    test ("load project with no jdk") {
+        var json = "";
+        //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
+        var opalInit = OpalInit("def", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "0")); // +"cmdsnake"+File.separator+"Direction.class"
+        json = write(opalInit);
+
+        post("/project/load", json) {
+            body should equal ("Project loaded")
+            status should equal (200)
+        }
+
+
+        var requestLogs = Log("def", "", Map("key" -> "value"));
+        json = write(requestLogs);
+        post("/project/load/log", json) {
+            body should ( include ("creating the project took") and include ("validating the project took") and not include ("the JDK is part of the analysis") )
             status should equal (200)
         }
     }

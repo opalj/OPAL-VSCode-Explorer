@@ -54,13 +54,22 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
      * Let OPAL load / analyze the Project with the opalInit Message
      **/
     def load() : String = {
-        val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
-        val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar ) // 
-        project = Project(
-            targetClassFiles, 
-            libraryClassFiles, 
-            libraryClassFilesAreInterfacesOnly = true,
-            virtualClassFiles = Traversable.empty)(projectLogger = logger);
+        val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))        
+        if (opalInit.config.contains("jdk.load") && ( opalInit.config.get("jdk.load").get == "true" || opalInit.config.get("jdk.load").get == "1" )) {
+            val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
+            project = Project(
+                targetClassFiles, 
+                libraryClassFiles, 
+                libraryClassFilesAreInterfacesOnly = true,
+                virtualClassFiles = Traversable.empty)(projectLogger = logger);
+        } else {
+            val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)))
+            project = Project(
+                targetClassFiles, 
+                libraryClassFiles, 
+                libraryClassFilesAreInterfacesOnly = true,
+                virtualClassFiles = Traversable.empty)(projectLogger = logger);
+        }
         "Project loaded"
     }
 
@@ -208,7 +217,7 @@ class OPALProject(projectId : String, opalInit : OpalInit) {
             org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
             match {
                 case Left(cfSource) ⇒ 
-                    val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS)
+                    val htmlCSS = Some(org.opalj.da.ClassFile.TheCSS + ".class_file {background: white;}")
                     res = cfSource._1.toXHTML(Some(cfSource._2), htmlCSS, Some(""), Some(""), false).toString
                 case Right(altClassNames) ⇒
                     res = "cannot find class "+className+" in "+altClassNames;
