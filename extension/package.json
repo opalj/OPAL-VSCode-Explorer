@@ -62,11 +62,11 @@
       },
       {
         "command": "extension.menuTac",
-        "title": "Three-Address-Code ..."
+        "title": "Default Three-Address-Code ..."
       },
       {
         "command": "extension.menuTacDetached",
-        "title": "Detached Three-Address-Code ..."
+        "title": "Lazy Detached AI Three-Address-Code ..."
       },
       {
         "command": "extension.menuJar",
