@@ -12,10 +12,11 @@ export default class TACProvider extends AbstractProvider {
     provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
         /**
          * params[0] => class File URI
+         * params[2] => TAC Variation
          */
         let params = decodeLocation(uri);
 
-        let document = this._documents.get(params[0].fsPath);
+        let document = this._documents.get(params[0].fsPath+params[2]);
         if (document) {
             return document.value;
         }
@@ -23,7 +24,7 @@ export default class TACProvider extends AbstractProvider {
        
        let classItem = this._classDAO.getClassForURI(params[0]);
        document = new TACDocument(uri, this.projectId, params[0], this._config, classItem, params[2]);
-       this._documents.set(uri.toString(), document);
+       this._documents.set(params[0].fsPath+params[2], document);
 
        if (!document.value) {
             return document.populate();
@@ -39,10 +40,16 @@ export default class TACProvider extends AbstractProvider {
      * @param token cancellation token
      */
     provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]>{
-        let doc : TACDocument;
-        doc = <any> this._documents.get(document.uri.toString());
-        let tac = doc.value;
-        let links = doc.parseDocumentLinks(tac);
-        return Promise.resolve(links);
+        /**
+         * params[0] => class File URI
+         * params[2] => TAC Variation
+         */
+        let params = decodeLocation(document.uri);
+        let doc = this._documents.get(params[0].fsPath+params[2]);
+        if (doc !== undefined) {
+            let tac = document.getText();
+            let links = doc.parseDocumentLinks(tac);
+            return Promise.resolve(links);
+        }
     }
 }

@@ -5,7 +5,7 @@ import { ClassFile } from "../model/class.dao";
 
 export default class TACDocument extends AbstractDocument {
 
-  public version : string;
+  public variation : string;
 
   constructor(
     uri: vscode.Uri,
@@ -13,18 +13,18 @@ export default class TACDocument extends AbstractDocument {
     target: vscode.Uri,
     config: any,
     classItem : ClassFile,
-    verison = ""
+    variation = ""
   ) {
     super(uri, projectId, target, config, classItem);
-    this.version = verison;
+    this.variation = variation;
   }
 
   public loadContent() {
-    return this._commandService.loadTAC(this._commandService.getTACForClassMessage(this._projectId, this._class.fqn, this._class.name, this.version));
+    return this._commandService.loadTAC(this._commandService.getTACForClassMessage(this._projectId, this._class.fqn, this._class.name, this.variation));
   }
  
   public parseDocumentLinks(tac : string) : vscode.DocumentLink[] {
-    const parser = new LinkParser(this._uri, tac);
+    const parser = new LinkParser(this.uri, tac);
     parser.parseJumps();
     return parser.getLinks();
   }

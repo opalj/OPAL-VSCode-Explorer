@@ -2,18 +2,42 @@ import * as vscode from "vscode";
 import { CommandService } from "../service/command.service";
 import { ClassFile } from "../model/class.dao";
 
-export default abstract class AbstractDocument {
+export default abstract class AbstractDocument { // should implements vscode.TextDocument 
+  uri: vscode.Uri;
+  fileName: string = "";
+  isUntitled: boolean = false;
+  languageId: string = "";
+  version: number = 1;
+  isDirty: boolean = false;
+  isClosed: boolean = false;
+  save(): Thenable<boolean> {
+    throw new Error("Method not implemented.");
+  }
+  //eol: vscode.EndOfLine;
+  //lineCount: number;
+  //lineAt(line: number): vscode.TextLine;
+  //lineAt(position: vscode.Position): vscode.TextLine;
+  lineAt(position: any) {
+    throw new Error("Method not implemented.");
+  }
+  offsetAt(position: vscode.Position): number {
+    throw new Error("Method not implemented.");
+  }
+  positionAt(offset: number): vscode.Position {
+    throw new Error("Method not implemented.");
+  }
+  getText(range?: vscode.Range | undefined): string {
+    throw new Error("Method not implemented.");
+  }
+
   /**
    * Links for the jumps to references
    */
   private _links: vscode.DocumentLink[];
   protected _commandService: CommandService;
-  
-  //private _emitter: vscode.EventEmitter<vscode.Uri>;
-  protected _uri: vscode.Uri;
   protected _content: string;
   protected _projectId: string;
-  protected _target: vscode.Uri;
+  protected _classFileURI: vscode.Uri;
   private _opalConfig: any;
   protected targetsRoot : string = "";
   protected _class : ClassFile;
@@ -21,12 +45,11 @@ export default abstract class AbstractDocument {
   constructor(
     uri: vscode.Uri,
     projectId: string,
-    target: vscode.Uri,
+    classFileURI: vscode.Uri,
     config: any,
     classItem : ClassFile
   ) {
     this._links = [];
-
     this._opalConfig = config;
     this._commandService = new CommandService(
       "http://localhost:" + this._opalConfig.get("OPAL.server.port")
@@ -34,10 +57,10 @@ export default abstract class AbstractDocument {
 
 
     //this._emitter = emitter;
-    this._uri = uri;
+    this.uri = uri;
 
     this._projectId = projectId;
-    this._target = target;
+    this._classFileURI = classFileURI;
     this._class = classItem;
     this._content = "";
   }
