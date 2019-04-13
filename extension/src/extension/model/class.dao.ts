@@ -24,10 +24,6 @@ export default class ClassDAO {
     }
 
     getClassForURI(classURI : Uri) : ClassFile {
-        let tmp = workspace.asRelativePath(ClassDAO._classes[0].uri.fsPath);
-        let tmp2 = workspace.asRelativePath(classURI.path);
-        tmp = tmp.slice(tmp.indexOf("\\"));
-        
         let res = ClassDAO._classes.find((item) =>
             workspace.asRelativePath(item.uri.fsPath) === workspace.asRelativePath(classURI.fsPath)
         );
