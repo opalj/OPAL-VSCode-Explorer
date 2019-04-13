@@ -60,12 +60,12 @@ export class CommandService {
      * Check /server/src/main/scala/opal/vscode/model.scala for Details
      * TACForClass(projectId:String, fqn:String, className:String)
      */
-    getTACForClassMessage(projectId:String, fqn:String, className:String) {
+    getTACForClassMessage(projectId:String, fqn:String, className:String, version = "") {
         return {
             "projectId" : projectId,
             "fqn" : fqn,
             "className" : className,
-            "version" : ""
+            "version" : version
         };
     }
 }
