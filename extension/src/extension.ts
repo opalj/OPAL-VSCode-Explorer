@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * The Project ID is the fs Path to the Project
    */
   var projectId = await getProjectId();
-  
+
   /**
    * Setup and get the Config
    */
@@ -139,7 +139,7 @@ export async function activate(context: vscode.ExtensionContext) {
     while (!jettyIsUp) {
       await delay(100);
       jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
-      progress.report({ "increment": i * 10, "message": "Starting Server ...."+i });
+      progress.report({ "increment": i * 10});
       i++;
     }
     return Promise.resolve();
@@ -194,7 +194,9 @@ export async function activate(context: vscode.ExtensionContext) {
       var projectloaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
-        {}
+        {
+          "jdk.load" : conf.get("OPAL.jdk.load")+""
+        }
       );
       // let opal load the project (this may take a while)
       projectService.load(opalLoadMessage).then(function() {
@@ -322,6 +324,7 @@ export async function activate(context: vscode.ExtensionContext) {
   let menuBCCommand = vscode.commands.registerCommand(
     "extension.menuBC",
     async (uri: vscode.Uri) => {
+      await vscode.commands.executeCommand("extension.loadProject");
       let classItem = classDAO.getClassForURI(uri);
       let commandService = new CommandService(serverURL);
       let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
