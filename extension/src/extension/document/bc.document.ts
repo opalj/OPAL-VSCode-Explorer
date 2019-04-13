@@ -13,14 +13,8 @@ export default class BCDocument extends AbstractDocument {
    return [];
   }
  
-  public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {
-    try {
-      let bcObject = await this._commandService.loadAnyCommand("getBCForClass", projectId, {"fqn" : this._class.fqn, "className" : this._class.name});
-      bcObject = this.parseBCJson(bcObject);
-      return Promise.resolve(bcObject);
-    } catch (e) {
-      console.log(e);
-    }
+  public async loadContent(): Promise<string> {
+    return this._commandService.loadAnyCommand("getBCForClass", this._projectId, {"fqn" : this._class.fqn, "className" : this._class.name});
   }
 
   parseBCJson(bcJSON : any) : any {

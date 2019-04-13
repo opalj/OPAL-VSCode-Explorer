@@ -1,8 +1,27 @@
 import AbstractDocument from './abstract.document';
 import * as vscode from "vscode";
+import { ClassFile } from "../model/class.dao";
 
 
 export default class TACDocument extends AbstractDocument {
+
+  public version : string;
+
+  constructor(
+    uri: vscode.Uri,
+    projectId: string,
+    target: vscode.Uri,
+    config: any,
+    classItem : ClassFile,
+    verison = ""
+  ) {
+    super(uri, projectId, target, config, classItem);
+    this.version = verison;
+  }
+
+  public loadContent() {
+    return this._commandService.loadTAC(this._commandService.getTACForClassMessage(this._projectId, this._class.fqn, this._class.name, this.version));
+  }
  
   public parseDocumentLinks(tac : string) : vscode.DocumentLink[] {
     const parser = new LinkParser(this._uri, tac);
@@ -10,15 +29,6 @@ export default class TACDocument extends AbstractDocument {
     return parser.getLinks();
   }
 
-  public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {    
-    try {
-      let tac = await this._commandService.loadTAC(this._commandService.getTACForClassMessage(projectId, this._class.fqn, this._class.name));
-      this._content = tac;
-      return tac;
-    } catch (e) {
-      console.log(e);
-    }
-  }
 }
 
 enum LineType {

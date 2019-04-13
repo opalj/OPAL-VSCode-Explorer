@@ -10,20 +10,26 @@ export default class TACProvider extends AbstractProvider {
   
  
     provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
-        let document = this._documents.get(uri.query);
+        /**
+         * params[0] => class File URI
+         */
+        let params = decodeLocation(uri);
+
+        let document = this._documents.get(params[0].fsPath);
         if (document) {
             return document.value;
         }
 
-        /**
-         * params[0] => class File URI
-         */
-       let params = decodeLocation(uri);
+       
        let classItem = this._classDAO.getClassForURI(params[0]);
-        document = new TACDocument(uri, this.projectId, params[0], this._config, classItem);
-        
-        this._documents.set(uri.toString(), document);
-        return document.value;
+       document = new TACDocument(uri, this.projectId, params[0], this._config, classItem, params[2]);
+       this._documents.set(uri.toString(), document);
+
+       if (!document.value) {
+            return document.populate();
+       } else {
+            return document.value;
+       }
     }
 
     /**

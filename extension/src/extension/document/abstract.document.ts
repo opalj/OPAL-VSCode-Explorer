@@ -12,10 +12,10 @@ export default abstract class AbstractDocument {
   //private _emitter: vscode.EventEmitter<vscode.Uri>;
   protected _uri: vscode.Uri;
   protected _content: string;
-  private _projectId: string;
-  private _target: vscode.Uri;
+  protected _projectId: string;
+  protected _target: vscode.Uri;
   private _opalConfig: any;
-  private targetsRoot : string = "";
+  protected targetsRoot : string = "";
   protected _class : ClassFile;
 
   constructor(
@@ -39,7 +39,7 @@ export default abstract class AbstractDocument {
     this._projectId = projectId;
     this._target = target;
     this._class = classItem;
-    this._content = <string>(<unknown>this._populate());
+    this._content = "";
   }
 
   /**
@@ -57,11 +57,17 @@ export default abstract class AbstractDocument {
   /**
    * Get the Data of this document
    */
-  private async _populate() {
-    return this.loadContent(this._projectId, this._target, this.targetsRoot);
+  public async populate() {
+    try {
+      let tac = this.loadContent();
+      tac.then((result : string) => this._content = result);
+      return tac;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  public abstract parseDocumentLinks(content : string) :  vscode.DocumentLink[];
+  public abstract loadContent() : Promise<string>;
 
-  public abstract async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<string>;
+  public abstract parseDocumentLinks(content : string) :  vscode.DocumentLink[];
 }

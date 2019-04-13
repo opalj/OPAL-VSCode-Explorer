@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import AbstractDocument from "./abstract.document";
 
 export default class BChtmlDocument extends AbstractDocument {
@@ -7,11 +6,7 @@ export default class BChtmlDocument extends AbstractDocument {
     }
 
 
-    public async loadContent(projectId: string, target: vscode.Uri, targetsRoot : string): Promise<any> {
-        try {
-          return this._commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : this._class.name, "fileName": this._class.uri.fsPath});
-        } catch (e) {
-          console.log(e);
-        }
-      }
+    public loadContent(): Promise<string> {
+      return this._commandService.loadAnyCommand("getBCForClassHTML", this._projectId, {"className" : this._class.name, "fileName": this._class.uri.fsPath});
+    }
 }
