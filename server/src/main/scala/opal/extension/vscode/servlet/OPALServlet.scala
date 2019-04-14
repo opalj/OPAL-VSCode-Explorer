@@ -45,6 +45,7 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
         }
         res
     }
+    
 
     /**
      * OPAL loading the Project

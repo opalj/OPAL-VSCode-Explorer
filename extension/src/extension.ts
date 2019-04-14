@@ -68,7 +68,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * ######################################################
    * ############### Open Target Dialog ###################
    * ######################################################
-   */
+   
   let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
     async () => {
       var openDialogOptions : vscode.OpenDialogOptions = {
@@ -85,7 +85,7 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }
   );
-  
+  */
 
   /**
    * ######################################################
@@ -161,7 +161,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * Jetty is necessary for this because we need OPAL to get the fqn
    * from a class File
    */
-  classDAO.addClassesFromWorkspace();
+  await classDAO.addClassesFromWorkspace();
 
   // Get status bar
   let myStatusBarItem: vscode.StatusBarItem;
@@ -393,6 +393,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * Setting up and displaying Opal Tree View
    */
   const packageViewProvider = new PackageViewProvider(classDAO);
+  packageViewProvider.refresh();
   
   //register Opal Tree View
   vscode.window.registerTreeDataProvider("package-explorer", packageViewProvider);
@@ -407,7 +408,7 @@ export async function activate(context: vscode.ExtensionContext) {
     providerRegistrations,
     loadProjectCommand,
     reloadProjectCommand,
-    pickTargetRoot,
+    //pickTargetRoot,
     myStatusBarItem,
     menuTacDetached
   );

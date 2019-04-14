@@ -169,7 +169,7 @@
       "opal-explorer": [
         {
           "id": "package-explorer",
-          "name": "Package Explorer"
+          "name": "Project"
         }
       ]
     },
@@ -210,10 +210,6 @@
           "command": "extension.menuLibDir",
           "when": "explorerResourceIsFolder",
           "group": "2_workspace"
-        },
-        {
-          "command": "extension.pickTargetRoot",
-          "group": "navigation"
         }
       ]
     },

@@ -64,16 +64,18 @@ export default class ClassDAO {
 
     public async addClassesFromWorkspace() {
         let classes = await workspace.findFiles("**/*.class");
-        classes.forEach(classItem => {
-            this.addClassByURI(classItem);
-        });
+
+        for (let classItem of classes) {
+            await this.addClassByURI(classItem);
+        }
     }
 
     public async updateClassesFolder (folderPath : Uri) {
         let classes = await workspace.findFiles(new RelativePattern(folderPath.fsPath, "**/*.class"));
         ClassDAO._classes = [];
-        classes.forEach(classItem => {
-            this.addClassByURI(classItem);
-        });
+        
+        for (let classItem of classes) {
+            await this.addClassByURI(classItem);
+        }
     }
 }

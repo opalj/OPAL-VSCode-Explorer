@@ -33,7 +33,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 */
 	public refresh(): void {
 		this._onDidChangeTreeData.fire();
-		this._treeRoot = <any> this.setOpalNodeTree(this._classDAO.classes);
+		this._treeRoot = this.setOpalNodeTree(this._classDAO.classes);
 	}
 
 	/**
@@ -85,13 +85,15 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 * Set OpalNodes for Subtree of root path
 	 * @param root root path
 	 */
-	public setOpalNodeTree(classes : ClassFile[])  : OpalNode | undefined {
+	public setOpalNodeTree(classes : ClassFile[])  : OpalNode  {
+		let rootNode = new OpalNode("Project", vscode.TreeItemCollapsibleState.None, vscode.Uri.parse("file://root.opal"), "");
 		if (classes.length === 0) {
-			vscode.window.showErrorMessage("No classes in Workspace found!");
-			return undefined;
+			vscode.window.showErrorMessage("No classes found!");
+			return rootNode;
+		} else {
+			this._treeRoot = rootNode;
 		}
 		
-		this._treeRoot = new OpalNode("Root Node", vscode.TreeItemCollapsibleState.None, vscode.Uri.parse("file://root.opal"), "");
 		classes.forEach(async target => {
 			let fqnParts = target.fqn.split("/");
 			
