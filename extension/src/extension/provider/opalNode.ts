@@ -29,7 +29,7 @@ export class OpalNode extends vscode.TreeItem {
 		super(label, collapsibleState);
 		this._children = [];
 		//this._classFile = classFile;
-		this._parent = undefined;
+		
 		
 		/**
 		 * Setting contextValues and static Subnodes in
@@ -37,7 +37,7 @@ export class OpalNode extends vscode.TreeItem {
 		 */
 		if(this.type === "leaf"){
 			this.contextValue = "opalNodeClass";
-			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, classFile, "action",
+			this.setChildren([new OpalNode("Three-Address-Code Default", vscode.TreeItemCollapsibleState.None, classFile, "action",
 											{
 												command: 'extension.menuTac',
 												title: '',
@@ -50,7 +50,13 @@ export class OpalNode extends vscode.TreeItem {
 												title: '',
 												arguments: [classFile]
 											}
-										)]);
+										),
+			new OpalNode("Three-Address-Code Detached ", vscode.TreeItemCollapsibleState.None, classFile, "action",
+			{
+				command: 'extension.menuTacDetached',
+				title: '',
+				arguments: [classFile]
+			})]);
 		} /** else if(label.includes(".jar")){
 			this.contextValue = "opalNodeJar";
 			let classes: string[];
