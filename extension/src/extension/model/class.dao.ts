@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import * as npmPath from "path";
 import ContextService from "../service/context.service";
 import { workspace, Uri, RelativePattern } from 'vscode';
@@ -64,7 +65,7 @@ export default class ClassDAO {
 
     public async addClassesFromWorkspace() {
         let classes = await workspace.findFiles("**/*.class");
-
+        vscode.window.showInformationMessage(classes.length + " class Files found!");
         for (let classItem of classes) {
             await this.addClassByURI(classItem);
         }
