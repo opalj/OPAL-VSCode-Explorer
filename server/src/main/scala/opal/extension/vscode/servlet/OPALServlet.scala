@@ -31,21 +31,28 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     /**
      * Get Context Information for a class File
      **/
-    post("/context/fqn") {
+    post("/context/class") {
         var path = request.body
-        var res = "";
+        var res = new HashMap[String, String];
         org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).foreach({
             cf => 
                 if (!cf._1.isVirtualType) {
-                    res = cf._1.fqn
+                    res.put("fqn", cf._1.fqn);
+                    var methods = Array[String]();
+                    cf._1.methods.foreach(
+                        method => 
+                        if (!method.isFinal) {
+                            methods = methods :+ method.descriptor.toJava.replace("MethodDescriptor", method.name)
+                        }
+                    );
+                    res.put("methods", write(methods))
                 }
         })
-        if (res == "") {
-            throw new Exception("Can't get FQN. File not found: "+path);
+        if (res.isEmpty) {
+            throw new Exception("Can't get context from Class File: " + path);
         }
         res
-    }
-    
+    }    
 
     /**
      * OPAL loading the Project

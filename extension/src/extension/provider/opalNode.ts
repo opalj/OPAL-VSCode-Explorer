@@ -57,43 +57,7 @@ export class OpalNode extends vscode.TreeItem {
 				title: '',
 				arguments: [classFile]
 			})]);
-		} /** else if(label.includes(".jar")){
-			this.contextValue = "opalNodeJar";
-			let classes: string[];
-			classes = OpalNodeProvider.getClassesFromJar(path);
-			let childArray: OpalNode[];
-			childArray = [];
-			for(let i = 0; i < classes.length; i++){
-				childArray.push(new OpalNode("Class: "+classes[i], vscode.TreeItemCollapsibleState.Collapsed, classes[i]));
-			}
-			this._children = childArray;
-		} else if(label.includes("Class:")){
-			this.contextValue = "opalNodeJarClass";
-			let methods: string[];
-			methods = OpalNodeProvider.getMethodsForClass(path);
-			let childArray: OpalNode[];
-			childArray = [];
-			for(let i = 0; i < methods.length; i++){
-				childArray.push(new OpalNode("Method: "+methods[i], vscode.TreeItemCollapsibleState.Collapsed, methods[i]));
-			}
-			this._children = childArray;
-		} else if(label.includes("Method:")){
-			this.contextValue = "opalNodeJarMethod";
-			this.setChildren([new OpalNode("Three-Address-Code", vscode.TreeItemCollapsibleState.None, path.concat("/TAC"),
-											{
-												command: '', //call getTACForMethod
-												title: '',
-												arguments: [] //add Arguments for getTACForMethod call
-											}
-			),
-			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, path.concat("/BC"),
-											{
-												command: '', //call getBCForMethod
-												title: '',
-												arguments: [] //add Arguments for getBCForMethod call
-											}
-			)]);
-		} */else if(label=== "Three-Address-Code"){
+		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
 			this.contextValue = "opalNodeBC";
