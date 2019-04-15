@@ -114,16 +114,18 @@ class OPALProject(opalInit : OpalInit) {
         } else {
             cf.get.methods.foreach({
                 m =>
-                res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
-                res += "\n{\n";
-                tacForClass.version match {
-                    case "lazyDetachedTACai" => 
-                        var tac = tacAI(m);
-                        res += ToTxt(tac).mkString("\n");
-                    case _ => 
-                        res += ToTxt(m)
+                if (!m.isFinal && !m.isAbstract) {
+                    res += (if (m.isStatic) "static " else "") + m.descriptor.toJava(m.name);
+                    res += "\n{\n";
+                    tacForClass.version match {
+                        case "lazyDetachedTACai" => 
+                            var tac = tacAI(m);
+                            res += ToTxt(tac).mkString("\n");
+                        case _ => 
+                            res += ToTxt(m)
+                    }
+                    res += "\n}\n"
                 }
-                res += "\n}\n"
             })
             res + "\n"
         }
