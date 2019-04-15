@@ -3,7 +3,7 @@ package opal.extension.vscode
 import opal.extension.vscode.model._;
 import org.opalj.br.analyses._
 import org.opalj.br.analyses.Project.JavaClassFileReader
-import org.opalj.br.reader.Java9LibraryFramework
+import org.opalj.br.reader.Java9Framework
 import org.opalj.log.{LogContext, LogMessage, OPALLogger}
 import org.opalj.tac.{LazyDetachedTACAIKey, ToTxt}
 import java.io.File
@@ -64,18 +64,18 @@ class OPALProject(opalInit : OpalInit) {
 
         val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
         if (opalInit.config.contains("jdk.load") && ( opalInit.config.get("jdk.load").get == "true" || opalInit.config.get("jdk.load").get == "1" )) {
-            val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
+            val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
             project = Project(
                 targetClassFiles, 
                 libraryClassFiles, 
-                libraryClassFilesAreInterfacesOnly,
+                true,
                 virtualClassFiles = Traversable.empty)(projectLogger = logger);
         } else {
-            val libraryClassFiles = Java9LibraryFramework.AllClassFiles(opalInit.libraries.map(new File(_)))
+            val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)))
             project = Project(
                 targetClassFiles, 
                 libraryClassFiles, 
-                libraryClassFilesAreInterfacesOnly,
+                true,
                 virtualClassFiles = Traversable.empty)(projectLogger = logger);
         }
         res += "Project loaded"
