@@ -127,7 +127,8 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             //status should equal (200)
         }
 
-        var getBCForClassHTML = OpalCommand("123", "getBCForClassHTML", Map("fileName" -> "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class", "className" -> "Test"));
+        var testClassPath = testProject+File.separator+"Test.class";
+        var getBCForClassHTML = OpalCommand("123", "getBCForClassHTML", Map("fileName" -> testClassPath, "className" -> "Test"));
         json = write(getBCForClassHTML);
         post("/project/loadAny", json) {
             body should ( include("<td> <span class=\"instruction return\">return</span></td>") and include("<span>{ <span class=\" object_type\">java.io.PrintStream</span> <span class=\"name\">out </span> }</span>"))
@@ -144,7 +145,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     }
 
     test ("get fqn from class file") {
-        var filename = "C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class";
+        var filename = testProject+File.separator+"Test.class";
         var getContextInfos = write(OpalCommand("123", "getContextInfos", Map("filename" -> filename)));
     
         post("/context/class", filename) {
