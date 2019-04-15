@@ -22,7 +22,7 @@ export default class ContextService {
      */
     async loadFQNFromContext(filename : string) {
         this.options.body = filename;
-        this.options.uri = this.serverUrl + "/context/fqn";
+        this.options.uri = this.serverUrl + "/context/class";
         return request.post(this.options);
     }
 }

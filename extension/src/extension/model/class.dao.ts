@@ -57,9 +57,11 @@ export default class ClassDAO {
             throw new Error("Can't get Class Name from "+fileName);
         }
 
-        let fqn = await this._contextService.loadFQNFromContext(classPath.fsPath);
+        let context = await this._contextService.loadFQNFromContext(classPath.fsPath);
+        context = JSON.parse(context);
+        let methods = JSON.parse(context.methods);
 
-        let result : ClassFile = {"name" : className, "uri" : classPath, "fqn" : fqn};
+        let result : ClassFile = {"name" : className, "uri" : classPath, "fqn" : context.fqn, "methods" : methods};
         ClassDAO._classes.push(result);
     }
 
