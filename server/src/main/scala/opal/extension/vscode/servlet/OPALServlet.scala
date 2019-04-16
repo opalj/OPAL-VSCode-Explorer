@@ -68,7 +68,6 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
             res = project.load()
         } else {
             project = workspace.get(opalInit.projectId).get;
-            res = "Project already loaded!"
         }
         res;
     }

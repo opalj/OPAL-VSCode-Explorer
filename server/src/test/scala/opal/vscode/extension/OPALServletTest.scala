@@ -27,7 +27,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         json = write(opalInit);
 
         post("/project/load", json) {
-            body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
+            body should equal ("Project loaded with JDK")
             status should equal (200)
         }
 
@@ -46,7 +46,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         json = write(opalInit);
 
         post("/project/load", json) {
-            body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
+            body should equal ("Project loaded with JDK")
             status should equal (200)
         }
 
@@ -75,7 +75,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         json = write(opalInit);
 
         post("/project/load", json) {
-            body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
+            body should equal ("Project loaded without JDK")
             status should equal (200)
         }
 
@@ -95,7 +95,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         json = write(opalInit);
 
         post("/project/load", json) {
-            body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
+            body should equal ("Project loaded without JDK")
             status should equal (200)
         }
 
