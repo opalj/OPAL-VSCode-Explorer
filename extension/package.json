@@ -36,27 +36,27 @@
         "OPAL.server.port": {
           "type": "number",
           "default": "8080",
-          "markdownDescription": "Port of the OPAL Server you want to connect."
+          "markdownDescription": "Port of the OPAL Java Bytecode Project Server you want to connect."
         },
         "OPAL.server.options": {
           "type": "string",
-          "default": null,
-          "markdownDescription": "Java parameter for the OPAL Server. (like xmx, xms)"
+          "default": "-Xmx4G",
+          "markdownDescription": "Java parameter for the OPAL Java Bytecode Project Server. (Set to -Xmx16G for large Projects)"
         },
         "OPAL.jdk.load" : {
           "type" : "boolean",
           "default": true,
           "markdownDescription": "Should the JDK be part of the analysis?" 
         },
-        "OPAL.jdk.asLib" : {
+        "OPAL.jdk.loadAsLib" : {
           "type" : "boolean",
           "default": false,
-          "markdownDescription": "Should the JDK be loaded as Librarie?"
+          "markdownDescription": "Should the JDK be loaded as library?"
         },
-        "OPAL.libraryClassFilesAreInterfacesOnly" : {
+        "OPAL.jdk.loadLibraryClassFilesAreInterfacesOnly" : {
           "type" : "boolean",
           "default": false,
-          "markdownDescription": "Should the Librarie Class Files be loaded as interfaces only?"
+          "markdownDescription": "Should the Library Class files be loaded as interfaces only?"
         }
       }
     },
@@ -67,11 +67,11 @@
       },
       {
         "command": "extension.menuTac",
-        "title": "Default Three-Address-Code ..."
+        "title": "Three-Address-Code Naive"
       },
       {
         "command": "extension.menuTacDetached",
-        "title": "Lazy Detached AI Three-Address-Code ..."
+        "title": "Three-Address-Code SSA like"
       },
       {
         "command": "extension.menuJar",
@@ -80,10 +80,6 @@
       {
         "command": "extension.menuBC",
         "title": "Bytecode ..."
-      },
-      {
-        "command": "extension.menuSvg",
-        "title": "Callgraph ..."
       },
       {
         "command": "extension.menuLibDir",
@@ -160,7 +156,7 @@
       "activitybar": [
         {
           "id": "opal-explorer",
-          "title": "OPAL Explorer",
+          "title": "Java Bytecode Workbench",
           "icon": "assets/expicon.svg"
         }
       ]
