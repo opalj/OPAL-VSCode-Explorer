@@ -20,7 +20,7 @@
 			"patterns": [
 				{	
 					"name" : "keyword.control",
-					"match" : "\\b(if|goto)\\b"
+					"match" : "\\b(if|goto)\\b \\d+"
 				},
 				{	
 					"name" : "keyword.others",
@@ -33,6 +33,10 @@
 				{	
 					"name" : "keyword.control.less",
 					"match" : "\\b(exception)\\b"
+				},
+				{
+					"name" : "fqn",
+					"match": "\\b\\w+\\.\\w+(\\.\\w+)+\\b"
 				}
 			]
 		},
@@ -61,7 +65,7 @@
 				},
 				{
 					"name": "string.jade",
-					"match": "(\\d)*:/\\*pc=\\d+:\\*/"  
+					"match": "(\\d)*:/\\*pc=-?\\d+:\\*/"  
 				}
 			]
 		}

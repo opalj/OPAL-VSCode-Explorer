@@ -9,9 +9,12 @@
 	},
 	"tokenColors": [
 		{
+			"name" : "fqn",
+			"scope" : [
+				"fqn"
+			],
 			"settings": {
-				"foreground": "#eeffffff",
-				"background": "#263238ff"
+				"foreground": "#ff00aa"
 			}
 		},
 		{
@@ -754,6 +757,6 @@
 			"settings": {
 				"foreground": "#AAAAAA"
 			}
-		},
+		}		
 	]
 }
