@@ -36,7 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
   
   
   /**
-   * Get the Providers and register them to there sheme
+   * Get the Providers and register them to there scheme
    */
   const tacProvider = new TACProvider(projectId, conf, classDAO);
   // const bcProvider = new BCProvider(projectId, conf, classDAO);
@@ -77,7 +77,7 @@ export async function activate(context: vscode.ExtensionContext) {
     let found = false;
     //search for Opal Command Server jar
     for(let i = 0; i < files.length; i++){
-      if(files[i].includes("OPAL Command Server") && files[i].includes(".jar")){
+      if(files[i].includes("OPAL") && files[i].includes("Command") && files[i].includes("Server") && files[i].includes(".jar")){
         //if found, add it to jar path
         jarPath = jarPath+"/"+files[i]; 
         found = true;
@@ -264,10 +264,11 @@ export async function activate(context: vscode.ExtensionContext) {
       let classItem = classDAO.getClassForURI(uri);
       let commandService = new CommandService(serverURL);
       let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
+      let fileName = npmPath.parse(uri.fsPath).base;
 
       const panel = vscode.window.createWebviewPanel(
         "Byte-Code-HTML",
-        classItem.fqn+".class.bc",
+        fileName+".bc",
         vscode.ViewColumn.One,
         {}
       );
@@ -354,7 +355,7 @@ export async function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 /**
- * Method for issueing delay
+ * Method for issuing delay
  * @param ms delay in ms
  */
 async function delay(ms: number) {
