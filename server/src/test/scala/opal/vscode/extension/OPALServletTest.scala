@@ -40,33 +40,33 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     }
 
     test("Load Project with jdk and libraryClassFilesAre not InterfacesOnly") {
-    var json = "";
-    //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
-    var opalInit = OpalInit("with jdk and not only interfaces", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "1", "libraryClassFilesAreInterfacesOnly" -> "0")); // +"cmdsnake"+File.separator+"Direction.class"
-    json = write(opalInit);
+        var json = "";
+        //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
+        var opalInit = OpalInit("with jdk and not only interfaces", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "1", "libraryClassFilesAreInterfacesOnly" -> "0")); // +"cmdsnake"+File.separator+"Direction.class"
+        json = write(opalInit);
 
-    post("/project/load", json) {
-        body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
-        status should equal (200)
-    }
+        post("/project/load", json) {
+            body should equal ("libraryClassFilesAreInterfaces not OnlyProject loaded")
+            status should equal (200)
+        }
 
-    var requestLogs = Log("with jdk and not only interfaces", "", Map("key" -> "value"));
-    json = write(requestLogs);
-    post("/project/load/log", json) {
-        body should ( include ("creating the project took") and include ("the JDK is part of the analysis") and include ("validating the project took") )
-        status should equal (200)
-    }
+        var requestLogs = Log("with jdk and not only interfaces", "", Map("key" -> "value"));
+        json = write(requestLogs);
+        post("/project/load/log", json) {
+            body should ( include ("creating the project took") and include ("the JDK is part of the analysis") and include ("validating the project took") )
+            status should equal (200)
+        }
 
-    /*
-    * Test a class from inside the JDK
-    */
-    var tacForClassString = TACForClass("with jdk and not only interfaces", "java/lang/String", "");
-    json = write(tacForClassString);
-    post("/project/tac/class", json) {
-        //body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
-        //status should equal (200)
+        /*
+        * Test a class from inside the JDK
+        */
+        var tacForClassString = TACForClass("with jdk and not only interfaces", "java/lang/String", "");
+        json = write(tacForClassString);
+        post("/project/tac/class", json) {
+            //body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))
+            //status should equal (200)
+        }
     }
-}
 
     test ("load project with no jdk") {
         var json = "";
@@ -112,6 +112,13 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             body should ( include("op_2 = java.lang.System.in") and include("r_9 = op_0") and include("29:/*pc=58:*/ r_4 = op_0"))
             status should equal (200)
         }
+    } 
+
+    test ("bytecode") {
+        var json = "";
+        //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
+        var opalInit = OpalInit("123", Array(testProject), Array(""), Map("key" -> "value")); // File.separator+"AirlineProblem.class"
+        json = write(opalInit);
 
         var bcForClass = OpalCommand("123", "getBCForMethod", Map("fqn" -> "AirlineProblem", "methodName" -> "main", "descriptor" -> "(): void"));
         json = write(bcForClass);
@@ -120,13 +127,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var cgForClass = OpalCommand("123", "getCallGraph", Map("fqn" -> "AirlineProblem", "methodName" -> "main", "descriptor" -> "(): void"));
-        json = write(cgForClass);
-        post("/project/loadAny", json) {
-            //body should ( include("xxx"))
-            //status should equal (200)
-        }
-
+        
         var testClassPath = testProject+File.separator+"Test.class";
         var getBCForClassHTML = OpalCommand("123", "getBCForClassHTML", Map("fileName" -> testClassPath, "className" -> "Test"));
         json = write(getBCForClassHTML);
@@ -134,7 +135,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             body should ( include("<td> <span class=\"instruction return\">return</span></td>") and include("<span>{ <span class=\" object_type\">java.io.PrintStream</span> <span class=\"name\">out </span> }</span>"))
             status should equal (200)
         }
-    } 
+    }
 
     test("method descriptor void") {
         //NoArgumentMethodDescriptor(VoidType)
