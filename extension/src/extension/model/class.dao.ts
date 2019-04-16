@@ -67,7 +67,7 @@ export default class ClassDAO {
 
     public async addClassesFromWorkspace() {
         let classes = await workspace.findFiles("**/*.class");
-        vscode.window.showInformationMessage(classes.length + " class Files found!");
+        vscode.window.showInformationMessage(classes.length + " class files found!");
         for (let classItem of classes) {
             await this.addClassByURI(classItem);
         }

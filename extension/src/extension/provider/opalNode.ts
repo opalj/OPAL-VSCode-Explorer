@@ -28,8 +28,6 @@ export class OpalNode extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this._children = [];
-		//this._classFile = classFile;
-		
 		
 		/**
 		 * Setting contextValues and static Subnodes in
@@ -37,26 +35,28 @@ export class OpalNode extends vscode.TreeItem {
 		 */
 		if(this.type === "leaf"){
 			this.contextValue = "opalNodeClass";
-			this.setChildren([new OpalNode("Three-Address-Code Default", vscode.TreeItemCollapsibleState.None, classFile, "action",
-											{
-												command: 'extension.menuTac',
-												title: '',
-												arguments: [classFile]
-											}
-			),
-			new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, classFile, "action",
-											{
-												command: 'extension.menuBC',
-												title: '',
-												arguments: [classFile]
-											}
-										),
-			new OpalNode("Three-Address-Code Detached ", vscode.TreeItemCollapsibleState.None, classFile, "action",
-			{
-				command: 'extension.menuTacDetached',
-				title: '',
-				arguments: [classFile]
-			})]);
+			this.setChildren([
+				new OpalNode("Three-Address-Code Naive", vscode.TreeItemCollapsibleState.None, classFile, "action",
+					{
+						command: 'extension.menuTac',
+						title: '',
+						arguments: [classFile]
+					}
+				),
+				new OpalNode("Three-Address-Code SSA like", vscode.TreeItemCollapsibleState.None, classFile, "action",
+				{
+					command: 'extension.menuTacDetached',
+					title: '',
+					arguments: [classFile]
+				}),
+				new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, classFile, "action",
+				{
+					command: 'extension.menuBC',
+					title: '',
+					arguments: [classFile]
+				}
+			),	
+			]);
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){

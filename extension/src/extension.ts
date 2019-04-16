@@ -49,12 +49,6 @@ export async function activate(context: vscode.ExtensionContext) {
       { scheme: TACProvider.scheme },
       tacProvider
     )
-    /*
-    vscode.workspace.registerTextDocumentContentProvider(
-      BCProvider.scheme,
-      bcProvider
-    )
-    */
   );
 
   var projectService: any = new ProjectService(
@@ -63,29 +57,6 @@ export async function activate(context: vscode.ExtensionContext) {
     classDAO
   );
 
-  
-  /**
-   * ######################################################
-   * ############### Open Target Dialog ###################
-   * ######################################################
-   
-  let pickTargetRoot = vscode.commands.registerCommand("extension.pickTargetRoot",
-    async () => {
-      var openDialogOptions : vscode.OpenDialogOptions = {
-        "canSelectFiles" : false,
-        "canSelectFolders" : true,
-        "canSelectMany" : false
-      };
-
-      let classesFolder = await vscode.window.showOpenDialog(openDialogOptions);
-      if (classesFolder !== undefined) {
-        classDAO.updateClassesFolder(classesFolder[0]);
-        packageViewProvider.refresh();
-        await vscode.commands.executeCommand("extension.reloadProjectCommand");
-      }
-    }
-  );
-  */
 
   /**
    * ######################################################
@@ -114,7 +85,8 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     if (!found) {
-      vscode.window.showErrorMessage("Server jar not found!");
+      vscode.window.showErrorMessage("Server jar File not found!");
+      return;
     }
 
     // Jetty is not Up
@@ -133,7 +105,7 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Show some progress to the User while Jetty is booting
    */
-  vscode.window.withProgress({"cancellable" : false, "location" : 15, "title" : "Jetty is starting  ..."}, async (progress, token) => {
+  vscode.window.withProgress({"cancellable" : false, "location" : 15, "title" : "OPAL Java Bytecode Project Server is starting  ..."}, async (progress, token) => {
     progress.report({ increment: 0 });
     let i = 0;
     while (!jettyIsUp) {
@@ -154,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
     jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
   }
   
-  vscode.window.showInformationMessage("Connected to Jetty");
+  vscode.window.showInformationMessage("Connected to OPAL Java Bytecode Project Server");
 
   /**
    * After Jetty is up we can load the class Files from the Workspace
@@ -183,7 +155,7 @@ export async function activate(context: vscode.ExtensionContext) {
         "localhost:" + conf.get("OPAL.server.port")
       );
       if (!jettyIsUp) {
-        vscode.window.showErrorMessage("Jetty is not up!");
+        vscode.window.showErrorMessage("Server is not up!");
         return;
       }
 
@@ -191,7 +163,7 @@ export async function activate(context: vscode.ExtensionContext) {
        *  Load Project in to OPAL
        */  
       // get project Service
-      var projectloaded = false;
+      var projectLoaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
@@ -200,12 +172,13 @@ export async function activate(context: vscode.ExtensionContext) {
         }
       );
       // let opal load the project (this may take a while)
-      projectService.load(opalLoadMessage).then(function() {
-        console.log("Project loaded!");
-        myStatusBarItem.text = "Project loaded!";
-        myStatusBarItem.show();
-        vscode.window.showInformationMessage("Project loaded!");
-        projectloaded = true;
+      projectService.load(opalLoadMessage).then(function(response : any) {
+        if (response !== "") {
+          myStatusBarItem.text = response;
+          myStatusBarItem.show();
+          vscode.window.showInformationMessage(response);
+          projectLoaded = true;
+        }
       });
 
       // get log message
@@ -214,7 +187,7 @@ export async function activate(context: vscode.ExtensionContext) {
       const outputChannel = vscode.window.createOutputChannel("OPAL");
       // get logging while opal is loading the project
       var oldLog = "";
-      while (!projectloaded) {
+      while (!projectLoaded) {
         // wait for new logs
         await delay(1000);
         // show the logs in the status bar
@@ -230,8 +203,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-
-
   /**
    * ######################################################
    * ################# Reload Project #####################
@@ -242,42 +213,6 @@ export async function activate(context: vscode.ExtensionContext) {
     async () => {
       await projectService.unLoad();
       await vscode.commands.executeCommand("extension.loadProject");
-    }
-  );
-
-  //menu-command to get svg for .class
-  let menuSvgCommand = vscode.commands.registerCommand(
-    "extension.menuSvg",
-    async (uri: vscode.Uri) => {
-      /**
-       * Get URI for a virtual svg Document
-
-
-      let document = new SVGDocument(
-        uri,
-        new vscode.EventEmitter<vscode.Uri>(),
-        projectId,
-        uri,
-        conf
-      );
-       */
-      //var svgURI = "/Users/christianott/Documents/opal-vscode-explorer/dummy/410.svg";
-      //var svgDoc = await vscode.workspace.openTextDocument(svgURI);
-/*
-      var text = await document.getDocText();
-      let htmlforSVG =
-        '<!DOCTYPE html><html lang="de"><head></head><body><div id="__svg"> ' +
-        text +
-        "</div></body></html>";
-      const panel = vscode.window.createWebviewPanel(
-        "SVG-View",
-        "SVG-View",
-        vscode.ViewColumn.One,
-        {}
-      );
-      */
-      // And set its HTML content
-      // panel.webview.html = htmlforSVG;
     }
   );
 
@@ -402,7 +337,6 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     menuTacCommand,
     menuBCCommand,
-    menuSvgCommand,
     menuJarCommand,
     menuLibDirCommand,
     providerRegistrations,
@@ -413,7 +347,7 @@ export async function activate(context: vscode.ExtensionContext) {
     menuTacDetached
   );
 
-  vscode.window.showInformationMessage("Java Byte Code Workbench is ready for action");
+  vscode.window.showInformationMessage("Java Bytecode Workbench is ready for action");
 }
 
 // this method is called when your extension is deactivated

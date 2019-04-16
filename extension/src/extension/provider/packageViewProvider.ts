@@ -15,9 +15,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	readonly onDidChangeTreeData: vscode.Event<OpalNode | undefined> = this._onDidChangeTreeData.event;
 	
 	private _treeRoot: OpalNode;
-	// private _targets : any =  [];
 	public targetsRoot : string = "";
-
 	private _classDAO : ClassDAO;
 
 	/**
@@ -61,7 +59,6 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 				return Promise.resolve(p.getChildren());
 			} else {
 				return Promise.resolve([]);
-				vscode.window.showInformationMessage('Kein SubOpalNode enthalten!');
 			}
 		} else {
 			let p = this.setOpalNodeTree(this._classDAO.classes);
