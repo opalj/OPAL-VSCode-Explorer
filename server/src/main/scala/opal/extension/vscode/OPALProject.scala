@@ -107,6 +107,7 @@ class OPALProject(opalInit : OpalInit) {
     def getTacForClass(tacForClass : TACForClass) : String = {
         val tacAI = project.get(LazyDetachedTACAIKey)
         var res = tacForClass.fqn +".class\n"
+        res += "--------------------------------------------------------\n";
         //var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
         val cf = project.classFile(ObjectType(tacForClass.fqn.replace('.', '/')))
         

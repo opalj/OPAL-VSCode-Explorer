@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import TACDocument from './../document/tac.document';
 import BCDocument from '../document/bc.document';
 import ClassDAO from '../model/class.dao';
+import * as npmPath from "path";
 
 export abstract class AbstractProvider implements vscode.TextDocumentContentProvider, vscode.DocumentLinkProvider {
     onDidChange?: vscode.Event<vscode.Uri> | undefined;
@@ -26,8 +27,9 @@ export abstract class AbstractProvider implements vscode.TextDocumentContentProv
 let seq = 0;
 
 export function encodeLocation(uri: vscode.Uri, projectId: string, scheme : string, variant = ""): vscode.Uri {
+    let fileName = npmPath.parse(uri.fsPath).base;
 	const query = JSON.stringify([uri.toString(), projectId, variant]);
-	return vscode.Uri.parse(`${scheme}:OPAL.${scheme}?${query}#${variant}#${seq++}`);
+	return vscode.Uri.parse(`${scheme}:${fileName}.${scheme}?${query}#${variant}#${seq++}`);
 }
 
 export function decodeLocation(uri: vscode.Uri): [vscode.Uri, string, string] {

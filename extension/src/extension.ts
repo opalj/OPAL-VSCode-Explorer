@@ -267,7 +267,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
       const panel = vscode.window.createWebviewPanel(
         "Byte-Code-HTML",
-        "Byte Code",
+        classItem.fqn+".class.bc",
         vscode.ViewColumn.One,
         {}
       );
