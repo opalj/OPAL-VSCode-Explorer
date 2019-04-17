@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://bitbucket.org/delors/opal-vscode-explorer.git"
   },
-  "license": "SEE LICENSE File",
+  "license": "BSD 2",
   "engines": {
     "vscode": "^1.30.0"
   },
