@@ -118,12 +118,12 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	private addNode(opalNode : OpalNode, fqnParts : string[], classFile : vscode.Uri, i : number) {
 		var parent = this.searchNode(opalNode, fqnParts[i]);
 		if (parent !== null) {
-			// this is a grantparent of the node we try to add
+			// this is a grantParent of the node we try to add
 			i = i+1;
 			this.addNode(parent, fqnParts, classFile, i);
 		} else {
 			// this is the parent of the node we try to add
-			// we can add the node to the childs
+			// we can add the node to the children
 			if (fqnParts[i] !== undefined) {
 				let type = i === fqnParts.length-1 ? "leaf" : "node";
 				let newNode = new OpalNode(fqnParts[i], vscode.TreeItemCollapsibleState.Collapsed, classFile, type);
