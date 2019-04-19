@@ -47,6 +47,10 @@ export default class ClassDAO {
         return ClassDAO._classes;
     }
 
+    public async addClass(classItem : ClassFile) {
+        ClassDAO._classes.push(classItem);
+    }
+
     public async addClassByURI(classPath : Uri) {
         let fileName = npmPath.parse(classPath.fsPath).base;
         
