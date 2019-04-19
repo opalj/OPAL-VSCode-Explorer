@@ -26,9 +26,7 @@ class TACServlet extends ScalatraServlet  with JacksonJsonSupport   {
 		}catch{
 			case e: Exception => content = params("id") + " " + e.getMessage()
 		}
-
-		
-        new TAC(params("id"), content)
+		content
     }
 }
 

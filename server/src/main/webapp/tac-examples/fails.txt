@@ -1,0 +1,200 @@
+java.lang.String load()
+{
+      /* PARAMETERS:
+         param0: useSites={80,152,36,2,130,50,118,65,17,113,157,7,55} (origin=-1)
+      */
+    0: lv0 = "Project loaded"
+    1: lv1 = ""
+    2: lv2 = {param0}/*opal.extension.vscode.OPALProject*/.opalInit
+    3: lv3 = {lv2}/*opal.extension.vscode.model.OpalInit*/.config()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 3 →
+    4: lv4 = "libraryClassFilesAreInterfacesOnly"
+    5: lv5 = {lv3}/*scala.collection.immutable.Map*/.contains({lv4})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 5 →
+    6: if({lv5} == 0) goto 28
+
+      // 6 →
+    7: lv7 = {param0}/*opal.extension.vscode.OPALProject*/.opalInit
+    8: lv8 = {lv7}/*opal.extension.vscode.model.OpalInit*/.config()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 8 →
+    9: lv9 = "libraryClassFilesAreInterfacesOnly"
+   10: lva = {lv8}/*scala.collection.immutable.Map*/.get({lv9})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 10 →
+   11: lvb = {lva}/*scala.Option*/.get()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 11 →
+   12: lvc = "1"
+   13: if({lvb} != null) goto 15
+
+      // 13 →
+   14: goto 28
+
+      // 13 →
+   15: lvf = {lvb}/*java.lang.Object*/.equals({lvc})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 15 →
+   16: if({lvf} == 0) goto 28
+
+      // 16 →
+   17: lv11 = {param0}/*opal.extension.vscode.OPALProject*/.opalInit
+   18: lv12 = {lv11}/*opal.extension.vscode.model.OpalInit*/.config()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 18 →
+   19: lv13 = "libraryClassFilesAreInterfacesOnly"
+   20: lv14 = {lv12}/*scala.collection.immutable.Map*/.get({lv13})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 20 →
+   21: lv15 = {lv14}/*scala.Option*/.get()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 21 →
+   22: lv16 = "true"
+   23: if({lv15} != null) goto 25
+
+      // 23 →
+   24: goto 28
+
+      // 23 →
+   25: lv19 = {lv15}/*java.lang.Object*/.equals({lv16})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 25 →
+   26: if({lv19} == 0) goto 28
+
+      // 26 →
+   27: lv1b = " and library Class files are Interfaces only"
+
+      // 14, 16, 24, 26, 27, 6 →
+   28: lv1c = org.opalj.br.analyses.Project$.MODULE$
+   29: lv1d = org.opalj.br.analyses.Project$.MODULE$
+   30: lv1e = {lv1d}/*org.opalj.br.analyses.Project$*/.JavaClassFileReader$default$1()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+}
+
+org.json4s.DefaultFormats$ formats()
+{
+      /* PARAMETERS:
+         param0: useSites={0} (origin=-1)
+      */
+    0: lv0 = {param0}/*opal.extension.vscode.OPALProject*/.formats
+    1: return {lv0}
+}
+java.lang.String getAny(opal.extension.vscode.model.OpalCommand)
+{
+      /* PARAMETERS:
+         param0: useSites={16,26,6,21} (origin=-1)
+         param1: useSites={16,2,26,6,21} (origin=-2)
+      */
+    0: lv0 = new StringBuilder
+    1: {lv0}/*(non-virtual) scala.collection.mutable.StringBuilder*/.<init>()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 1 →
+    2: lv2 = {param1}/*opal.extension.vscode.model.OpalCommand*/.command()
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 2 →
+    3: lv3 = "getCFG"
+    4: lv4 = {lv3}/*java.lang.Object*/.equals({lv2})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 4 →
+    5: if({lv4} == 0) goto 8
+
+      // 5 →
+    6: lv6 = {param0}/*opal.extension.vscode.OPALProject*/.getCFG({param1})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 6 →
+    7: goto 29
+
+      // 5 →
+    8: lv8 = "getSVG"
+    9: lv9 = {lv8}/*java.lang.Object*/.equals({lv2})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 9 →
+   10: if({lv9} == 0) goto 13
+
+      // 10 →
+   11: lvb = ""
+   12: goto 29
+
+      // 10 →
+   13: lvd = "getBCForClass"
+   14: lve = {lvd}/*java.lang.Object*/.equals({lv2})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 14 →
+   15: if({lve} == 0) goto 18
+
+      // 15 →
+   16: lv10 = {param0}/*opal.extension.vscode.OPALProject*/.getBCForClass({param1})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 16 →
+   17: goto 29
+
+      // 15 →
+   18: lv12 = "getBCForMethod"
+   19: lv13 = {lv12}/*java.lang.Object*/.equals({lv2})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 19 →
+   20: if({lv13} == 0) goto 23
+
+      // 20 →
+   21: lv15 = {param0}/*opal.extension.vscode.OPALProject*/.getBCForMethod({param1})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 21 →
+   22: goto 29
+
+      // 20 →
+   23: lv17 = "getBCForClassHTML"
+   24: lv18 = {lv17}/*java.lang.Object*/.equals({lv2})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 24 →
+   25: if({lv18} == 0) goto 28
+
+      // 25 →
+   26: lv1a = {param0}/*opal.extension.vscode.OPALProject*/.getBCForClassHTML({param1})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 26 →
+   27: goto 29
+
+      // 25 →
+   28: lv1c = "unknown command"
+
+      // 12, 17, 22, 27, 28, 7 →
+   29: lv1d = new StringOps
+   30: lv1e = scala.Predef$.MODULE$
+   31: lv1f = {lv1e}/*scala.Predef$*/.augmentString({lv10, lv1c, lv1a, lv6, lv15, lvb})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 31 →
+   32: {lv1d}/*(non-virtual) scala.collection.immutable.StringOps*/.<init>({lv1f})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 32 →
+   33: lv21 = ""
+   34: lv22 = {lv1d}/*scala.collection.immutable.StringOps*/.mkString({lv21})
+      // ⚡️ <uncaught exception ⇒ abnormal return>
+
+      // 34 →
+   35: return {lv22}
+}
