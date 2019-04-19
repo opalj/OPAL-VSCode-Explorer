@@ -4,7 +4,7 @@ import { ProjectService } from "./extension/service/project.service";
 import * as npmPath from "path";
 import { PackageViewProvider } from "./extension/provider/packageViewProvider";
 import { encodeLocation } from './extension/provider/abstract.provider';
-import ClassDAO from "./extension/model/class.dao";
+import ClassDAO, { ClassFile } from "./extension/model/class.dao";
 import ContextService from "./extension/service/context.service";
 import { CommandService } from "./extension/service/command.service";
 let fs = require('file-system');
@@ -216,6 +216,41 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+
+  /**
+  * ######################################################
+  * ################### Commands #########################
+  * ######################################################
+  */
+  let customCommand = vscode.commands.registerCommand("extension.customCommand", async () => {
+    // debug TAC for static TAC files:
+    // 1. get id for tac file
+    let customCommandStr = await vscode.window.showInputBox({ placeHolder: 'command:param' });
+    if (customCommandStr === undefined) {
+      vscode.window.showErrorMessage("Command is undefined!");
+    } else {
+      /**
+       * command[0] => command
+       * command[1] => parameter
+       */
+      let command = customCommandStr.split(":");
+       
+      if (command[0] === "tac") { // default TAc
+        // 2. create a virtual uri for the menuTAC command parameter
+        var uri = vscode.Uri.parse("class://custom/"+command[1]);
+        let fqn = command[1].split(".");
+        let classItem : ClassFile = {
+          "name" : fqn[fqn.length -1],
+          "uri" : uri,
+          "fqn" : fqn.join("/")
+        };
+        classDAO.addClass(classItem);
+
+        vscode.commands.executeCommand("extension.menuTac", uri);
+      }
+    }
+  });
+
   //menu-command to get tac from .class
   let menuTacCommand = vscode.commands.registerCommand(
     "extension.menuTac",
@@ -343,7 +378,7 @@ export async function activate(context: vscode.ExtensionContext) {
     providerRegistrations,
     loadProjectCommand,
     reloadProjectCommand,
-    //pickTargetRoot,
+    customCommand,
     myStatusBarItem,
     menuTacDetached
   );
