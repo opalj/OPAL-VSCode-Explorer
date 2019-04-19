@@ -63,20 +63,20 @@ export class LinkParser {
     for (let i = this.tacLines.length - 1; i >= 0; i--) {
       switch (this.lineTypes[i]) {
         case LineType.Caller:
-          let tmp = <RegExpExecArray>this.matchCaller(this.tacLines[i]);
-          for (let j = 1; j < tmp.length; j++) {
+          let caller = <RegExpExecArray>this.matchCaller(this.tacLines[i]);
+          for (let j = 1; j < caller.length; j++) {
             let originRange: vscode.Range;
-            start = this.tacLines[i].indexOf(tmp[j]);
+            start = this.tacLines[i].search(' '+caller[j])+1;
             if (start < 0) {
               continue;
             } // // ⚡️ <uncaught exception ⇒ abnormal return>, ⚡️ java.io.IOException →
-            end = start + tmp[j].length;
+            end = start + caller[j].length;
             originRange = new vscode.Range(
               new vscode.Position(i, start),
               new vscode.Position(i, end)
             );
             let targetUri: vscode.Uri;
-            let targetLine = <number>this.getTargetLineGlobal(i, Number(tmp[j]));
+            let targetLine = <number>this.getTargetLineGlobal(i, Number(caller[j]));
             targetUri = this.docPath.with({ fragment: String(targetLine) });
             this.documentLinkComposer(originRange, targetUri);
           }
