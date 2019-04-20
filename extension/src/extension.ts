@@ -7,6 +7,7 @@ import { encodeLocation } from './extension/provider/abstract.provider';
 import ClassDAO, { ClassFile } from "./extension/model/class.dao";
 import ContextService from "./extension/service/context.service";
 import { CommandService } from "./extension/service/command.service";
+import ClassWorkbenchHTML from "./extension/document/classWorkbench.html";
 
 const fs = require('file-system');
 const isReachable = require("is-reachable");
@@ -223,6 +224,24 @@ export async function activate(context: vscode.ExtensionContext) {
   * ################### Commands #########################
   * ######################################################
   */
+  /**
+  * Comamnd for opening the class Workbench
+  */
+  let classWorkbenchCommand = vscode.commands.registerCommand("extension.classWorkbenchCommand", async (uri : vscode.Uri) => {
+    let classItem = classDAO.getClassForURI(uri);
+    let classWorkbench = new ClassWorkbenchHTML(classItem);
+
+    const panel = vscode.window.createWebviewPanel(
+      "Byte-Code-HTML",
+      "Class Workbench",
+      vscode.ViewColumn.One,
+      {}
+    );
+
+    // And set its HTML content
+    panel.webview.html = classWorkbench.loadContent();
+  });
+
   let customCommand = vscode.commands.registerCommand("extension.customCommand", async () => {
     // debug TAC for static TAC files:
     // 1. get id for tac file
@@ -382,7 +401,8 @@ export async function activate(context: vscode.ExtensionContext) {
     reloadProjectCommand,
     customCommand,
     myStatusBarItem,
-    menuTacDetached
+    menuTacDetached,
+    classWorkbenchCommand
   );
 
   vscode.window.showInformationMessage("Java Bytecode Workbench is ready for action");

@@ -63,6 +63,10 @@
     },
     "commands": [
       {
+        "command": "extension.classWorkbenchCommand",
+        "title": "Open the Class Workbench"
+      },
+      {
         "command": "extension.customCommand",
         "title": "opal-custom"
       },
@@ -172,6 +176,11 @@
     },
     "menus": {
       "explorer/context": [
+        {
+          "command": "extension.classWorkbenchCommand",
+          "when": "!explorerResourceIsFolder && resourceLangId == class",
+          "group": "2_workspace"
+        },
         {
           "command": "extension.menuTac",
           "when": "!explorerResourceIsFolder && resourceLangId == class",
