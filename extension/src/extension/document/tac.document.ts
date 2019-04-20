@@ -66,7 +66,7 @@ export class LinkParser {
           let caller = <RegExpExecArray>this.matchCaller(this.tacLines[i]);
           for (let j = 1; j < caller.length; j++) {
             let originRange: vscode.Range;
-            start = this.tacLines[i].search(' '+caller[j])+1;
+            start = this.tacLines[i].search(' (' + caller[j] +')[, ]')+1;
             if (start < 0) {
               continue;
             } // // ⚡️ <uncaught exception ⇒ abnormal return>, ⚡️ java.io.IOException →
