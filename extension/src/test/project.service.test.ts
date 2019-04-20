@@ -19,7 +19,7 @@ suite("OPAL Initialization Test Suit", function () {
             "config" : {}
 		};
         projectService.load(message).then(function (res : any) {
-            expect(res).to.equal("Project loaded");
+            expect(res).to.equal("Project loaded without JDK");
 
             var message = {
                 "projectId" : "/bla/projects/projectX",
@@ -39,9 +39,9 @@ suite("OPAL Initialization Test Suit", function () {
         let contextService = new ContextService("");
         let classDAO = new ClassDAO(contextService);
         var projectService = new ProjectService(config.server.url, "/bla/projects/projectX", classDAO);
-        projectService.addLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar").then(function () {
+        projectService.addLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\").then(function () {
             done();
-            expect(projectService.libraries).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\OPALTACDisassembler.jar");
+            expect(projectService.libraries).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\");
         });
     });
 });
