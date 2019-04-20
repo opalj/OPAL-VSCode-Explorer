@@ -7,8 +7,8 @@ import { encodeLocation } from './extension/provider/abstract.provider';
 import ClassDAO, { ClassFile } from "./extension/model/class.dao";
 import ContextService from "./extension/service/context.service";
 import { CommandService } from "./extension/service/command.service";
-let fs = require('file-system');
 
+const fs = require('file-system');
 const isReachable = require("is-reachable");
 
 const TACScheme = "tac";
@@ -168,7 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
           "jdk.load" : conf.get("OPAL.jdk.load")+"",
-          "libraryClassFilesAreInterfacesOnly" : conf.get("OPAL.libraryClassFilesAreInterfacesOnly")+""
+          "libraryClassFilesAreInterfacesOnly": conf.get("OPAL.extension.jdk.load.asLib.interfacesOnly")+""
         }
       );
       // let opal load the project (this may take a while)
@@ -188,8 +188,7 @@ export async function activate(context: vscode.ExtensionContext) {
       // get logging while opal is loading the project
       var oldLog = "";
       while (!projectLoaded) {
-        // wait for new logs
-        await delay(1000);
+        await delay(100);
         // show the logs in the status bar
         var log = await projectService.requestLOG(logMessage);
         if (log !== undefined && oldLog !== log) {
@@ -199,6 +198,8 @@ export async function activate(context: vscode.ExtensionContext) {
           oldLog = log;
           console.log(log);
         }
+        // wait for new logs
+        await delay(1000);
       }
     }
   );
@@ -347,6 +348,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   //menu-command to add a directory to the library directory paths (settings)
+  // @deprecated this is not used anmoyre
   let menuLibDirCommand = vscode.commands.registerCommand(
     "extension.menuLibDir", 
     async (uri: vscode.Uri) => {
