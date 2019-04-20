@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "publisher": "stg",
   "author": {
     "name": "Alexander Gössl",
@@ -37,27 +37,27 @@
         "OPAL.server.port": {
           "type": "number",
           "default": "8080",
-          "markdownDescription": "Port of the OPAL Java Bytecode Project Server you want to connect."
+          "description": "Port of the OPAL Java Bytecode Project Server you want to connect."
         },
         "OPAL.server.options": {
           "type": "string",
           "default": "-Xmx4G",
-          "markdownDescription": "Java parameter for the OPAL Java Bytecode Project Server. (Set to -Xmx16G for large Projects)"
+          "description": "Java parameter for the OPAL Java Bytecode Project Server. (Set to -Xmx16G for large Projects)"
         },
-        "OPAL.jdk.load" : {
-          "type" : "boolean",
+        "OPAL.extension.jdk.load": {
+          "type": "boolean",
           "default": true,
-          "markdownDescription": "Should the JDK be part of the analysis?" 
+          "description": "Should the JDK be part of the analysis?"
         },
-        "OPAL.jdk.loadAsLib" : {
-          "type" : "boolean",
+        "OPAL.extension.jdk.load.asLib": {
+          "type": "boolean",
           "default": false,
-          "markdownDescription": "Should the JDK be loaded as library?"
+          "description": "Should the JDK be loaded as library?"
         },
-        "OPAL.jdk.loadLibraryClassFilesAreInterfacesOnly" : {
-          "type" : "boolean",
+        "OPAL.extension.jdk.load.asLib.interfacesOnly": {
+          "type": "boolean",
           "default": false,
-          "markdownDescription": "Should the Library Class files be loaded as interfaces only?"
+          "description": "Should the Library Class files be loaded as interfaces only?"
         }
       }
     },
