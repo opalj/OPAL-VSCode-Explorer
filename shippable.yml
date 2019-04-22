@@ -1,5 +1,8 @@
 language: none
 
+env:
+  - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+
 build:
     pre_ci_boot:
         image_name: agssl123/vscodeextension
