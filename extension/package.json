@@ -49,12 +49,12 @@
           "default": true,
           "description": "Should the JDK be part of the analysis?"
         },
-        "OPAL.extension.jdk.load.asLib": {
+        "OPAL.extension.jdk.loadAsLib": {
           "type": "boolean",
           "default": false,
           "description": "Should the JDK be loaded as library?"
         },
-        "OPAL.extension.jdk.load.asLib.interfacesOnly": {
+        "OPAL.extension.jdk.loadAsLibInterfacesOnly": {
           "type": "boolean",
           "default": false,
           "description": "Should the Library Class files be loaded as interfaces only?"
@@ -201,11 +201,6 @@
         {
           "command": "extension.menuBC",
           "when": "!explorerResourceIsFolder && resourceLangId == class",
-          "group": "2_workspace"
-        },
-        {
-          "command": "extension.menuLibDir",
-          "when": "explorerResourceIsFolder",
           "group": "2_workspace"
         }
       ]

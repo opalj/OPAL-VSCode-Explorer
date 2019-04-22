@@ -167,8 +167,8 @@ export async function activate(context: vscode.ExtensionContext) {
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
-          "jdk.load" : conf.get("OPAL.jdk.load")+"",
-          "libraryClassFilesAreInterfacesOnly": conf.get("OPAL.extension.jdk.load.asLib.interfacesOnly")+""
+          "jdk.load" : conf.get("OPAL.extension.jdk.load")+"",
+          "libraryClassFilesAreInterfacesOnly": conf.get("OPAL.extension.jdk.loadAsLibInterfacesOnly")+""
         }
       );
       // let opal load the project (this may take a while)
@@ -193,7 +193,7 @@ export async function activate(context: vscode.ExtensionContext) {
         var log = await projectService.requestLOG(logMessage);
         if (log !== undefined && oldLog !== log) {
           myStatusBarItem.text = log;
-          outputChannel.appendLine("[OPAL]: " + log);
+          outputChannel.appendLine(log);
           outputChannel.show();
           oldLog = log;
           console.log(log);
@@ -348,7 +348,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   //menu-command to add a directory to the library directory paths (settings)
-  // @deprecated this is not used anmoyre
+  // @deprecated this is not used anymore
   let menuLibDirCommand = vscode.commands.registerCommand(
     "extension.menuLibDir", 
     async (uri: vscode.Uri) => {
