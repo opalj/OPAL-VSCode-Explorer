@@ -36,6 +36,8 @@ import org.opalj.da.ClassFileReader
 import org.opalj.ai.fpcf.analyses.LazyL0BaseAIAnalysis
 import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
+import java.nio.charset.CodingErrorAction
+import scala.io.Codec
 
 
 /**
@@ -217,7 +219,6 @@ class OPALProject(opalInit : OpalInit) {
             var fileName = opalCommand.params.get("fileName").get
             var className = opalCommand.params.get("className").get
 
-            val sourceFiles = new java.io.File(fileName)
             val classFileFilter =
                 if (className == null)
                     (cf: org.opalj.da.ClassFile) ⇒ true // just take the first one...
@@ -225,6 +226,10 @@ class OPALProject(opalInit : OpalInit) {
                     (cf: org.opalj.da.ClassFile) ⇒ 
                       cf.thisType.asJava == className.replace("/", ".")
         
+            implicit val codec = Codec("UTF-8")
+            codec.onMalformedInput(CodingErrorAction.REPLACE)
+            codec.onUnmappableCharacter(CodingErrorAction.REPLACE)
+
             org.opalj.da.ClassFileReader.findClassFile(List(new java.io.File(fileName)), println, classFileFilter, (cf: org.opalj.da.ClassFile) ⇒ cf.thisType.asJava)
             match {
                 case Left(cfSource) ⇒ 
