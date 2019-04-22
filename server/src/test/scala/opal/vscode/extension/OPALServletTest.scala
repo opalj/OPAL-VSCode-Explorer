@@ -42,7 +42,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     test("Load Project with jdk and libraryClassFilesAre not InterfacesOnly") {
         var json = "";
         //var opalInit = OpalInit("abc", Array(classesPath+File.separator+"JettyLauncher.class"), Array(""), Map("key" -> "value"));
-        var opalInit = OpalInit("with jdk and not only interfaces", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "1", "libraryClassFilesAreInterfacesOnly" -> "0")); // +"cmdsnake"+File.separator+"Direction.class"
+        var opalInit = OpalInit("with_jdk_not_only_interfaces", Array(testProject+File.separator), Array(""), Map("jdk.load" -> "1", "libraryClassFilesAreInterfacesOnly" -> "0")); // +"cmdsnake"+File.separator+"Direction.class"
         json = write(opalInit);
 
         post("/project/load", json) {
@@ -50,7 +50,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
             status should equal (200)
         }
 
-        var requestLogs = Log("with jdk and not only interfaces", "", Map("key" -> "value"));
+        var requestLogs = Log("with_jdk_not_only_interfaces", "", Map("key" -> "value"));
         json = write(requestLogs);
         post("/project/load/log", json) {
             body should ( include ("creating the project took") and include ("the JDK is part of the analysis") and include ("validating the project took") )
@@ -60,7 +60,7 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         /*
         * Test a class from inside the JDK
         */
-        var tacForClassString = TACForClass("with jdk and not only interfaces", "java/lang/String", "");
+        var tacForClassString = TACForClass("with_jdk_not_only_interfaces", "java/lang/String", "");
         json = write(tacForClassString);
         post("/project/tac/class", json) {
             //body should ( include("0:/*pc=-1:*/ r_0 = this") and include("void <init>()") and include("2:/*pc=1:*/ op_0/*(non-virtual) java.lang.Object*/.<init>()"))

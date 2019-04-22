@@ -9,7 +9,7 @@ class TACServletTests extends ScalatraSuite with FunSuiteLike {
   test("get tac route") {
     get("/short1.txt") {
       status should equal (200)
-      body should include ("short1.txt")
+      body should include ("void <init>(){")
     }
   }
 }

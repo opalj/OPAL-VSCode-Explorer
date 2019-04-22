@@ -56,9 +56,9 @@ class OPALProject(opalInit : OpalInit) {
         var libraryClassFilesAreInterfacesOnly = false;
         var res = "Project loaded";
         var  interfacesOnly = "";
-        if (opalInit.config.contains("libraryClassFilesAreInterfacesOnly") && opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "1" &&  opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "true") {
+        if (opalInit.config.contains("libraryClassFilesAreInterfacesOnly") && (opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "1" ||  opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "true")) {
             libraryClassFilesAreInterfacesOnly = true;
-            interfacesOnly = " and library Class files are Interfaces only";
+            interfacesOnly = " and library class files are Interfaces only";
         }
 
         val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
