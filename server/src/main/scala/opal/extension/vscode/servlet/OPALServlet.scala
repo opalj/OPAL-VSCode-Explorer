@@ -12,6 +12,7 @@ import scala.collection.mutable.HashMap;
 import org.json4s.jackson.Serialization.write
 import java.io.File
 import org.opalj.br.analyses.Project.JavaClassFileReader
+import org.json4s.jackson.Serialization.read
 
 /**
  * Servlet for /opal/ routes
@@ -32,26 +33,31 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
      * Get Context Information for a class File
      **/
     post("/context/class") {
-        var path = request.body
-        var res = new HashMap[String, String];
-        org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).foreach({
-            cf => 
-                if (!cf._1.isVirtualType) {
-                    res.put("fqn", cf._1.fqn);
-                    var methods = Array[String]();
-                    cf._1.methods.foreach(
-                        method => 
-                        if (!method.isFinal) {
-                            methods = methods :+ method.descriptor.toJava.replace("MethodDescriptor", method.name)
+        // path should be a string array
+        val paths : Array[String] = parse(request.body).extract[Array[String]]
+        var res = Array[ClassContext]();
+
+        paths.foreach(
+            path => {
+                org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).foreach({
+                    cf => 
+                        if (!cf._1.isVirtualType) {
+                            var context = new HashMap[String, String]
+                            context.put("fqn", cf._1.fqn);
+                            var methods = Array[String]();
+                            cf._1.methods.foreach(
+                                method => 
+                                if (!method.isFinal) {
+                                    methods = methods :+ method.descriptor.toJava.replace("MethodDescriptor", method.name)
+                                }
+                            );
+                            context.put("methods", write(methods))
+                            res = res :+ new ClassContext(path, context)
                         }
-                    );
-                    res.put("methods", write(methods))
-                }
-        })
-        if (res.isEmpty) {
-            throw new Exception("Can't get context from Class File: " + path);
-        }
-        res
+                })
+            }
+        )
+        write(res)
     }    
 
     /**
@@ -111,10 +117,8 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     post("/project/load/log") {
         var logMessage = parsedBody.extract[Log]
         var res = "";
-        if (workspace.get(logMessage.projectId).isEmpty) {
-            res = "Error: Project not found!";
-        } else {
-            res = workspace.get(logMessage.projectId).get.getLog();
+        if (!workspace.get(logMessage.projectId).isEmpty) {
+            res = workspace.get(logMessage.projectId).get.getLog();   
         }
         res;
     }

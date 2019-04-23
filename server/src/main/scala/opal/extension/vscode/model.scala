@@ -1,4 +1,5 @@
 package opal.extension.vscode.model;
+import scala.collection.mutable.HashMap;
 
 /**
  * Message for Loading the Project
@@ -36,3 +37,8 @@ case class Log(projectId: String, target: String, config: Map[String, String]);
  * Command for any functionality
  **/
 case class OpalCommand(projectId: String, command: String, params: Map[String, String]);
+
+/**
+ * Getting the context from all classes
+ **/
+case class ClassContext(path : String, infos: HashMap[String, String]);

@@ -34,27 +34,27 @@
     "configuration": {
       "title": "Java Byte Code Workbench",
       "properties": {
-        "OPAL.server.port": {
+        "JavaBytecodeWorkbench.server.port": {
           "type": "number",
           "default": "8080",
-          "description": "Port of the OPAL Java Bytecode Project Server you want to connect."
+          "description": "Port of the Java Bytecode Project Server you want to connect."
         },
-        "OPAL.server.options": {
+        "JavaBytecodeWorkbench.server.parameter": {
           "type": "string",
           "default": "-Xmx4G",
-          "description": "Java parameter for the OPAL Java Bytecode Project Server. (Set to -Xmx16G for large Projects)"
+          "description": "JVM parameter for the Java Bytecode Project Server. (Set to -Xmx16G for large Projects)"
         },
-        "OPAL.extension.jdk.load": {
+        "JavaBytecodeWorkbench.extension.jdk.load": {
           "type": "boolean",
           "default": true,
           "description": "Should the JDK be part of the analysis?"
         },
-        "OPAL.extension.jdk.loadAsLib": {
+        "JavaBytecodeWorkbench.extension.jdk.loadAsLib": {
           "type": "boolean",
           "default": false,
           "description": "Should the JDK be loaded as library?"
         },
-        "OPAL.extension.jdk.loadAsLibInterfacesOnly": {
+        "JavaBytecodeWorkbench.extension.jdk.loadAsLibInterfacesOnly": {
           "type": "boolean",
           "default": false,
           "description": "Should the Library Class files be loaded as interfaces only?"
@@ -101,13 +101,6 @@
       {
         "command": "extension.pickTargetRoot",
         "title": "Open Target"
-      }
-    ],
-    "themes": [
-      {
-        "label": "c",
-        "uiTheme": "vs-dark",
-        "path": "./themes/tac-color-theme.json"
       }
     ],
     "languages": [

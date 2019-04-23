@@ -27,7 +27,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * Setup and get the Config
    */
   const conf = vscode.workspace.getConfiguration();
-  const serverURL = "http://localhost:" + conf.get("OPAL.server.port");
+  const serverURL = "http://localhost:" + conf.get("JavaBytecodeWorkbench.server.port");
   /**
    * Get the Class Data Access Object
    */
@@ -65,7 +65,7 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   // Ping Jetty
   var jettyIsUp = await isReachable(
-    "localhost:" + conf.get("OPAL.server.port")
+    "localhost:" + conf.get("JavaBytecodeWorkbench.server.port")
   );
   
   if (!jettyIsUp) {
@@ -97,7 +97,7 @@ export async function activate(context: vscode.ExtensionContext) {
       "java -jar '" +
       jarPath +
         "' " +
-        conf.get("OPAL.server.options"),
+        conf.get("JavaBytecodeWorkbench.server.parameter"),
       true
     );
   }
@@ -110,7 +110,7 @@ export async function activate(context: vscode.ExtensionContext) {
     let i = 0;
     while (!jettyIsUp) {
       await delay(100);
-      jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
+      jettyIsUp = await isReachable("localhost:" + conf.get("JavaBytecodeWorkbench.server.port"));
       progress.report({ "increment": i * 10});
       i++;
     }
@@ -123,7 +123,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await delay(500);
   while (!jettyIsUp) {
     await delay(200);
-    jettyIsUp = await isReachable("localhost:" + conf.get("OPAL.server.port"));
+    jettyIsUp = await isReachable("localhost:" + conf.get("JavaBytecodeWorkbench.server.port"));
   }
   
   vscode.window.showInformationMessage("Connected to OPAL Java Bytecode Project Server");
@@ -152,7 +152,7 @@ export async function activate(context: vscode.ExtensionContext) {
     async () => {
       // Project can not be loaded if jetty is not op
       var jettyIsUp = await isReachable(
-        "localhost:" + conf.get("OPAL.server.port")
+        "localhost:" + conf.get("JavaBytecodeWorkbench.server.port")
       );
       if (!jettyIsUp) {
         vscode.window.showErrorMessage("Server is not up!");
@@ -167,8 +167,8 @@ export async function activate(context: vscode.ExtensionContext) {
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
-          "jdk.load" : conf.get("OPAL.extension.jdk.load")+"",
-          "libraryClassFilesAreInterfacesOnly": conf.get("OPAL.extension.jdk.loadAsLibInterfacesOnly")+""
+          "jdk.load" : conf.get("JavaBytecodeWorkbench.extension.jdk.load")+"",
+          "libraryClassFilesAreInterfacesOnly": conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLibInterfacesOnly")+""
         }
       );
       // let opal load the project (this may take a while)

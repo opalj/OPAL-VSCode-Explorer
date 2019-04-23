@@ -52,7 +52,7 @@ export default abstract class AbstractDocument { // should implements vscode.Tex
     this._links = [];
     this._opalConfig = config;
     this._commandService = new CommandService(
-      "http://localhost:" + this._opalConfig.get("OPAL.server.port")
+      "http://localhost:" + this._opalConfig.get("JavaBytecodeWorkbench.server.port")
     );
 
 

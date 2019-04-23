@@ -51,6 +51,23 @@ export default class ClassDAO {
         ClassDAO._classes.push(classItem);
     }
 
+    public async addClassFromContext(classContext : any) {
+        console.log(classContext);
+        let fileName = npmPath.parse(classContext.path).base;
+        
+        let className = "";
+        if (fileName.includes(".class") || fileName.includes(".java")) {
+            className = fileName.replace(".class", "").replace(".java", "");
+        } else {
+            throw new Error("Can't get Class Name from "+fileName);
+        }
+
+        let methods = JSON.parse(classContext.infos.methods);
+
+        let result : ClassFile = {"name" : className, "uri" : Uri.file(classContext.path), "fqn" : classContext.infos.fqn, "methods" : methods};
+        ClassDAO._classes.push(result);
+    }
+
     public async addClassByURI(classPath : Uri) {
         let fileName = npmPath.parse(classPath.fsPath).base;
         
@@ -71,11 +88,14 @@ export default class ClassDAO {
 
     public async addClassesFromWorkspace() {
         let classes = await workspace.findFiles("**/*.class");
+        let classItems = await this._contextService.loadFQNFromContextBULK(classes);
         vscode.window.showInformationMessage(classes.length + " class files found!");
-        for (let classItem of classes) {
-            await this.addClassByURI(classItem);
+        for (let classItem of classItems) {
+            await this.addClassFromContext(classItem);
         }
     }
+
+
 
     public async updateClassesFolder (folderPath : Uri) {
         let classes = await workspace.findFiles(new RelativePattern(folderPath.fsPath, "**/*.class"));

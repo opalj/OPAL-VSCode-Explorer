@@ -1,3 +1,5 @@
+import { Uri } from "vscode";
+
 var request = require('request-promise-native');
 
 export default class ContextService {
@@ -6,7 +8,7 @@ export default class ContextService {
         "headers": {
         },
         "body":{},
-        "json": false
+        "json": true
     };
 
     protected serverUrl = "";
@@ -23,6 +25,17 @@ export default class ContextService {
     async loadFQNFromContext(filename : string) {
         this.options.body = filename;
         this.options.uri = this.serverUrl + "/context/class";
+        return request.post(this.options);
+    }
+
+    async loadFQNFromContextBULK(filenames : Uri[])  {
+        let fsPaths : String[] = new Array();
+        filenames.forEach(filename => {
+            fsPaths.push(filename.fsPath);
+        });
+        this.options.body = fsPaths;
+        this.options.uri = this.serverUrl + "/context/class";
+        console.log(this.options);
         return request.post(this.options);
     }
 }
