@@ -19,7 +19,7 @@
 		"keywords": {
 			"patterns": [
 				{	
-					"name" : "keyword.control",
+					"name" : "token.error-token",
 					"match" : "\\b(if|goto)\\b \\d+"
 				},
 				{	
@@ -31,36 +31,43 @@
 					"match" : "\\b(new)\\b"
 				},
 				{	
-					"name" : "keyword.control.less",
+					"name" : "keyword.control",
 					"match" : "\\b(exception)\\b"
 				},
 				{
-					"name" : "fqn",
+					"name" : "entity.name.function",
 					"match": "\\b\\w+\\.\\w+(\\.\\w+)+\\b"
+				},
+				{
+					"name":"variable.function",
+					"match": " \\<?\\$?(\\w*)\\$?\\>?\\("
 				}
 			]
 		},
 		"comment": {
 			"patterns": [
 				{
-					"name": "comment.line",
+					"name": "comment",
 					"match": "//(\\s|\\w|\\.|\\\u216A|\\\u2192|.|\\$)*|/\\*(\\w|\\s|\\(|\\)|\\{|\\}|\\.|-)*\\*/"
 				},
 				{
-					"name": "comment.block",
+					"name": "variable.parameter",
 					"match": "/\\* PARAMETERS:(\\s|\\.|\\w|.)*|\\*/"
 				},
 				{
-					"name": "comment.block.documentation",
+					"name": "variable.import.parameter.js",
 					"match": "param[0-9]*: .*"
+				},
+				{
+					"name": "token.error-token",
+					"match": "\/\/(.*?)→"
 				}
-
 			]
 		},
 		"string": {
 			"patterns": [
 				{
-					"name": "string.other",
+					"name": "entity.name.tag",
 					"match": "\"(\\s|\\.|\\w|\\\\|.|/)*\""  
 				},
 				{
