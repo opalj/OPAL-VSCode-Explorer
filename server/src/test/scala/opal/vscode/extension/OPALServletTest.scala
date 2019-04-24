@@ -146,10 +146,10 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
     }
 
     test ("get fqn from class file") {
-        var filename = testProject+File.separator+"Test.class";
-        var getContextInfos = write(OpalCommand("123", "getContextInfos", Map("filename" -> filename)));
-    
-        post("/context/class", filename) {
+        var filenames = new Array[String](1);
+        filenames(0) = testProject+File.separator+"Test.class";
+
+        post("/context/class", write(filenames)) {
             status should equal (200)
             body should  include ("Test")
         }
