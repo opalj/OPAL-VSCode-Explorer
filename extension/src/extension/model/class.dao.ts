@@ -52,7 +52,6 @@ export default class ClassDAO {
     }
 
     public async addClassFromContext(classContext : any) {
-        console.log(classContext);
         let fileName = npmPath.parse(classContext.path).base;
         
         let className = "";

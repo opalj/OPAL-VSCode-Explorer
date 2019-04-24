@@ -35,7 +35,6 @@ export default class ContextService {
         });
         this.options.body = fsPaths;
         this.options.uri = this.serverUrl + "/context/class";
-        console.log(this.options);
         return request.post(this.options);
     }
 }

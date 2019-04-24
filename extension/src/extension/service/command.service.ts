@@ -31,7 +31,6 @@ export class CommandService {
      */
     async loadTAC(tacForClassMessage: any) {
         await vscode.commands.executeCommand("extension.loadProject");
-        console.log(tacForClassMessage);
         this.options.body = tacForClassMessage;
         this.options.uri = this.serverUrl + "/opal/project/tac/class";
         //Promise for sending classpath

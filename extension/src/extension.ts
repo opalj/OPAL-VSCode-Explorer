@@ -196,7 +196,6 @@ export async function activate(context: vscode.ExtensionContext) {
           outputChannel.appendLine(log);
           outputChannel.show();
           oldLog = log;
-          console.log(log);
         }
         // wait for new logs
         await delay(1000);
@@ -323,7 +322,6 @@ export async function activate(context: vscode.ExtensionContext) {
       //get folder und filename
       var jarFolder = npmPath.parse(uri.fsPath).dir;
       var fileName = npmPath.parse(uri.fsPath).base;
-      console.log(fileName);
       vscode.window.showInformationMessage(fileName);
 
       //open new terminal
