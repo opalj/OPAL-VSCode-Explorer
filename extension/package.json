@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "publisher": "stg",
   "author": {
     "name": "Alexander Gössl",
