@@ -24,7 +24,7 @@
 				},
 				{	
 					"name" : "keyword.others",
-					"match" : "\\b(return|void|static|throw)\\b"
+					"match" : "\\b(return|void|static|throw|if|goto)\\b"
 				},
 				{	
 					"name" : "keyword.operator.new",
@@ -37,10 +37,6 @@
 				{
 					"name" : "entity.name.function",
 					"match": "\\b\\w+\\.\\w+(\\.\\w+)+\\b"
-				},
-				{
-					"name":"variable.function",
-					"match": " \\<?\\$?(\\w*)\\$?\\>?\\("
 				}
 			]
 		},
