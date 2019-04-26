@@ -55,33 +55,55 @@ class OPALProject(opalInit : OpalInit) {
      * Let OPAL load / analyze the Project with the opalInit Message
      **/
     def load() : String = {
-        var libraryClassFilesAreInterfacesOnly = false;
-        var res = "Project loaded";
-        var  interfacesOnly = "";
-        if (opalInit.config.contains("libraryClassFilesAreInterfacesOnly") && (opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "1" ||  opalInit.config.get("libraryClassFilesAreInterfacesOnly").get == "true")) {
-            libraryClassFilesAreInterfacesOnly = true;
-            interfacesOnly = " and library class files are Interfaces only";
+        var libraryClassFilesAreInterfacesOnly = false
+        var libraryClassFilesAreInterfacesOnlyMSG = ""
+        var jdkAsLib = false
+        var jdkAsLibMSG = ""
+        var res = "Project loaded"
+        
+        opalInit.config.get("libraryClassFilesAreInterfacesOnly") match {
+            case Some("1") | Some("true") =>
+                libraryClassFilesAreInterfacesOnly = true;
+                libraryClassFilesAreInterfacesOnlyMSG = " and library class files are Interfaces only";
+            case _ =>
         }
 
-        val  targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
-        if (opalInit.config.contains("jdk.load") && ( opalInit.config.get("jdk.load").get == "true" || opalInit.config.get("jdk.load").get == "1" )) {
-            val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
-            project = Project(
-                targetClassFiles, 
-                libraryClassFiles, 
-                true,
-                virtualClassFiles = Traversable.empty)(projectLogger = logger);
-            res += " with JDK";
-        } else {
-            val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)))
-            project = Project(
-                targetClassFiles, 
-                libraryClassFiles, 
-                true,
-                virtualClassFiles = Traversable.empty)(projectLogger = logger);
-            res += " without JDK";
+        opalInit.config.get("jdk.loadAsLib") match {
+            case Some("1") | Some("true") =>
+                jdkAsLib = true;
+                jdkAsLibMSG = " as library";
+            case _ =>
         }
-        res + "" + interfacesOnly
+
+        val targetClassFiles = JavaClassFileReader().AllClassFiles(opalInit.targets.map(new File(_)))
+        opalInit.config.get("jdk.load") match {
+            case Some("1") | Some("true") => 
+                if (jdkAsLib) {
+                    val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
+                    project = Project(
+                        targetClassFiles, 
+                        libraryClassFiles, 
+                        libraryClassFilesAreInterfacesOnly,
+                        virtualClassFiles = Traversable.empty)(projectLogger = logger);
+                } else {
+                    val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)) :+ org.opalj.bytecode.RTJar )
+                    project = Project(
+                        targetClassFiles, 
+                        libraryClassFiles, 
+                        libraryClassFilesAreInterfacesOnly,
+                        virtualClassFiles = Traversable.empty)(projectLogger = logger);
+                }
+                res += " with JDK";
+            case _ => 
+                val libraryClassFiles = Java9Framework.AllClassFiles(opalInit.libraries.map(new File(_)))
+                project = Project(
+                    targetClassFiles, 
+                    libraryClassFiles, 
+                    libraryClassFilesAreInterfacesOnly,
+                    virtualClassFiles = Traversable.empty)(projectLogger = logger);
+                res += " without JDK";
+        }
+        res + jdkAsLibMSG + libraryClassFilesAreInterfacesOnlyMSG
     }
 
     /**
@@ -290,7 +312,7 @@ class OPALProject(opalInit : OpalInit) {
 
 /*
  * This is a small implementation of the OPAL Logger.
- * This is necessary for providing the logs to the client (in a diffrent process)
+ * This is necessary for providing the logs to the client (in a different process)
  */
 class StringLogger extends OPALLogger {
 

@@ -161,16 +161,18 @@ export async function activate(context: vscode.ExtensionContext) {
 
       /**
        *  Load Project in to OPAL
-       */  
+       */ 
       // get project Service
       var projectLoaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
           "jdk.load" : conf.get("JavaBytecodeWorkbench.extension.jdk.load")+"",
+          "jdk.loadAsLib" : conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLib")+"",
           "libraryClassFilesAreInterfacesOnly": conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLibInterfacesOnly")+""
         }
       );
+      
       // let opal load the project (this may take a while)
       projectService.load(opalLoadMessage).then(function(response : any) {
         if (response !== "") {
