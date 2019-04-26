@@ -41,4 +41,4 @@ case class OpalCommand(projectId: String, command: String, params: Map[String, S
 /**
  * Getting the context from all classes
  **/
-case class ClassContext(path : String, infos: HashMap[String, String]);
+case class ClassContext(path : String, infos: scala.collection.mutable.Map[String, String]);

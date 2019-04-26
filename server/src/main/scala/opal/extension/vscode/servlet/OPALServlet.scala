@@ -13,6 +13,7 @@ import org.json4s.jackson.Serialization.write
 import java.io.File
 import org.opalj.br.analyses.Project.JavaClassFileReader
 import org.json4s.jackson.Serialization.read
+import scala.collection.mutable.Map
 
 /**
  * Servlet for /opal/ routes
@@ -35,29 +36,21 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     post("/context/class") {
         // path should be a string array
         val paths : Array[String] = parse(request.body).extract[Array[String]]
-        var res = Array[ClassContext]();
-
-        paths.foreach(
-            path => {
-                org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).foreach({
-                    cf => 
-                        if (!cf._1.isVirtualType) {
-                            var context = new HashMap[String, String]
-                            context.put("fqn", cf._1.fqn);
-                            var methods = Array[String]();
-                            cf._1.methods.foreach(
-                                method => 
-                                if (!method.isFinal) {
-                                    methods = methods :+ method.descriptor.toJava.replace("MethodDescriptor", method.name)
-                                }
-                            );
-                            context.put("methods", write(methods))
-                            res = res :+ new ClassContext(path, context)
-                        }
+        val classInfos = paths.par.map(path => {
+            // get single non virtual class from .class file
+            val cf = org.opalj.br.analyses.Project.JavaClassFileReader().ClassFiles(new java.io.File(path)).filter(cf => !cf._1.isVirtualType)
+            
+            if (cf.length > 0) {
+                val methods = cf(0)._1.methods.filter(m => !m.isFinal);
+                var methodNames = Array[String]();
+                methods.foreach(m => {
+                    methodNames = methodNames :+ m.descriptor.toJava.replace("MethodDescriptor", m.name)
                 })
+                val context = new ClassContext(path, Map("fqn" -> cf(0)._1.fqn, "methods" -> write(methodNames)))
+                write(context)
             }
-        )
-        write(res)
+        })    
+        "["+classInfos.mkString(",")+"]"
     }    
 
     /**

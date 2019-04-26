@@ -137,21 +137,22 @@ class OPALServletTests extends ScalatraSuite with FunSuiteLike {
         }
     }
 
-    test("method descriptor void") {
-        //NoArgumentMethodDescriptor(VoidType)
-    }
 
     test("method descriptor string void") {
         MethodDescriptor(RefArray(LongType,ByteType,ObjectType.String), BooleanType)
     }
 
     test ("get fqn from class file") {
-        var filenames = new Array[String](1);
+        var filenames = new Array[String](5);
         filenames(0) = testProject+File.separator+"Test.class";
+        filenames(1) = testProject+File.separator+"AirlineProblem.class";
+        filenames(2) = testProject+File.separator+"cmdsnake"+File.separator+"Direction.class";
+        filenames(3) = testProject+File.separator+"cmdsnake"+File.separator+"Pair.class";
+        filenames(4) = testProject+File.separator+"cmdsnake"+File.separator+"Snake.class";
 
         post("/context/class", write(filenames)) {
             status should equal (200)
-            body should  include ("Test")
+            body should ( include ("\"fqn\":\"Test\"") and include ("\"fqn\":\"cmdsnake/Pair\"") )
         }
     }
 }
