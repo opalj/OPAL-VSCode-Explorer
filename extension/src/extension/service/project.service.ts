@@ -81,7 +81,7 @@ export class ProjectService {
     async getOPALLoadMessage(config : Object)   {
         var projectId = this._projectId;
         var targets = this._classDAO.getFSpaths();
-        var libraries = this._libraries;
+        var libraries = await this.getLibrariesInWorkspace();
         return {
             "projectId" : projectId,
             "targets" : targets,
@@ -102,6 +102,16 @@ export class ProjectService {
             "target" : target,
             "config" : config
         };
+    }
+
+
+    async getLibrariesInWorkspace() : Promise<string[]> {
+        let jarURIs = await workspace.findFiles("**/*.jar");
+        let paths : string[] = new Array();
+        jarURIs.forEach(jarURI => {
+            paths.push(jarURI.fsPath);
+        });
+        return paths;
     }
 
     /**
