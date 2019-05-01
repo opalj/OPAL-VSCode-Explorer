@@ -38,6 +38,7 @@ import org.opalj.tac.fpcf.analyses.TACAITransformer
 import org.opalj.br.fpcf.cg.properties.CallersProperty
 import java.nio.charset.CodingErrorAction
 import scala.io.Codec
+import org.opalj.bi.AccessFlags
 
 
 /**
@@ -130,14 +131,20 @@ class OPALProject(opalInit : OpalInit) {
      **/
     def getTacForClass(tacForClass : TACForClass) : String = {
         val tacAI = project.get(LazyDetachedTACAIKey)
-        var res = tacForClass.fqn +".class\n"
-        res += "--------------------------------------------------------\n";
-        //var cf = project.allClassFiles.find(_.fqn == tacForClass.fqn);
-        val cf = project.classFile(ObjectType(tacForClass.fqn.replace('.', '/')))
         
+        val cf = project.classFile(ObjectType(tacForClass.fqn.replace('.', '/')))
+        var res = ""
         if (cf.isEmpty) {
             res = "Class File for fqn = "+tacForClass.fqn+" not found!";
-        } else {
+        } else {           
+            val superClass = cf.get.superclassType.get.toJava
+            var access = AccessFlags.classFlagsToJava(cf.get.accessFlags)
+            var jdkVersion =  org.opalj.bi.jdkVersion(cf.get.majorVersion)
+            
+            res += access +" "+ tacForClass.fqn + " extends " + superClass +"\n"
+            res += s"Version: $jdkVersion\n"
+            res += "--------------------------------------------------------\n";
+
             cf.get.methods.foreach({
                 m =>
                 if (!m.isFinal && !m.isAbstract) {
