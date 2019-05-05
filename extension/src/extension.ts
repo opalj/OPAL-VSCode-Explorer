@@ -363,6 +363,19 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   /**
+   * Left click on a class File should open the BC of the Class
+   * Since this is not easily possible out of the box we use this little hack
+   */
+  vscode.window.onDidChangeVisibleTextEditors(async (event) => {
+    event = event.filter((event) => {
+      return event.document.uri.fsPath.includes(".class");
+    });
+    if (event !== undefined && event.length > 0) {
+      await vscode.commands.executeCommand("extension.menuBC", event[0].document.uri);
+    }
+  });
+
+  /**
    * Setting up and displaying Opal Tree View
    */
   const packageViewProvider = new PackageViewProvider(classDAO);
@@ -385,7 +398,7 @@ export async function activate(context: vscode.ExtensionContext) {
     menuTacDetached
   );
 
-  vscode.window.showInformationMessage("Java Bytecode Workbench is ready for action");
+  vscode.window.showInformationMessage("Java Bytecode Workbench is ready.");
 }
 
 // this method is called when your extension is deactivated
