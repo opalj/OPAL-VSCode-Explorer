@@ -14,7 +14,7 @@ suite("OPAL Initialization Test Suit", function () {
         let projectService = new ProjectService(serverUrl, "/bla/projects/projectX", classDAO);
         var message = {
 			"projectId": "/bla/projects/projectX",
-			"targets":["C:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\dummy\\Test.class"],
+			"targets":["./../../../dummy/Test.class"],
             "libraries": [],
             "config" : {}
 		};
@@ -50,9 +50,9 @@ suite("OPAL Initialization Test Suit", function () {
         let contextService = new ContextService("");
         let classDAO = new ClassDAO(contextService);
         var projectService = new ProjectService(serverUrl, "/bla/projects/projectX", classDAO);
-        projectService.addLibraries("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\").then(function () {
+        projectService.addLibraries("./../../../server/lib/").then(function () {
             done();
-            expect(projectService.libraries).to.equal("c:\\Users\\Alexander\\Documents\\asep\\vscode_plugin\\opal-vscode-explorer\\server\\lib\\");
+            expect(projectService.libraries).to.equal("./../../../server/lib/common_2.12.jar");
         });
     });
 });
