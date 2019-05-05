@@ -147,6 +147,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * ################# Load Project #######################
    * ######################################################
    */
+  let projectIsLoaded = false;
   let loadProjectCommand = vscode.commands.registerCommand(
     "extension.loadProject",
     async () => {
@@ -160,10 +161,15 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       /**
+       * @todo: check if Project is already loaded
+       */
+      if (projectIsLoaded) {
+        return;
+      }
+
+      /**
        *  Load Project in to OPAL
        */ 
-      // get project Service
-      var projectLoaded = false;
       // get opal init message
       var opalLoadMessage = await projectService.getOPALLoadMessage(
         {
@@ -179,7 +185,7 @@ export async function activate(context: vscode.ExtensionContext) {
           myStatusBarItem.text = response;
           myStatusBarItem.show();
           vscode.window.showInformationMessage(response);
-          projectLoaded = true;
+          projectIsLoaded = true;
         }
       });
 
@@ -189,7 +195,7 @@ export async function activate(context: vscode.ExtensionContext) {
       const outputChannel = vscode.window.createOutputChannel("OPAL");
       // get logging while opal is loading the project
       var oldLog = "";
-      while (!projectLoaded) {
+      while (!projectIsLoaded) {
         await delay(100);
         // show the logs in the status bar
         var log = await projectService.requestLOG(logMessage);
@@ -310,6 +316,7 @@ export async function activate(context: vscode.ExtensionContext) {
         {}
       );
 
+
       // And set its HTML content
       panel.webview.html = bcHTML;
     }
@@ -366,12 +373,9 @@ export async function activate(context: vscode.ExtensionContext) {
    * Left click on a class File should open the BC of the Class
    * Since this is not easily possible out of the box we use this little hack
    */
-  vscode.window.onDidChangeVisibleTextEditors(async (event) => {
-    event = event.filter((event) => {
-      return event.document.uri.fsPath.includes(".class");
-    });
-    if (event !== undefined && event.length > 0) {
-      await vscode.commands.executeCommand("extension.menuBC", event[0].document.uri);
+  vscode.workspace.onDidOpenTextDocument(async (document : vscode.TextDocument) => {
+    if (document.languageId === "class") {
+      await vscode.commands.executeCommand("extension.menuBC", document.uri);
     }
   });
 

@@ -36,7 +36,7 @@ integrations:
         - alexandergoessl@web.de
       sendFailingSnippet: true
       on_success: change
-      on_failure: change
+      on_failure: always
       on_cancel: never
       on_start: never
       on_pull_request: always
