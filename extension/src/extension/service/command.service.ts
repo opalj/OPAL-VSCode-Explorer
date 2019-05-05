@@ -33,7 +33,7 @@ export class CommandService {
         await vscode.commands.executeCommand("extension.loadProject");
         this.options.body = tacForClassMessage;
         this.options.uri = this.serverUrl + "/opal/project/tac/class";
-        //Promise for sending classpath
+        //Promise for sending classPath
         return request.post(this.options);
     }
 
@@ -42,7 +42,7 @@ export class CommandService {
      * The load Project Command is called every time method is called
      * The Server will not load the Project twice
      * @param command the command for opal
-     * @param params the params required for the comamnd
+     * @param params the params required for the Command
      * @param projectId the ID of the Project
      */
     loadAnyCommand(command: String, projectId : string, params: any) {

@@ -24,9 +24,7 @@ export class ProjectService {
 
     protected serverUrl = "";
     protected _projectId = "";
-
     protected _libraries : Uri[] = [];
-
     protected _classDAO : ClassDAO;
 
     /**
@@ -52,8 +50,8 @@ export class ProjectService {
     async load(loadProjectMessage : any) {
         this.options.body = loadProjectMessage;
         this.options.uri = this.serverUrl + "/opal/project/load";
+        console.log(this.options);
         console.log(loadProjectMessage);
-        //Promise for sending classpath
         return request.post(this.options);
     }
 
@@ -63,7 +61,7 @@ export class ProjectService {
 
     /**
      * Requesting Logs from OPAL
-     * While OPAL is doing stuff it will create Logs that can be retrived with this method
+     * While OPAL is doing stuff it will create Logs that can be retrieved with this method
      * @param loadProjectMessage Message for getting the OPAL Logs
      */
     async requestLOG(config : any) {
@@ -80,7 +78,7 @@ export class ProjectService {
      */
     async getOPALLoadMessage(config : Object)   {
         var projectId = this._projectId;
-        var targets = this._classDAO.getFSpaths();
+        var targets = this._classDAO.getFsPaths();
         var libraries = await this.getLibrariesInWorkspace();
         return {
             "projectId" : projectId,
@@ -116,12 +114,12 @@ export class ProjectService {
 
     /**
      * Get all jar files in the libraries dir paths
-     * @param librariesDirPaths Paths to the folder which contains libraries
+     * @param librariesDirPaths Paths to the folder which contains libraries 
      */
     async addLibraries(librariesDirPaths : string) {
         let libFolders = [];
         libFolders = librariesDirPaths.split(";");
-        var librariePaths = [];
+        var libraryPaths = [];
 
         //for every folder containing libraries
         for(let i = 0; i < libFolders.length; i++){
@@ -130,7 +128,7 @@ export class ProjectService {
             for(let j = 0; j < files.length; j++){
                 //and check for .jars to add them
                 if(files[j].includes(".jar")){
-                    librariePaths.push(libFolders[i]+"/"+files[j]);
+                    libraryPaths.push(libFolders[i]+"/"+files[j]);
                     console.log("Added Library "+files[j]+" from folder "+libFolders[i]);
                 }
             }

@@ -35,7 +35,7 @@ export default class ClassDAO {
         }
     }
 
-    public getFSpaths() : string[] {
+    public getFsPaths() : string[] {
         let res : string[] = [];
         ClassDAO._classes.forEach(classItem => {
             res.push(classItem.uri.fsPath);
