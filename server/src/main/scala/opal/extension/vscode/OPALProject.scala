@@ -144,11 +144,11 @@ class OPALProject(opalInit : OpalInit) {
 
             cf.get.interfaceTypes.toList.foreach({
                 interface => 
-                interfaces += interface.fqn.mkString
+                interfaces += interface.fqn.replace('/', '.')
             })
             
             res += s"Version: $jdkVersion\n"
-            res += access +" "+ tacForClass.fqn + " extends " + superClass +" implements " + interfaces + " {\n"
+            res += access +" "+ tacForClass.fqn.replace('/', '.') + " extends " + superClass +" implements " + interfaces + " {\n"
             
             cf.get.methods.foreach({
                 m =>
