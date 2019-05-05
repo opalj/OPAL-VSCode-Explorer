@@ -138,13 +138,18 @@ class OPALProject(opalInit : OpalInit) {
             res = "Class File for fqn = "+tacForClass.fqn+" not found!";
         } else {           
             val superClass = cf.get.superclassType.get.toJava
-            var access = AccessFlags.classFlagsToJava(cf.get.accessFlags)
-            var jdkVersion =  org.opalj.bi.jdkVersion(cf.get.majorVersion)
-            
-            res += access +" "+ tacForClass.fqn + " extends " + superClass +"\n"
-            res += s"Version: $jdkVersion\n"
-            res += "--------------------------------------------------------\n";
+            val access = AccessFlags.classFlagsToJava(cf.get.accessFlags)
+            val jdkVersion =  org.opalj.bi.jdkVersion(cf.get.majorVersion)
+            var interfaces = "";
 
+            cf.get.interfaceTypes.toList.foreach({
+                interface => 
+                interfaces += interface.fqn.mkString
+            })
+            
+            res += s"Version: $jdkVersion\n"
+            res += access +" "+ tacForClass.fqn + " extends " + superClass +" implements " + interfaces + " {\n"
+            
             cf.get.methods.foreach({
                 m =>
                 if (!m.isFinal && !m.isAbstract) {
