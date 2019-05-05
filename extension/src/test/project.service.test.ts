@@ -50,9 +50,9 @@ suite("OPAL Initialization Test Suit", function () {
         let contextService = new ContextService("");
         let classDAO = new ClassDAO(contextService);
         var projectService = new ProjectService(serverUrl, "/bla/projects/projectX", classDAO);
-        projectService.addLibraries("./../../../server/lib/").then(function () {
+        projectService.addLibraries("./../../../").then(function () {
             done();
-            expect(projectService.libraries).to.equal("./../../../server/lib/common_2.12.jar");
+            expect(projectService.libraries).to.equal("Test.jar");
         });
     });
 });
