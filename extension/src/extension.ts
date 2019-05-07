@@ -281,8 +281,8 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
   // an other variant of the TAC
-  let menuTacDetached = vscode.commands.registerCommand(
-    "extension.menuTacDetached",
+  let menuTacSsaLike = vscode.commands.registerCommand(
+    "extension.menuTacSsaLike",
     async (uri: vscode.Uri) => {
       /**
        * Get URI for a virtual TAC Document
@@ -417,7 +417,7 @@ export async function activate(context: vscode.ExtensionContext) {
     reloadProjectCommand,
     customCommand,
     myStatusBarItem,
-    menuTacDetached
+    menuTacSsaLike
   );
 
   vscode.window.showInformationMessage("Java Bytecode Workbench is ready.");

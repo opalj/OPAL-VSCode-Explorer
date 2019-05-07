@@ -23,6 +23,7 @@
     "onCommand:extension.customCommand",
     "onCommand:extension.tac",
     "onCommand:extension.menuTac",
+    "onCommand:extension.menuTacSsaLike",
     "onCommand:extension.menuJar",
     "onCommand:extension.menuBC",
     "onCommand:extension.menuSvg",
@@ -71,7 +72,7 @@
         "title": "Three-Address-Code Naive"
       },
       {
-        "command": "extension.menuTacDetached",
+        "command": "extension.menuTacSsaLike",
         "title": "Three-Address-Code SSA like"
       },
       {
@@ -171,7 +172,7 @@
           "group": "2_workspace"
         },
         {
-          "command": "extension.menuTacDetached",
+          "command": "extension.menuTacSsaLike",
           "when": "!explorerResourceIsFolder && resourceLangId == class",
           "group": "2_workspace"
         },
