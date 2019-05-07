@@ -19,20 +19,8 @@
 		"keywords": {
 			"patterns": [
 				{	
-					"name" : "token.error-token",
-					"match" : "\\b(if|goto)\\b \\d+"
-				},
-				{	
 					"name" : "keyword.others",
-					"match" : "\\b(return|void|static|throw|if|goto)\\b"
-				},
-				{	
-					"name" : "keyword.operator.new",
-					"match" : "\\b(new)\\b"
-				},
-				{	
-					"name" : "keyword.control",
-					"match" : "\\b(exception)\\b"
+					"match" : "\\b(return|void|static|throw|if|goto \\d*|public|init|class|new|extends|exception|implements|this)\\b"
 				},
 				{
 					"name" : "entity.name.function",
@@ -68,7 +56,11 @@
 				},
 				{
 					"name": "string.jade",
-					"match": "(\\d)*:/\\*pc=-?\\d+:\\*/"  
+					"match": "/\\*pc=-?\\d+:\\*/|\\{[a-z]*\\d*\\}"
+				},
+				{
+					"name": "keyword.others",
+					"match": "(\\d)*:"
 				}
 			]
 		}
