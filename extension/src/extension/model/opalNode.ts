@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
-//import OpalNodeProvider from "./opalNodeProvider";
+import { ClassFile, Method } from '../model/class.dao';
 
 /**
  * Class representing OpalNode
  */
-export class OpalNode extends vscode.TreeItem {
+export default class OpalNode extends vscode.TreeItem {
 
-	// private _classFile: vscode.Uri;
-	private _children: OpalNode[];
+	protected _children: OpalNode[];
 	private _parent: OpalNode | undefined;
 	
 
@@ -15,48 +14,28 @@ export class OpalNode extends vscode.TreeItem {
 	 * Constructor for OpalNode
 	 * @param label name label
 	 * @param collapsibleState	collapsibleState, Collapsed, Not or None 
-	 * @param classFile Uri of the class File
+	 * @param classFile Class File
 	 * @param type
 	 * @param command on-click command
 	 */
 	constructor(
 		public readonly label: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		public classFile: vscode.Uri,
+		public classFile: ClassFile,
 		public type: string,
 		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
 		this._children = [];
 		
-		/**
-		 * Setting contextValues and static Subnodes in
-		 * Depencency of data type
-		 */
 		if(this.type === "leaf"){
 			this.contextValue = "opalNodeClass";
 			this.setChildren([
-				new OpalNode("Three-Address-Code Naive", vscode.TreeItemCollapsibleState.None, classFile, "action",
-					{
-						command: 'extension.menuTac',
-						title: '',
-						arguments: [classFile]
-					}
-				),
-				new OpalNode("Three-Address-Code SSA like", vscode.TreeItemCollapsibleState.None, classFile, "action",
-				{
-					command: 'extension.menuTacDetached',
-					title: '',
-					arguments: [classFile]
-				}),
-				new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, classFile, "action",
-				{
-					command: 'extension.menuBC',
-					title: '',
-					arguments: [classFile]
-				}
-			),	
+				this.getTacNaiveLeaf(classFile),
+				this.getTacSsaLike(classFile),
+				this.getBytecode(classFile),	
 			]);
+			this.addMethods(classFile.methods);
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
@@ -66,16 +45,11 @@ export class OpalNode extends vscode.TreeItem {
 		}
 	}
 
-	/** 
-	iconPath = {
-		light: "assets/expicon.svg",
-		dark: "assets/expicon.svg"
-	};*/
 
 	/**
 	 * get name/label node
 	 */
-	public getName() : string{
+	public getLabel() : string{
 		return this.label;
 	}
 
@@ -83,7 +57,7 @@ export class OpalNode extends vscode.TreeItem {
 	 * set name/label of node
 	 * @param name new name/label
 	 */
-	public setName(name : string) {
+	public setLabel(name : string) {
 		super.label = name;
 		if(this.label.includes("class") || this.label.includes(".classpath")){
 			this.contextValue = "opalNodeFile";
@@ -96,7 +70,7 @@ export class OpalNode extends vscode.TreeItem {
 	 * method to get path of node data
 	 */
 	public getPath() : string{
-		return this.classFile.fsPath;
+		return this.classFile.uri.fsPath;
 	}
 
 	/**
@@ -143,5 +117,42 @@ export class OpalNode extends vscode.TreeItem {
 		} else {
 			return true;
 		}
+	}
+
+	getTacNaiveLeaf(classFile: ClassFile) {
+		return new OpalNode("Three-Address-Code Naive", vscode.TreeItemCollapsibleState.None, classFile, "action",
+		{
+				command: 'extension.menuTac',
+				title: '',
+				arguments: [classFile.uri]
+			}
+		);
+	}
+
+	getTacSsaLike(classFile : ClassFile) {
+		return new OpalNode("Three-Address-Code SSA like", vscode.TreeItemCollapsibleState.None, classFile, "action",
+		{
+			command: 'extension.menuTacSsaLike',
+			title: '',
+			arguments: [classFile.uri]
+		});
+	}
+
+	getBytecode(classFile : ClassFile) {
+		return new OpalNode("Bytecode", vscode.TreeItemCollapsibleState.None, classFile, "action",
+		{
+			command: 'extension.menuBC',
+			title: '',
+			arguments: [classFile.uri]
+		});
+	}
+
+	addMethods(methods : Method[] | undefined) {
+		if (methods !== undefined) {
+			methods.forEach(method => {
+				let methodNode = new OpalNode(method, vscode.TreeItemCollapsibleState.None, this.classFile, "action");
+				this.addChildren(methodNode);
+			});
+		}		
 	}
 }

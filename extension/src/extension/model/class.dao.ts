@@ -10,7 +10,7 @@ export interface ClassFile {
     fqn : string;
 }
 
-interface Method {
+export interface Method {
     name : string;
     descriptor : string;
 }

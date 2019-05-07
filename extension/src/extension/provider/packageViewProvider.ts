@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import { OpalNode } from "./opalNode";
+import OpalNode from "./../model/opalNode";
+import RootNode from "./../model/rootNode";
 
 import ClassDAO, { ClassFile }  from '../model/class.dao';
+import { TreeItem } from 'vscode';
 
 //dirTree for recursively reading directories and its contents
 //const dirTree = require("directory-tree");
@@ -14,7 +16,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	private _onDidChangeTreeData: vscode.EventEmitter<OpalNode | undefined> = new vscode.EventEmitter<OpalNode | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<OpalNode | undefined> = this._onDidChangeTreeData.event;
 	
-	private _treeRoot: OpalNode;
+	private _treeRoot: TreeItem;
 	public targetsRoot : string = "";
 	private _classDAO : ClassDAO;
 
@@ -23,7 +25,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 */
 	constructor(classDAO : ClassDAO) {
 		this._classDAO = classDAO;
-		this._treeRoot = new OpalNode("No classes found!", vscode.TreeItemCollapsibleState.None, vscode.Uri.parse("file://root.opal"), "");
+		this._treeRoot = new RootNode();
 	}
 
 	/**
@@ -37,7 +39,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	/**
 	 * method for getting tree root item
 	 */
-	public getTreeRoot(): OpalNode {
+	public getTreeRoot(): TreeItem {
 		return this._treeRoot;
 	}
 
@@ -63,7 +65,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 		} else {
 			let p = this.setOpalNodeTree(this._classDAO.classes);
 			if(p){
-				return Promise.resolve(p.getChildren());
+				return Promise.resolve((p as OpalNode).getChildren());
 			} else {
 				return Promise.resolve([]);
 			}
@@ -82,8 +84,8 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 * Set OpalNodes for Subtree of root path
 	 * @param root root path
 	 */
-	public setOpalNodeTree(classes : ClassFile[])  : OpalNode  {
-		let rootNode = new OpalNode("Project", vscode.TreeItemCollapsibleState.None, vscode.Uri.parse("file://root.opal"), "");
+	public setOpalNodeTree(classes : ClassFile[])  : TreeItem  {
+		let rootNode = new RootNode();
 		if (classes.length === 0) {
 			vscode.window.showErrorMessage("No classes found!");
 			return rootNode;
@@ -95,19 +97,19 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 			let fqnParts = target.fqn.split("/");
 			
 			fqnParts.forEach(fqnPart => {
-				this.addNode(this._treeRoot, fqnParts, target.uri, 0);
+				this.addNode(this._treeRoot, fqnParts, target, 0);
 			});			
 		});
 		return this._treeRoot;
 	}
 
 	private searchNode(root : OpalNode, label : string) : OpalNode | null {
-		if (root.getName() === label) {
+		if (root.label === label) {
 			return root;
 		} else {
 			let foundNode = null;
-			root.getChildren().forEach(child => {
-				if (child.getName() === label) {
+			root.getChildren().forEach((child: TreeItem) => {
+				if (child.label === label) {
 					foundNode = child;
 				}
 			});
@@ -115,8 +117,8 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 		}
 	}
 
-	private addNode(opalNode : OpalNode, fqnParts : string[], classFile : vscode.Uri, i : number) {
-		var parent = this.searchNode(opalNode, fqnParts[i]);
+	private addNode(opalNode : TreeItem, fqnParts : string[], classFile : ClassFile, i : number) {
+		var parent = this.searchNode(opalNode as OpalNode, fqnParts[i]);
 		if (parent !== null) {
 			// this is a grantParent of the node we try to add
 			i = i+1;
@@ -127,7 +129,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 			if (fqnParts[i] !== undefined) {
 				let type = i === fqnParts.length-1 ? "leaf" : "node";
 				let newNode = new OpalNode(fqnParts[i], vscode.TreeItemCollapsibleState.Collapsed, classFile, type);
-				opalNode.addChildren(newNode);
+				(opalNode as OpalNode).addChildren(newNode);
 			}
 		}
 	}
