@@ -299,26 +299,38 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let openedBCs : vscode.WebviewPanel[] = new Array();
   //menu-command to get bc from .class  
   let menuBCCommand = vscode.commands.registerCommand(
     "extension.menuBC",
     async (uri: vscode.Uri) => {
-      await vscode.commands.executeCommand("extension.loadProject");
-      let classItem = classDAO.getClassForURI(uri);
-      let commandService = new CommandService(serverURL);
-      let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
-      let fileName = npmPath.parse(uri.fsPath).base;
-
-      const panel = vscode.window.createWebviewPanel(
-        "Byte-Code-HTML",
-        fileName+".bc",
-        vscode.ViewColumn.One,
-        {}
-      );
-
-
-      // And set its HTML content
-      panel.webview.html = bcHTML;
+      let fileName = npmPath.parse(uri.fsPath).base+".bc";
+      let openedBC = openedBCs.find(openedBC => openedBC.title === fileName);
+      if (openedBC !== undefined) { // bc is already opened
+        // show already opened bc
+        openedBC.reveal();
+      } else {
+        await vscode.commands.executeCommand("extension.loadProject");
+        let classItem = classDAO.getClassForURI(uri);
+        let commandService = new CommandService(serverURL);
+        let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
+        
+        // create a new web view panel
+        const panel = vscode.window.createWebviewPanel(
+          "Byte-Code-HTML",
+          fileName,
+          vscode.ViewColumn.One,
+          {}
+        );
+        panel.onDidDispose((event) => {
+          openedBCs.splice(openedBCs.indexOf(panel), 1);
+        });
+        // and set content to it 
+        panel.webview.html = bcHTML;
+        
+        // add it to the opened byte code panels
+        openedBCs.push(panel);
+      }
     }
   );
 
@@ -370,11 +382,16 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   /**
+   * Open .class File
+   *
    * Left click on a class File should open the BC of the Class
    * Since this is not easily possible out of the box we use this little hack
    */
   vscode.workspace.onDidOpenTextDocument(async (document : vscode.TextDocument) => {
     if (document.languageId === "class") {
+      // if a class file is opened close it
+      await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
+      // open the Bytecode for this class file
       await vscode.commands.executeCommand("extension.menuBC", document.uri);
     }
   });

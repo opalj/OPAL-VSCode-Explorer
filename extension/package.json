@@ -80,7 +80,7 @@
       },
       {
         "command": "extension.menuBC",
-        "title": "Bytecode ..."
+        "title": "Bytecode"
       },
       {
         "command": "extension.menuLibDir",
