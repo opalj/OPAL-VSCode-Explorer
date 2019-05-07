@@ -148,8 +148,13 @@ class OPALProject(opalInit : OpalInit) {
             })
             
             res += s"Version: $jdkVersion\n"
-            res += access +" "+ tacForClass.fqn.replace('/', '.') + " extends " + superClass +" implements " + interfaces + " {\n"
+            res += access +" "+ tacForClass.fqn.replace('/', '.') + " extends " + superClass
             
+            if (interfaces != "") {
+                res += " implements " + interfaces
+            }
+            res += " {\n"
+
             cf.get.methods.foreach({
                 m =>
                 if (!m.isFinal && !m.isAbstract) {
