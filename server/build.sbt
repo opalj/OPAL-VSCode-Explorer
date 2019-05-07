@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
   )
 
 resolvers += Classpaths.typesafeReleases
+updateOptions := updateOptions.value.withLatestSnapshots(false)
 
 val ScalatraVersion = "2.6.4"
 libraryDependencies ++= Seq(
@@ -32,7 +33,7 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-text" % "1.6"  % "runtime",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1"  % "runtime",
   "it.unimi.dsi" % "fastutil" % "8.2.2" % "runtime",
-  "de.opal-project" %% "opal-developer-tools" % "3.0.0-SNAPSHOT" withJavadoc() withSources()
+  //"de.opal-project" %% "opal-developer-tools" % "3.0.0-SNAPSHOT" withJavadoc() withSources()
 
 )
 enablePlugins(SbtTwirl)
