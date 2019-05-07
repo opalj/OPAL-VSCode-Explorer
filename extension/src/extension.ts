@@ -220,6 +220,7 @@ export async function activate(context: vscode.ExtensionContext) {
     "extension.reloadProjectCommand",
     async () => {
       await projectService.unLoad();
+      projectIsLoaded = false;
       await vscode.commands.executeCommand("extension.loadProject");
     }
   );
