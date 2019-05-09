@@ -30,10 +30,10 @@ build:
         - "export DISPLAY=:99.0"
         - xvfb-run --server-args="-ac" npm test
         - cd ..
-    cd:
+      on_success:
         - cp './server/target/scala-2.12/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar' ./extension/
         - vsce package
-#        - curl -X POST "https://alexgssl1337:$PW@api.bitbucket.org/2.0/repositories/delors/opal-vscode-explorer/downloads" --form files=@"./java-bytecode-workbench-0.1.17.vsix"
+        - curl -X POST "https://alexgssl1337:$PW@api.bitbucket.org/2.0/repositories/delors/opal-vscode-explorer/downloads" --form files=@"./java-bytecode-workbench-0.1.17.vsix"
 integrations:
   notifications:
     - integrationName: email
