@@ -335,6 +335,31 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let openWorkbenchCommand = vscode.commands.registerCommand("extension.openWorkbenchCommand", async() => {
+    let extensionPath = ""+context.extensionPath;
+    let uri = vscode.Uri.file(extensionPath+"/src/extension/webview/index.html");
+    console.log(uri);
+
+    vscode.workspace.openTextDocument(uri).then((document) => {
+      let html = document.getText();
+      // create a new web view panel
+      const panel = vscode.window.createWebviewPanel(
+        "Workbench",
+        "Workbench",
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+          localResourceRoots : [vscode.Uri.file(extensionPath+"/src/extension/webview/test.html")]
+        }
+      );
+      panel.webview.html = html;
+      panel.webview.onDidReceiveMessage(message => {
+        vscode.window.showErrorMessage(message.command + message.text);
+      });
+    });
+  });
+  vscode.commands.executeCommand("extension.openWorkbenchCommand");
+
   //menu-command to extract jar file
   let menuJarCommand = vscode.commands.registerCommand(
     "extension.menuJar",
@@ -417,7 +442,8 @@ export async function activate(context: vscode.ExtensionContext) {
     reloadProjectCommand,
     customCommand,
     myStatusBarItem,
-    menuTacSsaLike
+    menuTacSsaLike,
+    openWorkbenchCommand
   );
 
   vscode.window.showInformationMessage("Java Bytecode Workbench is ready.");

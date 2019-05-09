@@ -64,6 +64,10 @@
     },
     "commands": [
       {
+        "command": "extension.openWorkbenchCommand",
+        "title": "open workbench"
+      },
+      {
         "command": "extension.customCommand",
         "title": "opal-custom"
       },
