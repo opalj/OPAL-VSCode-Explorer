@@ -7,6 +7,7 @@ import { encodeLocation } from './extension/provider/abstract.provider';
 import ClassDAO, { ClassFile } from "./extension/model/class.dao";
 import ContextService from "./extension/service/context.service";
 import { CommandService } from "./extension/service/command.service";
+import OpalNode from "./extension/model/opalNode";
 
 const fs = require('file-system');
 const isReachable = require("is-reachable");
@@ -22,6 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * The Project ID is the fs Path to the Project
    */
   var projectId = await getProjectId();
+  const extensionPath = context.extensionPath;
 
   /**
    * Setup and get the Config
@@ -400,6 +402,7 @@ export async function activate(context: vscode.ExtensionContext) {
   /**
    * Setting up and displaying Opal Tree View
    */
+  OpalNode.extensionPath = extensionPath;
   const packageViewProvider = new PackageViewProvider(classDAO);
   packageViewProvider.refresh();
   

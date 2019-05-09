@@ -1,15 +1,21 @@
 import * as vscode from 'vscode';
 import { ClassFile, Method } from '../model/class.dao';
+import * as path from 'path';
 
 /**
  * Class representing OpalNode
  */
 export default class OpalNode extends vscode.TreeItem {
 
-
 	protected _children: OpalNode[];
 	private _parent: OpalNode | undefined;
-	
+
+	static extensionPath : String = "";
+
+	iconPath = {
+		light: "",
+		dark: ""
+	};
 
 	/**
 	 * Constructor for OpalNode
@@ -31,6 +37,10 @@ export default class OpalNode extends vscode.TreeItem {
 		
 		if(this.type === "leaf"){
 			this.contextValue = "opalNodeClass";
+			this.iconPath = {
+				light: path.join(OpalNode.extensionPath+'/resources/light/file_type_class.svg'),
+				dark: path.join(OpalNode.extensionPath+'/resources/dark/file_type_class.svg')
+			};
 			this.setChildren([
 				this.getTacNaiveLeaf(classFile),
 				this.getTacSsaLike(classFile),
@@ -38,12 +48,27 @@ export default class OpalNode extends vscode.TreeItem {
 			]);
 			this.addMethods(classFile.methods, classFile);
 			this.addFields({}, classFile);
-		} else if(label=== "Three-Address-Code"){
+		} else if(label === "Three-Address-Code Naive" || label === "Three-Address-Code SSA like"){
 			this.contextValue = "opalNodeTac";
+			this.iconPath = {
+				light: path.join(OpalNode.extensionPath+'/resources/light/file_type_binary.svg'),
+				dark: path.join(OpalNode.extensionPath+'/resources/dark/file_type_binary.svg')
+			};
 		} else if(label === "Bytecode"){
 			this.contextValue = "opalNodeBC";
-		} else {
+			this.iconPath = {
+				light: path.join(OpalNode.extensionPath+'/resources/light/file_type_binary.svg'),
+				dark: path.join(OpalNode.extensionPath+'/resources/dark/file_type_binary.svg')
+			};
+		} else if (label === "Methods" || label === "Fields") {
+			// something will be added here
+		}
+		else  {
 			this.contextValue = "opalNodePackage";
+			this.iconPath = {
+				light: path.join(OpalNode.extensionPath+'/resources/light/dependency.svg'),
+				dark: path.join(OpalNode.extensionPath+'/resources/dark/dependency.svg')
+			};
 		}
 	}
 
@@ -108,6 +133,15 @@ export default class OpalNode extends vscode.TreeItem {
 	public setParent(parent : OpalNode) {
 		this._parent = parent;
 	}
+
+	/*
+	iconPath = {
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'folder.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'folder.svg')
+	};
+	*/
+
+
 
 	/**
 	 * method to get status of children nodes:
