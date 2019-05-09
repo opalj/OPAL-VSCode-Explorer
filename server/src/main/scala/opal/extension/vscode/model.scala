@@ -39,6 +39,11 @@ case class Log(projectId: String, target: String, config: Map[String, String]);
 case class OpalCommand(projectId: String, command: String, params: Map[String, String]);
 
 /**
- * Getting the context from all classes
+ * Context information of a .class File
  **/
-case class ClassContext(path : String, infos: scala.collection.mutable.Map[String, String]);
+case class ClassContext(path : String, fqn : String, methods : Array[MethodContext]);
+
+/**
+ * Information about a Method
+ **/
+case class MethodContext(name : String, descriptor : String, accessFlag : Int, toJava : String)

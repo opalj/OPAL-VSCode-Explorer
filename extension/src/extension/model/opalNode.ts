@@ -35,7 +35,7 @@ export default class OpalNode extends vscode.TreeItem {
 				this.getTacSsaLike(classFile),
 				this.getBytecode(classFile),	
 			]);
-			this.addMethods(classFile.methods);
+			this.addMethods(classFile.methods, classFile);
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
@@ -147,12 +147,14 @@ export default class OpalNode extends vscode.TreeItem {
 		});
 	}
 
-	addMethods(methods : Method[] | undefined) {
+	addMethods(methods : Method[] | undefined, classFile : ClassFile) {
+		let methodRoot = new OpalNode("Methods", vscode.TreeItemCollapsibleState.Collapsed, classFile, "action");
 		if (methods !== undefined) {
 			methods.forEach(method => {
-				let methodNode = new OpalNode(method, vscode.TreeItemCollapsibleState.None, this.classFile, "action");
-				this.addChildren(methodNode);
+				let methodNode = new OpalNode(method.toJava, vscode.TreeItemCollapsibleState.None, this.classFile, "action");
+				methodRoot.addChildren(methodNode);
 			});
-		}		
+		}
+		this.addChildren(methodRoot);
 	}
 }

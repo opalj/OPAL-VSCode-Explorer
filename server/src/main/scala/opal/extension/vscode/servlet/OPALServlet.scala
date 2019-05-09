@@ -31,7 +31,7 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
     }
 
     /**
-     * Get Context Information for a class File
+     * Get Context Information for all class Files
      **/
     post("/context/class") {
         // path should be a string array
@@ -42,11 +42,15 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
             
             if (cf.length > 0) {
                 val methods = cf(0)._1.methods.filter(m => !m.isFinal);
-                var methodNames = Array[String]();
+                var methodsInfos = Array[MethodContext]();
                 methods.foreach(m => {
-                    methodNames = methodNames :+ m.descriptor.toJava.replace("MethodDescriptor", m.name)
+                    val descriptorMatcher = """MethodDescriptor\((.*),(.*)\)""".r
+                    val toJava = m.descriptor.toJava match {
+                        case descriptorMatcher(returnType, params) => s"$returnType ${m.name}$params"
+                    }
+                    methodsInfos = methodsInfos :+ new MethodContext(m.name, m.descriptor.toJava, m.accessFlags , toJava);
                 })
-                val context = new ClassContext(path, Map("fqn" -> cf(0)._1.fqn, "methods" -> write(methodNames)))
+                val context = new ClassContext(path, cf(0)._1.fqn, methodsInfos);
                 write(context)
             }
         })    

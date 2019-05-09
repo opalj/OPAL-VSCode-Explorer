@@ -13,6 +13,8 @@ export interface ClassFile {
 export interface Method {
     name : string;
     descriptor : string;
+    accessFlag : Number;
+    toJava : string;
 }
 
 export default class ClassDAO {
@@ -61,9 +63,7 @@ export default class ClassDAO {
             throw new Error("Can't get Class Name from "+fileName);
         }
 
-        let methods = JSON.parse(classContext.infos.methods);
-
-        let result : ClassFile = {"name" : className, "uri" : Uri.file(classContext.path), "fqn" : classContext.infos.fqn, "methods" : methods};
+        let result : ClassFile = {"name" : className, "uri" : Uri.file(classContext.path), "fqn" : classContext.fqn, "methods" : classContext.methods};
         ClassDAO._classes.push(result);
     }
 
