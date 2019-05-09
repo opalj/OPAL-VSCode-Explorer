@@ -32,6 +32,7 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
 
     /**
      * Get Context Information for all class Files
+     * @param Array of Paths to the class Files 
      **/
     post("/context/class") {
         // path should be a string array
@@ -50,7 +51,14 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
                     }
                     methodsInfos = methodsInfos :+ new MethodContext(m.name, m.descriptor.toJava, m.accessFlags , toJava);
                 })
-                val context = new ClassContext(path, cf(0)._1.fqn, methodsInfos);
+
+                var attributes = Array[String]();
+                cf(0)._1.attributes.foreach(attribute =>{
+                    attributes = attributes :+ attribute.toString()
+                    attribute.formatted("")
+                })
+
+                val context = new ClassContext(path, cf(0)._1.fqn, methodsInfos, attributes);
                 write(context)
             }
         })    

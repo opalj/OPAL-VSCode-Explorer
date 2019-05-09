@@ -41,7 +41,7 @@ case class OpalCommand(projectId: String, command: String, params: Map[String, S
 /**
  * Context information of a .class File
  **/
-case class ClassContext(path : String, fqn : String, methods : Array[MethodContext]);
+case class ClassContext(path : String, fqn : String, methods : Array[MethodContext], attributes : Array[String]);
 
 /**
  * Information about a Method

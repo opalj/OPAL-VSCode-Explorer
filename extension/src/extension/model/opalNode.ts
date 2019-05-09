@@ -6,6 +6,7 @@ import { ClassFile, Method } from '../model/class.dao';
  */
 export default class OpalNode extends vscode.TreeItem {
 
+
 	protected _children: OpalNode[];
 	private _parent: OpalNode | undefined;
 	
@@ -36,6 +37,7 @@ export default class OpalNode extends vscode.TreeItem {
 				this.getBytecode(classFile),	
 			]);
 			this.addMethods(classFile.methods, classFile);
+			this.addFields({}, classFile);
 		} else if(label=== "Three-Address-Code"){
 			this.contextValue = "opalNodeTac";
 		} else if(label === "Bytecode"){
@@ -156,5 +158,11 @@ export default class OpalNode extends vscode.TreeItem {
 			});
 		}
 		this.addChildren(methodRoot);
+	}
+
+	addFields(arg0: {}, classFile: ClassFile) {
+		let fieldsRoot = new OpalNode("Fields", vscode.TreeItemCollapsibleState.Collapsed, classFile, "action");
+		this.addChildren(fieldsRoot);
+		// not implemented!
 	}
 }
