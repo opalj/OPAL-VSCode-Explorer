@@ -3,7 +3,7 @@ language: none
 env:
   global:
     - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
-    - secure: gN1VqdHk/K4XiNCoz75M0LlWW2rt8BqT/ce5qTViCXrMR2MXsn71qVnY35dBVyr66K3DXRaymWLwBmGuSbOpbftOQX4FVAI2pstBdDWOKi5GMuKMXsbItJABhNnruSPAmlL6ucqJr8MsHSBOfFdExcyT0K0l8kRC6TVlAjhdize5Fly1ixY/KnVB3Yc1bsDUrzsHV8wG2uxjwK99JFPT/jEqFMkdHt59bNKpNRBsh7mDg84L9NdR/wfj4/hwoF219RHJsGJjCcM9yHnj2nTLo2JHrAJMPTCemjAa+qQWaRUp/Fqinuf6OZyiMiAkShjqTVxQIeczdvybrDEgFJMg6A==   
+    - secure: A6NC8VSXTXP4URXSw+99opjZw3B+BjXN/nZKDw85Kq0enE8+k8jr8nPXO6LE751aFLFfgW0El1j87bgUqEC5Tqxu61fW8HynWk0qoDv9RgIkkHqxBscIaw7bRw24Km9GDXggAUju5RnCqGXcTiMEWdBB3nWPynrh4e63dkr2mh45ijeRK72l8lCzT8Iu+Y/2/3JBqHmi7Bj/HtO/GSsZcl4PX4uXP9tNX1PXO0TdJ1+MZQrdwGxjCuagEHmz21YQxi/d+tcOwmgWYCmfvms0NzQB7vM8OGot8fymW6wuG3fG3gsrdtoZTzaFQ/HBe6pHLvHem2YRT4BsUjUqvKk28g== 
 
 build:
     pre_ci_boot:
