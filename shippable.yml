@@ -1,8 +1,9 @@
 language: none
 
 env:
-  - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
-  - secure: gN1VqdHk/K4XiNCoz75M0LlWW2rt8BqT/ce5qTViCXrMR2MXsn71qVnY35dBVyr66K3DXRaymWLwBmGuSbOpbftOQX4FVAI2pstBdDWOKi5GMuKMXsbItJABhNnruSPAmlL6ucqJr8MsHSBOfFdExcyT0K0l8kRC6TVlAjhdize5Fly1ixY/KnVB3Yc1bsDUrzsHV8wG2uxjwK99JFPT/jEqFMkdHt59bNKpNRBsh7mDg84L9NdR/wfj4/hwoF219RHJsGJjCcM9yHnj2nTLo2JHrAJMPTCemjAa+qQWaRUp/Fqinuf6OZyiMiAkShjqTVxQIeczdvybrDEgFJMg6A==   
+  global:
+    - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+    - secure: gN1VqdHk/K4XiNCoz75M0LlWW2rt8BqT/ce5qTViCXrMR2MXsn71qVnY35dBVyr66K3DXRaymWLwBmGuSbOpbftOQX4FVAI2pstBdDWOKi5GMuKMXsbItJABhNnruSPAmlL6ucqJr8MsHSBOfFdExcyT0K0l8kRC6TVlAjhdize5Fly1ixY/KnVB3Yc1bsDUrzsHV8wG2uxjwK99JFPT/jEqFMkdHt59bNKpNRBsh7mDg84L9NdR/wfj4/hwoF219RHJsGJjCcM9yHnj2nTLo2JHrAJMPTCemjAa+qQWaRUp/Fqinuf6OZyiMiAkShjqTVxQIeczdvybrDEgFJMg6A==   
 
 build:
     pre_ci_boot:
