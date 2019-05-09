@@ -338,10 +338,10 @@ export async function activate(context: vscode.ExtensionContext) {
   let openWorkbenchCommand = vscode.commands.registerCommand("extension.openWorkbenchCommand", async() => {
     let extensionPath = ""+context.extensionPath;
     let uri = vscode.Uri.file(extensionPath+"/src/extension/webview/index.html");
-    console.log(uri);
-
+    let onDiskPath = vscode.Uri.file(extensionPath+"src/extension/webview/like_button.js").with({ scheme: 'vscode-resource' });
+    console.log(onDiskPath);
     vscode.workspace.openTextDocument(uri).then((document) => {
-      let html = document.getText();
+      let html = document.getText().replace("%%extensionPath%%", extensionPath);
       // create a new web view panel
       const panel = vscode.window.createWebviewPanel(
         "Workbench",
@@ -349,7 +349,6 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.ViewColumn.One,
         {
           enableScripts: true,
-          localResourceRoots : [vscode.Uri.file(extensionPath+"/src/extension/webview/test.html")]
         }
       );
       panel.webview.html = html;
