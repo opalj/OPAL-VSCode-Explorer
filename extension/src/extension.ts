@@ -159,14 +159,18 @@ export async function activate(context: vscode.ExtensionContext) {
       );
       if (!jettyIsUp) {
         vscode.window.showErrorMessage("Server is not up!");
-        return;
+        return Promise.resolve();
       }
 
       if (projectIsLoaded) {
-        return;
-      } else {
-        vscode.window.showInformationMessage("Loading Project");
+        return Promise.resolve();
       }
+      vscode.window.showInformationMessage("Loading Project");
+        
+      // get output channel where we can show the opal logs
+      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      outputChannel.appendLine("Loading Project ...");
+      outputChannel.show();
 
       /**
        *  Load Project in to OPAL
@@ -193,8 +197,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
       // get log message
       var logMessage = await projectService.getLogMessage("init", {});
-      // get output channel where we can show the opal logs
-      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      
       // get logging while opal is loading the project
       var oldLog = "";
       while (!projectIsLoaded) {
@@ -339,6 +342,38 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let openWorkbenchCommand = vscode.commands.registerCommand("extension.openWorkbenchCommand", async(classFile : ClassFile) => {
+    let extensionPath = ""+context.extensionPath;
+    let uri = vscode.Uri.file(extensionPath+"/src/extension/webview/index.html");
+    // let onDiskPath = vscode.Uri.file(extensionPath+"src/extension/webview/like_button.js").with({ scheme: 'vscode-resource' });
+    // console.log(onDiskPath);
+    vscode.workspace.openTextDocument(uri).then((document) => {
+      let html = document.getText();
+      
+      // create a new web view panel
+      const panel = vscode.window.createWebviewPanel(
+        "Workbench",
+        "Workbench",
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+        }
+      );
+      panel.webview.html = html;
+      panel.webview.onDidReceiveMessage((event) => {
+        console.log(event);
+        vscode.commands.executeCommand(event.command, classFile.uri);
+      });
+      console.log(classFile);
+      panel.onDidChangeViewState((event) => {
+        if (panel.active) {
+          panel.webview.postMessage({ "classFile": classFile});
+        }
+      });
+      panel.webview.postMessage({ "classFile": classFile});
+    });
+  });
+
   //menu-command to extract jar file
   let menuJarCommand = vscode.commands.registerCommand(
     "extension.menuJar",
@@ -427,7 +462,8 @@ export async function activate(context: vscode.ExtensionContext) {
     reloadProjectCommand,
     customCommand,
     myStatusBarItem,
-    menuTacSsaLike
+    menuTacSsaLike,
+    openWorkbenchCommand
   );
 
   vscode.window.showInformationMessage("Java Bytecode Workbench is ready.");

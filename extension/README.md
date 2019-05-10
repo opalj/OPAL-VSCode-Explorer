@@ -1,4 +1,4 @@
-# opal-vscode-explorer README
+# Java Bytecode Workbench README
 
 ## Description
 

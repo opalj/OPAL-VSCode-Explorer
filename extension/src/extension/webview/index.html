@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+    const vscode = acquireVsCodeApi();
+    let data = null;
+
+    function showTAC() {
+      let variant = document.getElementById("TacVariant").value
+      
+      if (variant === "AI") {
+        vscode.postMessage({command:"extension.menuTac"});  
+      } else {
+        vscode.postMessage({command:"extension.menuTacSsaLike"});  
+      }
+    }
+
+    function showBC() {
+      vscode.postMessage({command:"extension.menuBC"});  
+    }
+    </script>
+  </head>
+  <body>
+    <h1 id="headline">Workbench</h1>
+    <div class="section">
+      <h2>Three-Address-Code</h2>
+      <label>Variants:</label>
+      <select name="TacVariant" id="TacVariant">
+        <option value="naive">Naive</option>
+        <option value="AI">AI</option>
+      </select>
+      <button onclick="showTAC()">open</button>
+    </div>
+    <div class="section">
+      <h2>Bytecode</h2>
+      <button onclick="showBC()">open</button>
+    </div>
+  </body>
+</html>
