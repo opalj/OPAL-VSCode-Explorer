@@ -159,11 +159,11 @@ export async function activate(context: vscode.ExtensionContext) {
       );
       if (!jettyIsUp) {
         vscode.window.showErrorMessage("Server is not up!");
-        return Promise.resolve();
+        return;
       }
 
       if (projectIsLoaded) {
-        return Promise.resolve();
+        return;
       }
       vscode.window.showInformationMessage("Loading Project");
         

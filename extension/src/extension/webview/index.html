@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <script>
     const vscode = acquireVsCodeApi();
-    let data = null;
 
     function showTAC() {
       let variant = document.getElementById("TacVariant").value
@@ -19,17 +18,53 @@
     function showBC() {
       vscode.postMessage({command:"extension.menuBC"});  
     }
+
+    window.addEventListener('message', event => {
+      let classFile = event.data.classFile;
+      document.getElementById("headline").innerHTML = classFile.name+".class Workbench";
+      
+      let methodSelect = document.getElementById("methods");
+      classFile.methods.forEach(method => {
+        let option = document.createElement("option");
+        option.text = method.name;
+        option.value = method.name;
+        methodSelect.add(option);
+      });
+    });
     </script>
+    <style>
+      h1 {
+        text-align: center;
+        border-bottom: 1px solid black;  
+      }
+    .section {
+      border-bottom: 1px solid black;
+      padding: 5px;
+      margin-bottom: 3px;
+    }
+    .section h2 {
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+    </style>
   </head>
   <body>
     <h1 id="headline">Workbench</h1>
     <div class="section">
       <h2>Three-Address-Code</h2>
-      <label>Variants:</label>
-      <select name="TacVariant" id="TacVariant">
-        <option value="naive">Naive</option>
-        <option value="AI">AI</option>
-      </select>
+      <p>
+        <label>variant:</label>
+        <select name="TacVariant" id="TacVariant">
+          <option value="naive">Naive</option>
+          <option value="AI">AI</option>
+        </select>
+      </p>
+      <p>
+        <label>Method:</label>
+        <select name="method" id="methods">
+          <option value="">--</option>
+        </select> 
+      </p>
       <button onclick="showTAC()">open</button>
     </div>
     <div class="section">
