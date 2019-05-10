@@ -157,15 +157,18 @@ export async function activate(context: vscode.ExtensionContext) {
       );
       if (!jettyIsUp) {
         vscode.window.showErrorMessage("Server is not up!");
-        return;
+        return Promise.resolve();
       }
 
       /**
        * @todo: check if Project is already loaded
        */
       if (projectIsLoaded) {
-        return;
+        return Promise.resolve();
       }
+      // get output channel where we can show the opal logs
+      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      outputChannel.appendLine("Loading Project ...");
 
       /**
        *  Load Project in to OPAL
@@ -191,8 +194,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
       // get log message
       var logMessage = await projectService.getLogMessage("init", {});
-      // get output channel where we can show the opal logs
-      const outputChannel = vscode.window.createOutputChannel("OPAL");
+      
       // get logging while opal is loading the project
       var oldLog = "";
       while (!projectIsLoaded) {
@@ -358,6 +360,11 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand(event.command, classFile.uri);
       });
       console.log(classFile);
+      panel.onDidChangeViewState((event) => {
+        if (panel.active) {
+          panel.webview.postMessage({ "classFile": classFile});
+        }
+      });
       panel.webview.postMessage({ "classFile": classFile});
     });
   });
