@@ -335,13 +335,14 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  let openWorkbenchCommand = vscode.commands.registerCommand("extension.openWorkbenchCommand", async() => {
+  let openWorkbenchCommand = vscode.commands.registerCommand("extension.openWorkbenchCommand", async(classFile : ClassFile) => {
     let extensionPath = ""+context.extensionPath;
     let uri = vscode.Uri.file(extensionPath+"/src/extension/webview/index.html");
-    let onDiskPath = vscode.Uri.file(extensionPath+"src/extension/webview/like_button.js").with({ scheme: 'vscode-resource' });
-    console.log(onDiskPath);
+    // let onDiskPath = vscode.Uri.file(extensionPath+"src/extension/webview/like_button.js").with({ scheme: 'vscode-resource' });
+    // console.log(onDiskPath);
     vscode.workspace.openTextDocument(uri).then((document) => {
-      let html = document.getText().replace("%%extensionPath%%", extensionPath);
+      let html = document.getText();
+      
       // create a new web view panel
       const panel = vscode.window.createWebviewPanel(
         "Workbench",
@@ -352,12 +353,14 @@ export async function activate(context: vscode.ExtensionContext) {
         }
       );
       panel.webview.html = html;
-      panel.webview.onDidReceiveMessage(message => {
-        vscode.window.showErrorMessage(message.command + message.text);
+      panel.webview.onDidReceiveMessage((event) => {
+        console.log(event);
+        vscode.commands.executeCommand(event.command, classFile.uri);
       });
+      console.log(classFile);
+      panel.webview.postMessage({ "classFile": classFile});
     });
   });
-  vscode.commands.executeCommand("extension.openWorkbenchCommand");
 
   //menu-command to extract jar file
   let menuJarCommand = vscode.commands.registerCommand(

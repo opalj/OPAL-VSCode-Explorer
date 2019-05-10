@@ -35,6 +35,7 @@ export default class OpalNode extends vscode.TreeItem {
 				this.getTacNaiveLeaf(classFile),
 				this.getTacSsaLike(classFile),
 				this.getBytecode(classFile),	
+				this.getOpenWorkbench(classFile)
 			]);
 			this.addMethods(classFile.methods, classFile);
 			this.addFields({}, classFile);
@@ -146,6 +147,15 @@ export default class OpalNode extends vscode.TreeItem {
 			command: 'extension.menuBC',
 			title: '',
 			arguments: [classFile.uri]
+		});
+	}
+
+	getOpenWorkbench(classFile : ClassFile) {
+		return new OpalNode("Workbench", vscode.TreeItemCollapsibleState.None, classFile, "action",
+		{
+			command: 'extension.openWorkbenchCommand',
+			title: '',
+			arguments: [classFile]
 		});
 	}
 

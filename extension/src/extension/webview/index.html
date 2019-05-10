@@ -2,25 +2,39 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Add React in One Minute</title>
+    <script>
+    const vscode = acquireVsCodeApi();
+    let data = null;
+
+    function showTAC() {
+      let variant = document.getElementById("TacVariant").value
+      
+      if (variant === "AI") {
+        vscode.postMessage({command:"extension.menuTac"});  
+      } else {
+        vscode.postMessage({command:"extension.menuTacSsaLike"});  
+      }
+    }
+
+    function showBC() {
+      vscode.postMessage({command:"extension.menuBC"});  
+    }
+    </script>
   </head>
   <body>
-
-    <h2>Add React in One Minute</h2>
-    <p>This page demonstrates using React with no build tooling.</p>
-    <p>React is loaded as a script tag.</p>
-
-    <!-- We will put our React component inside this div. -->
-    <div id="like_button_container"></div>
-
-    <!-- Load React. -->
-    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16/umd/react.development.js" ></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" ></script>
-
-    <!-- Load our React component. -->
-    <script src="vscode-resource:%%extensionPath%%/src/extension/webview/like_button.js" type="text/babel"></script>
-    <div id="like_button_container"></div>
+    <h1 id="headline">Workbench</h1>
+    <div class="section">
+      <h2>Three-Address-Code</h2>
+      <label>Variants:</label>
+      <select name="TacVariant" id="TacVariant">
+        <option value="naive">Naive</option>
+        <option value="AI">AI</option>
+      </select>
+      <button onclick="showTAC()">open</button>
+    </div>
+    <div class="section">
+      <h2>Bytecode</h2>
+      <button onclick="showBC()">open</button>
+    </div>
   </body>
 </html>
