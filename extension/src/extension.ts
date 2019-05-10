@@ -313,11 +313,6 @@ export async function activate(context: vscode.ExtensionContext) {
         // show already opened bc
         openedBC.reveal();
       } else {
-        await vscode.commands.executeCommand("extension.loadProject");
-        let classItem = classDAO.getClassForURI(uri);
-        let commandService = new CommandService(serverURL);
-        let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
-        
         // create a new web view panel
         const panel = vscode.window.createWebviewPanel(
           "Byte-Code-HTML",
@@ -325,6 +320,13 @@ export async function activate(context: vscode.ExtensionContext) {
           vscode.ViewColumn.One,
           {}
         );
+        panel.webview.html = "<h1>Loading Bytecode ...</h1>";
+        await vscode.commands.executeCommand("extension.loadProject");
+        let classItem = classDAO.getClassForURI(uri);
+        let commandService = new CommandService(serverURL);
+        let bcHTML = await commandService.loadAnyCommand("getBCForClassHTML", projectId, {"className" : classItem.fqn, "fileName": classItem.uri.fsPath});
+        
+
         panel.onDidDispose((event) => {
           openedBCs.splice(openedBCs.indexOf(panel), 1);
         });
@@ -398,6 +400,11 @@ export async function activate(context: vscode.ExtensionContext) {
       await vscode.commands.executeCommand("extension.menuBC", document.uri);
     }
   });
+
+  vscode.window.onDidChangeWindowState((event) => {
+    let active = vscode.window.activeTextEditor;
+    console.log(active);
+  });     
 
   /**
    * Setting up and displaying Opal Tree View
