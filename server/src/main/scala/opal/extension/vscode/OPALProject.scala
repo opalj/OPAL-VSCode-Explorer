@@ -142,18 +142,37 @@ class OPALProject(opalInit : OpalInit) {
             val jdkVersion =  org.opalj.bi.jdkVersion(cf.get.majorVersion)
             var interfaces = "";
 
-            cf.get.interfaceTypes.toList.foreach({
-                interface => 
-                interfaces += interface.fqn.replace('/', '.')
-            })
+
             
             res += s"Version: $jdkVersion\n"
-            res += access +" "+ tacForClass.fqn.replace('/', '.') + " extends " + superClass
-            
+            //res += s"Access: $access\n"
+            val fqn = tacForClass.fqn.replace('/', '.');
+            //res += s"Fully Qualified Name: $fqn\n"
+            res += s"Super Class: $superClass\n"
+            if (cf.get.interfaceTypes.toList.length > 0) {
+                cf.get.interfaceTypes.toList.foreach({
+                    interface => 
+                    interfaces += interface.fqn.replace('/', '.')
+                })
+                res += s"Interfaces: $interfaces\n"
+            }
+            res += access +" "+ tacForClass.fqn.replace('/', '.') + " {\n"
+            /*
             if (interfaces != "") {
                 res += " implements " + interfaces
             }
             res += " {\n"
+            */
+            if (cf.get.fields.length > 0) {
+                res += "Fields: \n"
+                cf.get.fields.foreach({
+                    field => 
+                    val fieldName = field.name
+                    val fieldType = field.fieldType
+                    res += "\t - "+field.name + " " + field.fieldType+"\n"
+                });
+                res += "\n"
+            }
 
             cf.get.methods.foreach({
                 m =>
@@ -171,7 +190,7 @@ class OPALProject(opalInit : OpalInit) {
                 }
             })
         }
-        res
+        res +"}"
     }
 
     /**
