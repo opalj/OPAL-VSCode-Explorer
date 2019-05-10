@@ -58,7 +58,17 @@ class OPALServlet extends ScalatraServlet  with JacksonJsonSupport   {
                     attribute.formatted("")
                 })
 
-                val context = new ClassContext(path, cf(0)._1.fqn, methodsInfos, attributes);
+                var fields = Array[String]();
+                if (cf(0)._1.fields.length > 0) {
+                    cf(0)._1.fields.foreach({
+                        field => 
+                        val fieldName = field.name
+                        val fieldType = field.fieldType
+                        fields = fields :+ field.name + " " + field.fieldType
+                    });
+                }
+
+                val context = new ClassContext(path, cf(0)._1.fqn, methodsInfos, attributes, fields);
                 write(context)
             }
         })    
