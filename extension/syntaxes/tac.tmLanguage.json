@@ -20,7 +20,7 @@
 			"patterns": [
 				{	
 					"name" : "keyword.others",
-					"match" : "\\b(return|void|static|throw|if|goto \\d*|public|init|class|new|extends|exception|implements|this)\\b"
+					"match" : "\\b(return|void|static|throw|if|goto \\d*|public|init|class|new|extends|exception|implements|this|main|clinit)\\b"
 				},
 				{
 					"name" : "entity.name.function",
