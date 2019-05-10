@@ -76,10 +76,10 @@ export class ProjectService {
      * @param librariesDirPath Path to the libraries. Libraries are jar Files that may necessary for analyzing
      * @param config additional config params for opal 
      */
-    async getOPALLoadMessage(config : Object)   {
+    async getOPALLoadMessage(config : any)   {
         var projectId = this._projectId;
         var targets = this._classDAO.getFsPaths();
-        var libraries = await this.getLibrariesInWorkspace();
+        var libraries = await this.addLibraries(config.libFolders);
         return {
             "projectId" : projectId,
             "targets" : targets,
@@ -118,7 +118,10 @@ export class ProjectService {
      */
     async addLibraries(librariesDirPaths : string) {
         let libFolders = [];
-        libFolders = librariesDirPaths.split(";");
+        if (librariesDirPaths === undefined || librariesDirPaths === "") {
+            return [];
+        }
+        libFolders = librariesDirPaths.split(",");
         var libraryPaths = [];
 
         //for every folder containing libraries
@@ -133,6 +136,7 @@ export class ProjectService {
                 }
             }
         }
+        return libraryPaths;
     }
 
     /**

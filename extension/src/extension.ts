@@ -162,11 +162,10 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      /**
-       * @todo: check if Project is already loaded
-       */
       if (projectIsLoaded) {
         return;
+      } else {
+        vscode.window.showInformationMessage("Loading Project");
       }
 
       /**
@@ -177,7 +176,8 @@ export async function activate(context: vscode.ExtensionContext) {
         {
           "jdk.load" : conf.get("JavaBytecodeWorkbench.extension.jdk.load")+"",
           "jdk.loadAsLib" : conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLib")+"",
-          "libraryClassFilesAreInterfacesOnly": conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLibInterfacesOnly")+""
+          "libraryClassFilesAreInterfacesOnly": conf.get("JavaBytecodeWorkbench.extension.jdk.loadAsLibInterfacesOnly")+"",
+          "libFolders" : conf.get("JavaBytecodeWorkbench.extension.libFolders")
         }
       );
       

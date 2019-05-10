@@ -2,7 +2,7 @@
   "name": "java-bytecode-workbench",
   "displayName": "Java Bytecode Workbench",
   "description": "VS Code Explorer for the OPAL Application",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "publisher": "stg",
   "author": {
     "name": "Alexander Gössl",
@@ -59,6 +59,11 @@
           "type": "boolean",
           "default": false,
           "description": "Should the Library Class files be loaded as interfaces only?"
+        },
+        "JavaBytecodeWorkbench.extension.libFolders" : {
+          "type": "string",
+          "default": "",
+          "description": "The Paths to the libraries. (Comma separated)"
         }
       }
     },
@@ -108,7 +113,7 @@
       {
         "id": "tac",
         "aliases": [
-          "three-address code",
+          "Three-Address-Code",
           "tac"
         ],
         "extensions": [
