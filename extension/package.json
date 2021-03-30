@@ -12,6 +12,7 @@
 	"activationEvents": [
 		"onCommand:extension.tac",
 		"onCommand:extension.menuTac",
+		"onCommand:extension.menuJar",
 		"onCommand:extension.menuBC",
 		"workspaceContains:**/opal.config.json"
 	],
@@ -25,6 +26,10 @@
 			{
 				"command": "extension.menuTac",
 				"title": "TAC from file"
+			},
+			{
+				"command": "extension.menuJar",
+				"title": "Extract Jar..."
 			},
 			{
 				"command": "extension.menuBC",
@@ -63,8 +68,35 @@
 					"class",
 					"Class"
 				]
+			},
+			{
+				"id": "jar",
+				"extensions": [
+					".jar"
+				],
+				"aliases": [
+					"jar",
+					"Jar"
+				]
 			}
 		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "opal-explorer",
+					"title": "OPAL Explorer",
+					"icon": "assets/expicon.svg"
+				}
+			]
+		},
+		"views": {
+			"opal-explorer": [
+				{
+					"id": "package-explorer",
+					"name": "Package Explorer"
+				}
+			]
+		},
 		"menus": {
 			"editor/context": [
 				{
@@ -83,6 +115,17 @@
 					"command": "extension.menuBC",
 					"when": "!explorerResourceIsFolder && resourceLangId == class",
 					"group": "2_workspace"
+				},
+				{
+					"command": "extension.menuJar",
+					"when": "!explorerResourceIsFolder && resourceLangId == jar",
+					"group": "2_workspace"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "extension.menuTac",
+					"when": "viewItem == opalNodeClass"
 				}
 			]
 		},
@@ -108,6 +151,8 @@
 		"chai": "^4.2.0",
 		"is-reachable": "^3.0.0",
 		"mocha": "*",
+		"readdirp": "^2.2.1",
+		"directory-tree": "^2.2.1",
 		"request-promise-native": "^1.0.7",
 		"tslint": "^5.8.0",
 		"typescript": "^3.1.4",

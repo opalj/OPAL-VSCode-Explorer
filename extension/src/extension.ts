@@ -5,7 +5,9 @@ import * as vscode from 'vscode';
 import TACProvider, { encodeTACLocation } from './extension/provider/tac.provider';
 import BCProvider, { encodeBCLocation } from './extension/provider/bc.provider';
 import { ProjectService } from './extension/service/project.service';
+import * as npmPath from 'path';
 import OpalConfig from './extension/opal.config';
+import { PackageViewProvider } from './extension/provider/packageViewProvider';
 
 
 const isReachable = require('is-reachable');
@@ -43,9 +45,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Ping Jetty
 	var jettyIsUp = await isReachable(config.server.url.replace("http://", ""));
 	if (!jettyIsUp) {
-		var terminal = vscode.window.createTerminal("jetty");
-		terminal.show(false);
-		terminal.sendText("java -jar '"+config.extension.serverJarPath+"' "+config.extension.jarOptions, true);
+		var jettyTerminal = vscode.window.createTerminal("jetty");
+		jettyTerminal.show(false);
+		jettyTerminal.sendText("java -jar '"+config.server.jar+"' "+config.server.jaroptions, true);
 	}
 
 	/*
@@ -137,8 +139,30 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.showTextDocument(doc);
 	});
 
+	//menu-command to extract jar file
+	let menuJarCommand = vscode.commands.registerCommand('extension.menuJar', async (uri:vscode.Uri) => {
+		vscode.window.showInformationMessage("Extracting Jar ...");
+		var jarFolder = config.extension.jarExtractionFolder;
+		var fileName = npmPath.parse(uri.fsPath).base;
+		console.log(fileName);
+		vscode.window.showInformationMessage(fileName);
 
-	context.subscriptions.push(menuTacCommand, menuBCCommand, providerRegistrations);
+		var jarTerminal = vscode.window.createTerminal("Jar Extracter");
+		jarTerminal.show(false);
+		jarTerminal.sendText(("mkdir " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar")));
+		jarTerminal.sendText("cd " + jarFolder.replace(/\\/g, "/") + "/" + fileName.replace(".jar", "_jar"));
+		jarTerminal.sendText("jar -xf " + uri.path.replace("/", ""));
+	});
+
+	/**
+	 * Setting up and displaying Opal Tree View
+	 */
+	const pVP = new PackageViewProvider(vscode.Uri.parse(<string> vscode.workspace.rootPath));
+	vscode.window.showInformationMessage("Package Explorer is loading...");
+	vscode.window.registerTreeDataProvider('package-explorer', pVP);
+	vscode.window.showInformationMessage("Package Explorer is ready.");
+	
+	context.subscriptions.push(menuTacCommand, menuBCCommand, menuJarCommand, providerRegistrations);
 }
 
 // this method is called when your extension is deactivated
