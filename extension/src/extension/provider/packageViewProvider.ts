@@ -32,7 +32,7 @@ export class PackageViewProvider implements vscode.TreeDataProvider<OpalNode> {
 	 * method for refreshing tree view
 	 */
 	public refresh(): void {
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 		this._treeRoot = this.setOpalNodeTree(this._classDAO.classes);
 	}
 

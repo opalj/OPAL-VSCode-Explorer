@@ -1,8 +1,8 @@
 var expect = require('chai').expect;
-import { ProjectService } from '../extension/service/project.service';
-import ClassDAO from '../extension/model/class.dao';
-import ContextService from '../extension/service/context.service';
-import { CommandService } from '../extension/service/command.service';
+import { ProjectService } from '../../extension/service/project.service';
+import ClassDAO from '../../extension/model/class.dao';
+import ContextService from '../../extension/service/context.service';
+import { CommandService } from '../../extension/service/command.service';
 
 let serverUrl = 'http://localhost:8080';
 
