@@ -1,5 +1,5 @@
 
-ThisBuild / scalaVersion     := "2.12.8"
+ThisBuild / scalaVersion     := "2.12.13"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organizationName := "TU Darmstadt"
 ThisBuild / organization     := "org.opalj"
@@ -26,15 +26,7 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.2",
 
   // OPAL dependencies 
-  "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-  "org.scala-lang.modules" %% "scala-xml" % "1.1.1" % "runtime",
-  "com.typesafe.play" %% "play-json" % "2.7.2" % "runtime",
-  "com.iheart" %% "ficus" % "1.4.5"  % "runtime",
-  "org.apache.commons" % "commons-text" % "1.6"  % "runtime",
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1"  % "runtime",
-  "it.unimi.dsi" % "fastutil" % "8.2.2" % "runtime",
-  //"de.opal-project" %% "opal-developer-tools" % "3.0.0-SNAPSHOT" withJavadoc() withSources()
-
+  "de.opal-project" % "framework_2.12" % "4.0.0"
 )
 enablePlugins(SbtTwirl)
 enablePlugins(ScalatraPlugin)
@@ -60,3 +52,8 @@ assemblyMergeStrategy in assembly := {
     }
   case _ => MergeStrategy.last
 }
+
+
+assembly / assemblyJarName := "OPALCommandServer.jar"
+assembly / assemblyOutputPath := baseDirectory.value / (assembly / assemblyJarName).value
+
