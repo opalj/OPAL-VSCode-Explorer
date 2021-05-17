@@ -1,4 +1,4 @@
-var request = require('request-promise-native');
+const request = require("request-promise-native");
 import * as vscode from "vscode";
 
 /**
@@ -8,63 +8,68 @@ import * as vscode from "vscode";
  * This Service is responsible for encoding / decoding the body
  */
 export class CommandService {
+  options = {
+    uri: "",
+    headers: {},
+    body: {},
+    json: true,
+  };
 
-    options = {
-        "uri": "",
-        "headers": {
-        },
-        "body":{},
-        "json": true
+  protected serverUrl = "";
+
+  constructor(public _url: string) {
+    this.serverUrl = _url;
+  }
+
+  /**
+   * Requesting TAC from Server
+   * The load Project Command is called every time method is called
+   * The Server will not load the Project twice
+   * @param tacForClassMessage The message for requesting the TAC for a Class
+   */
+  async loadTAC(tacForClassMessage: any) {
+    await vscode.commands.executeCommand("extension.loadProject");
+    this.options.body = tacForClassMessage;
+    this.options.uri = this.serverUrl + "/opal/project/tac/class";
+    //Promise for sending classPath
+    return request.post(this.options);
+  }
+
+  /**
+   * Request any command from server
+   * The load Project Command is called every time method is called
+   * The Server will not load the Project twice
+   * @param command the command for opal
+   * @param params the params required for the Command
+   * @param projectId the ID of the Project
+   */
+  loadAnyCommand(command: string, projectId: string, params: any) {
+    vscode.commands.executeCommand("extension.loadProject");
+    this.options.body = {
+      params: params,
+      command: command,
+      projectId: projectId,
     };
+    this.options.uri = this.serverUrl + "/opal/project/loadAny";
+    return request.post(this.options);
+  }
 
-    protected serverUrl = "";
-
-    constructor(public _url: string){
-        this.serverUrl = _url;
-    }
-
-    /**
-     * Requesting TAC from Server
-     * The load Project Command is called every time method is called
-     * The Server will not load the Project twice
-     * @param tacForClassMessage The message for requesting the TAC for a Class
-     */
-    async loadTAC(tacForClassMessage: any) {
-        await vscode.commands.executeCommand("extension.loadProject");
-        this.options.body = tacForClassMessage;
-        this.options.uri = this.serverUrl + "/opal/project/tac/class";
-        //Promise for sending classPath
-        return request.post(this.options);
-    }
-
-    /**
-     * Request any command from server
-     * The load Project Command is called every time method is called
-     * The Server will not load the Project twice
-     * @param command the command for opal
-     * @param params the params required for the Command
-     * @param projectId the ID of the Project
-     */
-    loadAnyCommand(command: String, projectId : string, params: any) {
-        vscode.commands.executeCommand("extension.loadProject");
-        this.options.body = {"params": params,"command": command, "projectId":projectId};
-        this.options.uri = this.serverUrl + "/opal/project/loadAny";
-        return request.post(this.options);
-    }
-
-
-
-    /**
-     * Get the request body for requesting TAC for a class
-     * Check /server/src/main/scala/opal/vscode/model.scala for Details
-     * TACForClass(projectId:String, fqn:String, className:String)
-     */
-    getTACForClassMessage(projectId:String, fqn:String, className:String, version = "") {
-        return {
-            "projectId" : projectId,
-            "fqn" : fqn,
-            "className" : className,
-            "version" : version
-        };
-    }
+  /**
+   * Get the request body for requesting TAC for a class
+   * Check /server/src/main/scala/opal/vscode/model.scala for Details
+   * TACForClass(projectId:String, fqn:String, className:String)
+   */
+  getTACForClassMessage(
+    projectId: string,
+    fqn: string,
+    className: string,
+    version = ""
+  ) {
+    return {
+      projectId: projectId,
+      fqn: fqn,
+      className: className,
+      version: version,
+    };
+  }
 }

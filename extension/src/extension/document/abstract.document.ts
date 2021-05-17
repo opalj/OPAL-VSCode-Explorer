@@ -2,14 +2,15 @@ import * as vscode from "vscode";
 import { CommandService } from "../service/command.service";
 import { ClassFile } from "../model/class.dao";
 
-export default abstract class AbstractDocument { // should implements vscode.TextDocument 
+export default abstract class AbstractDocument {
+  // should implements vscode.TextDocument
   uri: vscode.Uri;
-  fileName: string = "";
-  isUntitled: boolean = false;
-  languageId: string = "";
-  version: number = 1;
-  isDirty: boolean = false;
-  isClosed: boolean = false;
+  fileName = "";
+  isUntitled = false;
+  languageId = "";
+  version = 1;
+  isDirty = false;
+  isClosed = false;
   save(): Thenable<boolean> {
     throw new Error("Method not implemented.");
   }
@@ -39,22 +40,22 @@ export default abstract class AbstractDocument { // should implements vscode.Tex
   protected _projectId: string;
   protected _classFileURI: vscode.Uri;
   private _opalConfig: any;
-  protected targetsRoot : string = "";
-  protected _class : ClassFile;
+  protected targetsRoot = "";
+  protected _class: ClassFile;
 
   constructor(
     uri: vscode.Uri,
     projectId: string,
     classFileURI: vscode.Uri,
     config: any,
-    classItem : ClassFile
+    classItem: ClassFile
   ) {
     this._links = [];
     this._opalConfig = config;
     this._commandService = new CommandService(
-      "http://localhost:" + this._opalConfig.get("JavaBytecodeWorkbench.server.port")
+      "http://localhost:" +
+        this._opalConfig.get("JavaBytecodeWorkbench.server.port")
     );
-
 
     //this._emitter = emitter;
     this.uri = uri;
@@ -82,15 +83,15 @@ export default abstract class AbstractDocument { // should implements vscode.Tex
    */
   public async populate() {
     try {
-      let tac = this.loadContent();
-      tac.then((result : string) => this._content = result);
+      const tac = this.loadContent();
+      tac.then((result: string) => (this._content = result));
       return tac;
     } catch (e) {
       console.log(e);
     }
   }
 
-  public abstract loadContent() : Promise<string>;
+  public abstract loadContent(): Promise<string>;
 
-  public abstract parseDocumentLinks(content : string) :  vscode.DocumentLink[];
+  public abstract parseDocumentLinks(content: string): vscode.DocumentLink[];
 }

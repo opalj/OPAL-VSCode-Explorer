@@ -1,7 +1,13 @@
-# Change Log
-All notable changes to the "opal-vscode-explorer" extension will be documented in this file.
+# Changelog
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
-- Initial release
+
+## [0.2.0] - 2021-05-17
+
+- Updated OPAL to 4.0. This should allow the plugin to handle Java 16 classes.
+- Update the vscode Engine to 1.5.1
+  

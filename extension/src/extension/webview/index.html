@@ -3,49 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-    const vscode = acquireVsCodeApi();
+      const vscode = acquireVsCodeApi();
 
-    function showTAC() {
-      let variant = document.getElementById("TacVariant").value
-      
-      if (variant === "AI") {
-        vscode.postMessage({command:"extension.menuTac"});  
-      } else {
-        vscode.postMessage({command:"extension.menuTacSsaLike"});  
+      function showTAC() {
+        let variant = document.getElementById("TacVariant").value;
+
+        if (variant === "AI") {
+          vscode.postMessage({ command: "extension.menuTac" });
+        } else {
+          vscode.postMessage({ command: "extension.menuTacSsaLike" });
+        }
       }
-    }
 
-    function showBC() {
-      vscode.postMessage({command:"extension.menuBC"});  
-    }
+      function showBC() {
+        vscode.postMessage({ command: "extension.menuBC" });
+      }
 
-    window.addEventListener('message', event => {
-      let classFile = event.data.classFile;
-      document.getElementById("headline").innerHTML = classFile.name+".class Workbench";
-      
-      let methodSelect = document.getElementById("methods");
-      classFile.methods.forEach(method => {
-        let option = document.createElement("option");
-        option.text = method.name;
-        option.value = method.name;
-        methodSelect.add(option);
+      window.addEventListener("message", (event) => {
+        let classFile = event.data.classFile;
+        document.getElementById("headline").innerHTML =
+          classFile.name + ".class Workbench";
+
+        let methodSelect = document.getElementById("methods");
+        classFile.methods.forEach((method) => {
+          let option = document.createElement("option");
+          option.text = method.name;
+          option.value = method.name;
+          methodSelect.add(option);
+        });
       });
-    });
     </script>
     <style>
       h1 {
         text-align: center;
-        border-bottom: 1px solid black;  
+        border-bottom: 1px solid black;
       }
-    .section {
-      border-bottom: 1px solid black;
-      padding: 5px;
-      margin-bottom: 3px;
-    }
-    .section h2 {
-      margin-top: 0px;
-      padding-top: 0px;
-    }
+      .section {
+        border-bottom: 1px solid black;
+        padding: 5px;
+        margin-bottom: 3px;
+      }
+      .section h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+      }
     </style>
   </head>
   <body>
@@ -63,7 +64,7 @@
         <label>Method:</label>
         <select name="method" id="methods">
           <option value="">--</option>
-        </select> 
+        </select>
       </p>
       <button onclick="showTAC()">open</button>
     </div>
