@@ -1,7 +1,7 @@
 out
 node_modules
 .vscode-test/
-dist/*
+dist
 target/
 lib_managed/
 src_managed/
@@ -10,6 +10,7 @@ project/plugins/project/
 .history
 .cache
 .lib/
+.bsp/
 .metals/
 .metals/metals.h2.db
 .metals/metals.log
@@ -24,5 +25,7 @@ server/.metals/metals.log
 server/.bloop/
 server/.idea/
 dummy/opal.config.json
-extension/OPAL Command Server-assembly-0.1.0-SNAPSHOT.jar
 server/lib/OPALTACDisassembler/**
+**/OPALCommandServer.jar
+*.vsix
+
